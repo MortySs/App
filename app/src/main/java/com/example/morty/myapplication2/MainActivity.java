@@ -13,10 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    byte pressedCount = 1;
+    Date pressedMoment1 = new Date(0);
+    Date pressedMoment2 = new Date(0);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,9 +50,24 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
+            pressedCount = 1;
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        } else if(pressedCount==1){
+            pressedCount++;
+            pressedMoment1 = new Date();
+            Toast.makeText(this, "Нажмите еще раз для выхода", Toast.LENGTH_SHORT).show();
+        } else{
+            pressedCount = 1;
+            pressedMoment2 = new Date();
+            if(pressedMoment2.getTime()-pressedMoment1.getTime() < 1000) {
+                super.onBackPressed();
+                pressedMoment1 = new Date(0);
+                pressedMoment2 = new Date(0);
+            }else{
+                pressedCount++;
+                pressedMoment1 = new Date();
+                Toast.makeText(this, "Нажмите еще раз для выхода", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
