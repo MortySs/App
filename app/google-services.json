@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "210738292827",
+    "firebase_url": "https://leotest-2k1n.firebaseio.com",
+    "project_id": "leotest-2k1n",
+    "storage_bucket": "leotest-2k1n.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:210738292827:android:8c4a7dbf5ed7eec0",
+        "android_client_info": {
+          "package_name": "com.example.morty.myapplication2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "210738292827-2btrsco60f44m3vlq6h5d3jbd0ivo9sa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDeDoSMvTwqT9SZBpMiXvWhv02Tk-ICFsY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
