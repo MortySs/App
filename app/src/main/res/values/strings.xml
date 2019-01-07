@@ -6,12 +6,10 @@
     <string name="nav_header_subtitle">nkrotovskaya@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_login">Авторизация</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Электронная почта</string>
     <string name="prompt_password">Пароль</string>
     <string name="action_sign_in">Войти или зарегистрироваться</string>
-    <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">Неверный адрес электронной почты</string>
     <string name="error_invalid_password">Слишком короткий пароль</string>
     <string name="error_incorrect_password">Неверный пароль</string>
