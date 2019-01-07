@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="emailpassword_status_fmt"></string>
+    <string name="auth_failed">Ошибка авторизации</string>
+    <string name="signed_out">Вы не авторизованы</string>
+    <string name="firebase_status_fmt"></string>
+</resources>
