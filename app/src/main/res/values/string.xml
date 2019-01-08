@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="action_sign_in_short">Register</string>
+    <string name="action_sign_in_short">Зарегистрироваться</string>
     <string name="email">Адрес электронной почты</string>
     <string name="minimum_password">Слишком короткий пароль, введите минимум 6 символов!</string>
     <string name="auth_failed">Ошибка авторизации, неверный логин/пароль или вы еще не зарегистрированы</string>
@@ -16,7 +16,7 @@
     <string name="hint_name">Fullname</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Все еще не с нами? Присоединяйтесь!</string>
-    <string name="btn_link_to_login">Already registered. Login Me!</string>
+    <string name="btn_link_to_login">Уже зарегистрированы?Войдите!</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
     <string name="btn_forgot_password">Забыли пароль?</string>
     <string name="btn_reset_password">Сбросить пароль</string>
