@@ -14,10 +14,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private FirebaseAuth mAuth;
+
     byte pressedCount = 1;
     Date pressedMoment1 = new Date(0);
     Date pressedMoment2 = new Date(0);
@@ -26,7 +32,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        mAuth = FirebaseAuth.getInstance();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -101,8 +107,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
-            Intent intent = new Intent(MainActivity.this, EmailPasswordActivity.class);
-            startActivity(intent);
+                FirebaseUser currentUser = mAuth.getCurrentUser();
+                if (currentUser!=null){
+                    Intent intent = new Intent(MainActivity.this, user_profile.class);
+                    startActivity(intent);
+
+         }else{
+                    Intent intent = new Intent(MainActivity.this, EmailPasswordActivity.class);
+                    startActivity(intent);
+                }
+
         } else if (id == R.id.nav_tests) {
             Toast.makeText(this, "Ещё чуть-чуть и вы сможете создать собственный тест!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_done) {

@@ -24,10 +24,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ResetPasswordActivity"></activity>
-        <activity android:name=".SignupActivity"></activity>
-        <activity android:name=".EmailPasswordActivity"></activity>
-        <activity android:name="NavHeaderActivity"></activity>
+        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".SignupActivity" />
+        <activity android:name=".EmailPasswordActivity" />
+        <activity android:name=".NavHeaderActivity" />
+        <activity
+            android:name=".user_profile"
+            android:label="@string/title_activity_user_profile"></activity>
     </application>
 
 </manifest>
