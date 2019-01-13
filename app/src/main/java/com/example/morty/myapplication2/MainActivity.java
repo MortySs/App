@@ -27,12 +27,15 @@ public class MainActivity extends AppCompatActivity
     byte pressedCount = 1;
     Date pressedMoment1 = new Date(0);
     Date pressedMoment2 = new Date(0);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mAuth = FirebaseAuth.getInstance();
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_profile) {
-                FirebaseUser currentUser = mAuth.getCurrentUser();
+            FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser!=null){
                     Intent intent = new Intent(MainActivity.this, user_profile.class);
                     startActivity(intent);
@@ -127,10 +130,15 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "У вас пока нет ни одного черновика", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
             Toast.makeText(this, "Скоро вы сможете поделиться вашим прогрессом", Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_sign_out){
+            FirebaseAuth.getInstance().signOut();
+            Toast.makeText(this, "Вы успешно вышли из аккаунта", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
 }

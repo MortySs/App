@@ -85,15 +85,16 @@ public class SignupActivity extends AppCompatActivity {
                         .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(SignupActivity.this, "createUserWithEmail:onComplete:" + task.isSuccessful(), Toast.LENGTH_SHORT).show();
+
                                 progressBar.setVisibility(View.GONE);
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(SignupActivity.this, "Authentication failed." + task.getException(),
+                                    Toast.makeText(SignupActivity.this, "Ошибка регистрации" + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 } else {
+                                    Toast.makeText(SignupActivity.this, "Новый пользователь успешно зарегистрирован", Toast.LENGTH_SHORT).show();
                                     startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
                                 }
@@ -105,11 +106,10 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    private void writeNewUser(String userId, String name, String email) {
-        User user = new User(name, email);
-
-        mDatabase.child("users").child(userId).setValue(user);
-    }
+    //private void writeNewUser(String userId, String name, String email) {
+    //   User user = new User(name, email);
+    //    mDatabase.child("users").child(userId).setValue(user);
+    //}
 
     @Override
     protected void onResume() {
