@@ -100,7 +100,7 @@ public class user_profile extends AppCompatActivity {
 
                 if (snapshot != null && snapshot.exists()) {
                     mTextMessage.setText(snapshot.get("name").toString());
-                    mTextMessage1.setText(snapshot.get("mobile").toString());
+                    mTextMessage1.setText(snapshot.get("phone").toString());
                     mTextMessage2.setText(cus.getEmail());
 
 

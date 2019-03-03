@@ -28,6 +28,7 @@
         <activity android:name=".SignupActivity" />
         <activity android:name=".EmailPasswordActivity" />
         <activity android:name=".NavHeaderActivity" />
+        <activity android:name=".userFirstActivity"/>
         <activity
             android:name=".user_profile"
             android:label="@string/title_activity_user_profile"></activity>

@@ -28,4 +28,5 @@
     <string name="btn_sign_out">Sign Out</string>
     <string name="lbl_forgot_password">Забыли пароль?</string>
     <string name="forgot_password_msg">Введите адрес электронной почты, на которую зарегистрирован ваш аккаунт</string>
+    <string name="new_us">Нам нужно больше информации о вас, пожалуйста, заполните поля ниже</string>
 </resources>
