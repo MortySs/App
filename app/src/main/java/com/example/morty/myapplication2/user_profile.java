@@ -99,8 +99,16 @@ public class user_profile extends AppCompatActivity {
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    mTextMessage.setText(snapshot.get("name").toString());
-                    mTextMessage1.setText(snapshot.get("phone").toString());
+                    if (snapshot.get("name")!=null) {
+                        mTextMessage.setText(snapshot.get("name").toString());
+                    }else{
+                        mTextMessage.setText("Ошибка загрузки данных");
+                    }
+                    if (snapshot.get("phone")!=null) {
+                        mTextMessage1.setText(snapshot.get("phone").toString());
+                    }else{
+                        mTextMessage1.setText("Ошибка загрузки данных");
+                    }
                     mTextMessage2.setText(cus.getEmail());
 
 
