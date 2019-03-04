@@ -30,6 +30,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 public class user_profile extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -57,6 +59,7 @@ public class user_profile extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -66,6 +69,7 @@ public class user_profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+<<<<<<< HEAD
         //   Uri file = Uri.fromFile(new File());
         //   StorageReference riversRef = storageRef.child("Default/"+file.getLastPathSegment());
         //   UploadTask uploadTask = riversRef.putFile(file);
@@ -82,6 +86,24 @@ public class user_profile extends AppCompatActivity {
         //           // ...
         //       }
         //   });
+=======
+   //   Uri file = Uri.fromFile(new File());
+   //   StorageReference riversRef = storageRef.child("Default/"+file.getLastPathSegment());
+   //   UploadTask uploadTask = riversRef.putFile(file);
+// //gister observers to listen for when the download is done or if it fails
+   //   uploadTask.addOnFailureListener(new OnFailureListener() {
+   //       @Override
+   //       public void onFailure(@NonNull Exception exception) {
+   //          Log.d("","PROBLEM");
+   //       }
+   //   }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+   //       @Override
+   //       public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+   //           // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+   //           // ...
+   //       }
+   //   });
+>>>>>>> ccd036e92f2f485c8be2fb394950d9b1270258d0
 
 
         mTextMessage = (TextView) findViewById(R.id.uzname_field);
