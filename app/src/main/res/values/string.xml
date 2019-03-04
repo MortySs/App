@@ -16,7 +16,7 @@
     <string name="hint_name">Fullname</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Все еще не с нами? Присоединяйтесь!</string>
-    <string name="btn_link_to_login">Уже зарегистрированы?Войдите!</string>
+    <string name="btn_link_to_login">Уже зарегистрированы? Войдите!</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>
     <string name="btn_forgot_password">Забыли пароль?</string>
     <string name="btn_reset_password">Сбросить пароль</string>

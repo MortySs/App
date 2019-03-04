@@ -34,10 +34,8 @@ public class user_profile extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private TextView mTextMessage;
-    private TextView mTextMessage1;
     private TextView mTextMessage2;
     private ImageView Avatar;
-
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -68,9 +66,25 @@ public class user_profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        //   Uri file = Uri.fromFile(new File());
+        //   StorageReference riversRef = storageRef.child("Default/"+file.getLastPathSegment());
+        //   UploadTask uploadTask = riversRef.putFile(file);
+// //gister observers to listen for when the download is done or if it fails
+        //   uploadTask.addOnFailureListener(new OnFailureListener() {
+        //       @Override
+        //       public void onFailure(@NonNull Exception exception) {
+        //          Log.d("","PROBLEM");
+        //       }
+        //   }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        //       @Override
+        //       public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+        //           // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+        //           // ...
+        //       }
+        //   });
+
 
         mTextMessage = (TextView) findViewById(R.id.uzname_field);
-        mTextMessage1 = (TextView) findViewById(R.id.uzmob_field);
         mTextMessage2 = (TextView) findViewById(R.id.uz_email);
         Avatar = (ImageView) findViewById(R.id.uz_avatar);
 
@@ -84,7 +98,7 @@ public class user_profile extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
+                Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/leotest-2k1n.appspot.com/o/Default%2Favatar_pic.png?alt=media&token=0a264da6-7d1b-44cd-aaee-9230bd2d0b2d").into(Avatar);
             }
         });
 
@@ -103,11 +117,6 @@ public class user_profile extends AppCompatActivity {
                         mTextMessage.setText(snapshot.get("name").toString());
                     }else{
                         mTextMessage.setText("Ошибка загрузки данных");
-                    }
-                    if (snapshot.get("phone")!=null) {
-                        mTextMessage1.setText(snapshot.get("phone").toString());
-                    }else{
-                        mTextMessage1.setText("Ошибка загрузки данных");
                     }
                     mTextMessage2.setText(cus.getEmail());
 

@@ -28,7 +28,7 @@ import java.util.Map;
 public class SignupActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
-    private EditText inputEmail, inputPassword;
+    private EditText inputEmail, inputPassword, inputName;
     private Button btnSignIn, btnSignUp, btnResetPassword;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
@@ -47,6 +47,7 @@ public class SignupActivity extends AppCompatActivity {
         btnSignUp = (Button) findViewById(R.id.sign_up_button);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
+        inputName = (EditText) findViewById(R.id.us_name);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
 
@@ -64,12 +65,17 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-                       btnSignUp.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String name = inputName.getText().toString().trim();
                 final String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+
+                if (TextUtils.isEmpty(name)) {
+                    Toast.makeText(getApplicationContext(), "Введите ваше имя!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(getApplicationContext(), "Enter email address!", Toast.LENGTH_SHORT).show();
@@ -102,8 +108,7 @@ public class SignupActivity extends AppCompatActivity {
                                             Toast.LENGTH_SHORT).show();
                                 } else {
                                     Map<String, Object> user = new HashMap<>();
-                                    user.put("name", "New user");
-                                    user.put("phone", "n/a");
+                                    user.put("name", name);
 
                                     db.collection("users").document(email)
                                             .set(user)
@@ -120,7 +125,7 @@ public class SignupActivity extends AppCompatActivity {
                                                 }
                                             });
                                     Toast.makeText(SignupActivity.this, "Новый пользователь успешно зарегистрирован", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(SignupActivity.this, userFirstActivity.class));
+                                    startActivity(new Intent(SignupActivity.this, MainActivity.class));
                                     finish();
                                 }
                             }
