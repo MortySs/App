@@ -30,6 +30,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 public class user_profile extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -59,6 +61,7 @@ public class user_profile extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -67,6 +70,23 @@ public class user_profile extends AppCompatActivity {
         final StorageReference storageRef = storage.getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+   //   Uri file = Uri.fromFile(new File());
+   //   StorageReference riversRef = storageRef.child("Default/"+file.getLastPathSegment());
+   //   UploadTask uploadTask = riversRef.putFile(file);
+// //gister observers to listen for when the download is done or if it fails
+   //   uploadTask.addOnFailureListener(new OnFailureListener() {
+   //       @Override
+   //       public void onFailure(@NonNull Exception exception) {
+   //          Log.d("","PROBLEM");
+   //       }
+   //   }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+   //       @Override
+   //       public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+   //           // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+   //           // ...
+   //       }
+   //   });
 
 
         mTextMessage = (TextView) findViewById(R.id.uzname_field);
@@ -84,7 +104,7 @@ public class user_profile extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle any errors
+                Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/leotest-2k1n.appspot.com/o/Default%2Favatar_pic.png?alt=media&token=0a264da6-7d1b-44cd-aaee-9230bd2d0b2d").into(Avatar);
             }
         });
 
