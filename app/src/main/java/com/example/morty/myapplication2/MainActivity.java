@@ -132,6 +132,8 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "Скоро вы сможете поделиться вашим прогрессом", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_sign_out){
             FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(MainActivity.this,MainActivity.class);
+            startActivity(intent);
             Toast.makeText(this, "Вы успешно вышли из аккаунта", Toast.LENGTH_SHORT).show();
         }
 
