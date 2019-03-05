@@ -66,6 +66,7 @@ public class User_profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+<<<<<<< HEAD:app/src/main/java/com/example/morty/myapplication2/User_profile.java
         //   Uri file = Uri.fromFile(new File());
         //   StorageReference riversRef = storageRef.child("Default/"+file.getLastPathSegment());
         //   UploadTask uploadTask = riversRef.putFile(file);
@@ -98,6 +99,9 @@ public class User_profile extends AppCompatActivity {
    //           // ...
    //       }
    //   });
+=======
+
+>>>>>>> c3a28ac76eeee7848abc6e67dccc6d484d596c1a:app/src/main/java/com/example/morty/myapplication2/user_profile.java
 
 
         mTextMessage = (TextView) findViewById(R.id.uzname_field);
