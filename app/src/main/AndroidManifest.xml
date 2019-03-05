@@ -29,7 +29,7 @@
         <activity android:name=".EmailPasswordActivity" />
         <activity android:name=".NavHeaderActivity" />
         <activity
-            android:name=".user_profile"
+            android:name=".User_profile"
             android:label="@string/title_activity_user_profile"></activity>
     </application>
 

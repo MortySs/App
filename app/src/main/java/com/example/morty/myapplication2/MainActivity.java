@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_profile) {
             FirebaseUser currentUser = mAuth.getCurrentUser();
                 if (currentUser!=null){
-                    Intent intent = new Intent(MainActivity.this, user_profile.class);
+                    Intent intent = new Intent(MainActivity.this, User_profile.class);
                     startActivity(intent);
 
          }else{
@@ -130,9 +130,6 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, "У вас пока нет ни одного черновика", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
             Toast.makeText(this, "Скоро вы сможете поделиться вашим прогрессом", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_sign_out){
-            FirebaseAuth.getInstance().signOut();
-            Toast.makeText(this, "Вы успешно вышли из аккаунта", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

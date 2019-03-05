@@ -1,25 +1,24 @@
 package com.example.morty.myapplication2;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.Nullable;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -27,17 +26,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-
-public class user_profile extends AppCompatActivity {
+public class User_profile extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private TextView mTextMessage;
     private TextView mTextMessage2;
     private ImageView Avatar;
+    private Button btn;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -69,7 +66,6 @@ public class user_profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
-<<<<<<< HEAD
         //   Uri file = Uri.fromFile(new File());
         //   StorageReference riversRef = storageRef.child("Default/"+file.getLastPathSegment());
         //   UploadTask uploadTask = riversRef.putFile(file);
@@ -86,7 +82,6 @@ public class user_profile extends AppCompatActivity {
         //           // ...
         //       }
         //   });
-=======
    //   Uri file = Uri.fromFile(new File());
    //   StorageReference riversRef = storageRef.child("Default/"+file.getLastPathSegment());
    //   UploadTask uploadTask = riversRef.putFile(file);
@@ -103,12 +98,21 @@ public class user_profile extends AppCompatActivity {
    //           // ...
    //       }
    //   });
->>>>>>> ccd036e92f2f485c8be2fb394950d9b1270258d0
 
 
         mTextMessage = (TextView) findViewById(R.id.uzname_field);
         mTextMessage2 = (TextView) findViewById(R.id.uz_email);
         Avatar = (ImageView) findViewById(R.id.uz_avatar);
+        btn = (Button) findViewById(R.id.LogOut);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent( User_profile.this, MainActivity.class);
+                startActivity(intent);
+                Toast.makeText(User_profile.this, "Вы успешно вышли из аккаунта", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         final FirebaseUser cus = mAuth.getCurrentUser();
         DocumentReference users = db.collection("users").document(cus.getEmail());
