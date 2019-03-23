@@ -28,9 +28,13 @@
         <activity android:name=".SignupActivity" />
         <activity android:name=".EmailPasswordActivity" />
         <activity android:name=".NavHeaderActivity" />
+        <activity android:name=".TestCreateActivity" />
         <activity
             android:name=".User_profile"
-            android:label="@string/title_activity_user_profile"></activity>
+            android:label="@string/title_activity_user_profile" />
+        <activity android:name=".test_view" />
+        <activity android:name=".prompt" />
+        <activity android:name=".TestCreateView"></activity>
     </application>
 
 </manifest>

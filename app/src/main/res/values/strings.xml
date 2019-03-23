@@ -17,6 +17,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="tag">Выберите категорию</string>
     <string name="title_activity_user_profile">Профиль</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

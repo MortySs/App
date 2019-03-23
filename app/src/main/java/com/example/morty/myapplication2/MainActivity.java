@@ -36,13 +36,12 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mAuth = FirebaseAuth.getInstance();
 
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Нету в проге, но есть в уме", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(MainActivity.this,TestCreateActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -121,7 +120,9 @@ public class MainActivity extends AppCompatActivity
                 }
 
         } else if (id == R.id.nav_tests) {
-            Toast.makeText(this, "Ещё чуть-чуть и вы сможете создать собственный тест!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this,test_view.class);
+            startActivity(intent);
+            //Toast.makeText(this, "Ещё чуть-чуть и вы сможете создать собственный тест!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_done) {
             Toast.makeText(this, "Вы пока не выполнили ни одного теста", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_manage) {
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_writes) {
             Toast.makeText(this, "У вас пока нет ни одного черновика", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
-            Toast.makeText(this, "Скоро вы сможете поделиться вашим прогрессом", Toast.LENGTH_SHORT).show();
+           //Toast.makeText(this, "Скоро вы сможете поделиться вашим прогрессом", Toast.LENGTH_SHORT).show();
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
