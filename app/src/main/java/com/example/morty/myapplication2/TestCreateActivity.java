@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,17 +21,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.florent37.expansionpanel.ExpansionLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class TestCreateActivity extends AppCompatActivity{
-
+    public final ArrayList<String> Questions = new ArrayList<>();
+    private EditText name;
+    private FirebaseAuth mAuth;
     private TextView mTextMessage;
-    private Button q_create;
+    private Button q_create,t_create;
     private ProgressBar progressBar;
     final Context context = this;
-    public final ArrayList<String> Questions = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +52,8 @@ public class TestCreateActivity extends AppCompatActivity{
         mTextMessage = (TextView) findViewById(R.id.tag_name);
         q_create = (Button)findViewById(R.id.q_add);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        name = (EditText)findViewById(R.id.name_of_test);
+        t_create = (Button)findViewById(R.id.t_create);
         ListView listView = (ListView)findViewById(R.id.list_tag);
         ListView questionView = (ListView)findViewById(R.id.test_create_list);
 
@@ -50,6 +67,7 @@ public class TestCreateActivity extends AppCompatActivity{
 
                Intent intent = new Intent(TestCreateActivity.this,TestCreateView.class);
                intent.putExtra("q_text",Questions.get((int)id));
+               intent.putExtra("number",(int)id+1);
                startActivity(intent);
                //Toast.makeText(TestCreateActivity.this, "Нажат вопрос номер " + id, Toast.LENGTH_SHORT).show();
            }
@@ -104,10 +122,60 @@ public class TestCreateActivity extends AppCompatActivity{
             }
         });
 
-
+        t_create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Upd_test();
+                Intent intent = new Intent(TestCreateActivity.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
+    private void Upd_test(){
+        mAuth = FirebaseAuth.getInstance();
+        final FirebaseUser cus = mAuth.getCurrentUser();
+        long q_count;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
+        final CollectionReference tests = db.collection("tests"); //document(name.getText().toString());
+
+        Map<String, Object> data = new HashMap<>();
+        final Map<String, Object> data1 = new HashMap<>();
+        for (int i = 0;i<Questions.size();i++){
+            final String count = ""+i;
+            data.put(count, Questions.get(i).toString());
+
+            for (int j = 0;j<4;j++){
+                final int k = j;
+                DocumentReference a = a_draft.document(""+(i+1));
+                a.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                data1.put(""+k,document.get(""+k).toString());
+                                tests.document(name.getText().toString()).collection("answers").document(count).set(data1);
+                                Log.d("LOL", "DocumentSnapshot data: " + document.get(""+k));
+                            } else {
+                                Log.d("LOL", "No such document");
+                            }
+                        } else {
+                            Log.d("LOL", "get failed with ", task.getException());
+                        }
+                    }
+                });
+            }
+
+            data1.clear();
+        }
+        data.put("q_count",Questions.size());
+        tests.document(name.getText().toString()).set(data);
 
 
-}
+    }
+    }
+
+
