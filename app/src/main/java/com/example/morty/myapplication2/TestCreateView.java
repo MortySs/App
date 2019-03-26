@@ -25,7 +25,6 @@ import java.util.Map;
 
 public class TestCreateView extends AppCompatActivity {
     private EditText a1,a2,a3,a4,c_a;
-    private Boolean b1,b2,b3,b4;
     private Button save;
     private TextView text;
     final Context context = this;
@@ -48,35 +47,34 @@ public class TestCreateView extends AppCompatActivity {
         text.setText(intent.getStringExtra("q_text"));
 
 
+
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(a1.getText()!=null) {
-                    b1=true;
+
                     Answers.add(a1.getText().toString());
                 }else {
-                    b1 = false;
                     //TODO тут делаешь, чтобы красным было
                 }
                 if (a2.getText()!=null){
-                    b2=true;
+
                 Answers.add(a2.getText().toString());
                 }else {
-                    b2 = false;
+
                     //TODO тут делаешь, чтобы красным было
                 }
                 if (a3.getText()!=null){
-                    b3=true;
+
                 Answers.add(a3.getText().toString());
                 }else{
-                    b3 = false;
                     //TODO тут делаешь, чтобы красным было
                 }
                 if (a4.getText()!=null){
-                    b4=true;
+
                 Answers.add(a4.getText().toString());
                 }else{
-                    b4 = false;
                     //TODO тут делаешь, чтобы красным было
                 }
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -94,11 +92,10 @@ public class TestCreateView extends AppCompatActivity {
                     data.put(count, Answers.get(i).toString());
                     doc.set(data);
                 }
-                if (b1&b2&b3&b4){
+
                 TestCreateView.this.finish();
-                }else{
-                    Toast.makeText(TestCreateView.this,"Проверьте вопросы!",Toast.LENGTH_LONG).show();
-                }
+
+                //TODO else{ //Toast.makeText(TestCreateView.this,"Проверьте вопросы!",Toast.LENGTH_SHORT).show();}
             }
 
 
