@@ -52,52 +52,32 @@ public class TestCreateView extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(a1.getText()!=null) {
-
+                if (a1.getText().toString().equals("") || a2.getText().toString().equals("") || a3.getText().toString().equals("") || a4.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "Введите все варианты ответов", Toast.LENGTH_SHORT).show();
+                }else {
                     Answers.add(a1.getText().toString());
-                }else {
-                    //TODO тут делаешь, чтобы красным было
+                    Answers.add(a2.getText().toString());
+                    Answers.add(a3.getText().toString());
+                    Answers.add(a4.getText().toString());
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    mAuth = FirebaseAuth.getInstance();
+                    final FirebaseUser cus = mAuth.getCurrentUser();
+                    final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
+                    DocumentReference doc = a_draft.document("" + n);
+                    DocumentReference draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft");
+                    Map<String, Object> data2 = new HashMap<>();
+                    data2.put("" + n, intent.getStringExtra("q_text"));
+                    draft.update(data2);
+                    Map<String, Object> data = new HashMap<>();
+                    for (int i = 0; i < 4; i++) {
+                        String count = "" + i;
+                        data.put(count, Answers.get(i).toString());
+                        doc.set(data);
+                    }
+
+                    TestCreateView.this.finish();
                 }
-                if (a2.getText()!=null){
-
-                Answers.add(a2.getText().toString());
-                }else {
-
-                    //TODO тут делаешь, чтобы красным было
-                }
-                if (a3.getText()!=null){
-
-                Answers.add(a3.getText().toString());
-                }else{
-                    //TODO тут делаешь, чтобы красным было
-                }
-                if (a4.getText()!=null){
-
-                Answers.add(a4.getText().toString());
-                }else{
-                    //TODO тут делаешь, чтобы красным было
-                }
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                mAuth = FirebaseAuth.getInstance();
-                final FirebaseUser cus = mAuth.getCurrentUser();
-                final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
-                DocumentReference doc = a_draft.document(""+n);
-                DocumentReference draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft");
-                Map<String, Object> data2 = new HashMap<>();
-                data2.put(""+n,intent.getStringExtra("q_text"));
-                draft.update(data2);
-                Map<String, Object> data = new HashMap<>();
-                for (int i = 0;i<4;i++){
-                    String count = ""+i;
-                    data.put(count, Answers.get(i).toString());
-                    doc.set(data);
-                }
-
-                TestCreateView.this.finish();
-
-                //TODO else{ //Toast.makeText(TestCreateView.this,"Проверьте вопросы!",Toast.LENGTH_SHORT).show();}
             }
-
 
 
         });
