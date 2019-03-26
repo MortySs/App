@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,10 +26,12 @@ import java.util.Map;
 
 public class TestCreateView extends AppCompatActivity {
     private EditText a1,a2,a3,a4,c_a;
-    private Button save;
+    private Button save,back;
     private TextView text;
     final Context context = this;
     private FirebaseAuth mAuth;
+    private CheckBox ac1,ac2,ac3,ac4;
+    private boolean c1,c2,c3,c4;
     private int n;
     public final ArrayList<String> Answers = new ArrayList<>();
     @Override
@@ -37,70 +40,67 @@ public class TestCreateView extends AppCompatActivity {
         setContentView(R.layout.test_answer);
 
         a1 = (EditText) findViewById(R.id.answer1);
-        a2 = (EditText)findViewById(R.id.answer2);
-        a3 = (EditText)findViewById(R.id.answer3);
-        a4 = (EditText)findViewById(R.id.answer4);
-        text = (TextView)findViewById(R.id.question);
-        save = (Button)findViewById(R.id.save_btn);
+        a2 = (EditText) findViewById(R.id.answer2);
+        a3 = (EditText) findViewById(R.id.answer3);
+        a4 = (EditText) findViewById(R.id.answer4);
+        ac1= (CheckBox) findViewById(R.id.check_answer1);
+        ac2= (CheckBox) findViewById(R.id.check_answer2);
+        ac3= (CheckBox) findViewById(R.id.check_answer3);
+        ac4= (CheckBox) findViewById(R.id.check_answer4);
+        back = (Button)findViewById(R.id.bck_button);
+        text = (TextView) findViewById(R.id.question);
+        save = (Button) findViewById(R.id.save_btn);
         final Intent intent = getIntent();
-        n=intent.getIntExtra("number",0);
+        n = intent.getIntExtra("number", 0);
         text.setText(intent.getStringExtra("q_text"));
-
-
 
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(a1.getText()!=null) {
-
+                if (a1.getText().toString().equals("") || a2.getText().toString().equals("") || a3.getText().toString().equals("") || a4.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "Введите все варианты ответов", Toast.LENGTH_SHORT).show();
+                } else {
                     Answers.add(a1.getText().toString());
-                }else {
-                    //TODO тут делаешь, чтобы красным было
-                }
-                if (a2.getText()!=null){
+                    Answers.add(a2.getText().toString());
+                    Answers.add(a3.getText().toString());
+                    Answers.add(a4.getText().toString());
 
-                Answers.add(a2.getText().toString());
-                }else {
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    mAuth = FirebaseAuth.getInstance();
+                    final FirebaseUser cus = mAuth.getCurrentUser();
+                    final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
+                    DocumentReference doc = a_draft.document("" + n);
+                    DocumentReference draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft");
+                    Map<String, Object> data2 = new HashMap<>();
+                    data2.put("" + n, intent.getStringExtra("q_text"));
+                    draft.update(data2);
+                    Map<String, Object> data = new HashMap<>();
+                    for (int i = 0; i < 4; i++) {
+                        String count = "" + i;
+                        data.put(count, Answers.get(i).toString());
 
-                    //TODO тут делаешь, чтобы красным было
-                }
-                if (a3.getText()!=null){
-
-                Answers.add(a3.getText().toString());
-                }else{
-                    //TODO тут делаешь, чтобы красным было
-                }
-                if (a4.getText()!=null){
-
-                Answers.add(a4.getText().toString());
-                }else{
-                    //TODO тут делаешь, чтобы красным было
-                }
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                mAuth = FirebaseAuth.getInstance();
-                final FirebaseUser cus = mAuth.getCurrentUser();
-                final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
-                DocumentReference doc = a_draft.document(""+n);
-                DocumentReference draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft");
-                Map<String, Object> data2 = new HashMap<>();
-                data2.put(""+n,intent.getStringExtra("q_text"));
-                draft.update(data2);
-                Map<String, Object> data = new HashMap<>();
-                for (int i = 0;i<4;i++){
-                    String count = ""+i;
-                    data.put(count, Answers.get(i).toString());
+                    }
+                    data.put("is_cor_"+0,ac1.isChecked());
+                    data.put("is_cor_"+1,ac2.isChecked());
+                    data.put("is_cor_"+2,ac3.isChecked());
+                    data.put("is_cor_"+3,ac4.isChecked());
                     doc.set(data);
+                    TestCreateView.this.finish();
+
+                    //TODO else{ //Toast.makeText(TestCreateView.this,"Проверьте вопросы!",Toast.LENGTH_SHORT).show();}
                 }
-
-                TestCreateView.this.finish();
-
-                //TODO else{ //Toast.makeText(TestCreateView.this,"Проверьте вопросы!",Toast.LENGTH_SHORT).show();}
             }
 
-
-
         });
-    }
+
+         back.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 TestCreateView.this.finish();
+             }
+         });
+         }
+        
 
 }

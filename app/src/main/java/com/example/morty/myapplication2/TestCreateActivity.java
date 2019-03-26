@@ -142,6 +142,7 @@ public class TestCreateActivity extends AppCompatActivity{
         final CollectionReference tests = db.collection("tests"); //document(name.getText().toString());
 
         Map<String, Object> data = new HashMap<>();
+        final Map<String, Object> data3 = new HashMap<>();
         final Map<String, Object> data1 = new HashMap<>();
         for (int i = 0;i<Questions.size();i++){
             final String count = ""+i;
@@ -157,7 +158,9 @@ public class TestCreateActivity extends AppCompatActivity{
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 data1.put(""+k,document.get(""+k).toString());
+                                data3.put("is_cor_"+k,document.get("is_cor_"+k));
                                 tests.document(name.getText().toString()).collection("answers").document(count).set(data1);
+                                tests.document(name.getText().toString()).collection("answers").document(count).update(data3);
                                 Log.d("LOL", "DocumentSnapshot data: " + document.get(""+k));
                             } else {
                                 Log.d("LOL", "No such document");
