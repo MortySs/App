@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +24,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestCreateView extends AppCompatActivity {
-    private Button a1,a2,a3,a4,c_a,save;
+    private EditText a1,a2,a3,a4,c_a;
+    private Boolean b1,b2,b3,b4;
+    private Button save;
     private TextView text;
     final Context context = this;
     private FirebaseAuth mAuth;
@@ -32,143 +35,50 @@ public class TestCreateView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test_create_view);
+        setContentView(R.layout.test_answer);
 
-        a1 = (Button)findViewById(R.id.a_e_button);
-        a2 = (Button)findViewById(R.id.a_e_button2);
-        a3 = (Button)findViewById(R.id.a_e_button3);
-        a4 = (Button)findViewById(R.id.a_e_button4);
-        c_a = (Button)findViewById(R.id.correct_a_choose);
-        text = (TextView)findViewById(R.id.q_e_text);
+        a1 = (EditText) findViewById(R.id.answer1);
+        a2 = (EditText)findViewById(R.id.answer2);
+        a3 = (EditText)findViewById(R.id.answer3);
+        a4 = (EditText)findViewById(R.id.answer4);
+        text = (TextView)findViewById(R.id.question);
         save = (Button)findViewById(R.id.save_btn);
         final Intent intent = getIntent();
         n=intent.getIntExtra("number",0);
         text.setText(intent.getStringExtra("q_text"));
-        a1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.prompt, null);
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-                mDialogBuilder.setView(promptsView);
 
-                final EditText userInput = (EditText) promptsView.findViewById(R.id.input_text);
-                mDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        a1.setText(userInput.getText().toString());
-                                        Answers.add(userInput.getText().toString());
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
 
-                AlertDialog alertDialog = mDialogBuilder.create();
-                alertDialog.show();
-            }
-        });
-        a2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.prompt, null);
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-                mDialogBuilder.setView(promptsView);
-
-                final EditText userInput = (EditText) promptsView.findViewById(R.id.input_text);
-                mDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        a2.setText(userInput.getText().toString());
-                                        Answers.add(userInput.getText().toString());
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                AlertDialog alertDialog = mDialogBuilder.create();
-                alertDialog.show();
-            }
-        });
-        a3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.prompt, null);
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-                mDialogBuilder.setView(promptsView);
-
-                final EditText userInput = (EditText) promptsView.findViewById(R.id.input_text);
-                mDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        a3.setText(userInput.getText().toString());
-                                        Answers.add(userInput.getText().toString());
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                AlertDialog alertDialog = mDialogBuilder.create();
-                alertDialog.show();
-            }
-        });
-        a4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.prompt, null);
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-                mDialogBuilder.setView(promptsView);
-
-                final EditText userInput = (EditText) promptsView.findViewById(R.id.input_text);
-                mDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("OK",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                       a4.setText(userInput.getText().toString());
-                                        Answers.add(userInput.getText().toString());
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                    }
-                                });
-
-                AlertDialog alertDialog = mDialogBuilder.create();
-                alertDialog.show();
-            }
-        });
-        c_a.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(a1.getText()!=null) {
+                    b1=true;
+                    Answers.add(a1.getText().toString());
+                }else {
+                    b1 = false;
+                    //TODO тут делаешь, чтобы красным было
+                }
+                if (a2.getText()!=null){
+                    b2=true;
+                Answers.add(a2.getText().toString());
+                }else {
+                    b2 = false;
+                    //TODO тут делаешь, чтобы красным было
+                }
+                if (a3.getText()!=null){
+                    b3=true;
+                Answers.add(a3.getText().toString());
+                }else{
+                    b3 = false;
+                    //TODO тут делаешь, чтобы красным было
+                }
+                if (a4.getText()!=null){
+                    b4=true;
+                Answers.add(a4.getText().toString());
+                }else{
+                    b4 = false;
+                    //TODO тут делаешь, чтобы красным было
+                }
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 mAuth = FirebaseAuth.getInstance();
                 final FirebaseUser cus = mAuth.getCurrentUser();
@@ -184,7 +94,11 @@ public class TestCreateView extends AppCompatActivity {
                     data.put(count, Answers.get(i).toString());
                     doc.set(data);
                 }
+                if (b1&b2&b3&b4){
                 TestCreateView.this.finish();
+                }else{
+                    Toast.makeText(TestCreateView.this,"Проверьте вопросы!",Toast.LENGTH_LONG).show();
+                }
             }
 
 
