@@ -36,6 +36,7 @@ public class MyTestsActivity extends AppCompatActivity {
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private  HashMap<String, String> map;
     private ProgressBar progressBar;
+    public ImageView Avatar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public class MyTestsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_tests);
+        Avatar = (ImageView) findViewById(R.id.us_avatar);
         final FirebaseUser cus = mAuth.getCurrentUser();
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
