@@ -140,9 +140,10 @@ public class TestCreateActivity extends AppCompatActivity{
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
         final CollectionReference tests = db.collection("tests"); //document(name.getText().toString());
-
+        final DocumentReference us = db.collection("users").document(cus.getEmail().toString());
         Map<String, Object> data = new HashMap<>();
         final Map<String, Object> data3 = new HashMap<>();
+        final Map<String, Object> us_data = new HashMap<>();
         final Map<String, Object> data1 = new HashMap<>();
         for (int i = 0;i<Questions.size();i++){
             final String count = ""+i;
@@ -176,9 +177,29 @@ public class TestCreateActivity extends AppCompatActivity{
         }
         data.put("q_count",Questions.size());
         tests.document(name.getText().toString()).set(data);
-
+        us.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        us_data.put("name",document.get("name").toString());
+                        tests.document(name.getText().toString()).update(us_data);
+                        Log.d("LOL", "DocumentSnapshot data: " + document.get("name"));
+                    } else {
+                        Log.d("LOL", "No such document");
+                    }
+                } else {
+                    Log.d("LOL", "get failed with ", task.getException());
+                }
+            }
+        });
 
     }
-    }
+
+}
+
+
+
 
 
