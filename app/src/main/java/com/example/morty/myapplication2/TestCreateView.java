@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class TestCreateView extends AppCompatActivity {
     private EditText a1,a2,a3,a4,c_a;
-    private Button save,back;
+    private Button save;
     private TextView text;
     final Context context = this;
     private FirebaseAuth mAuth;
@@ -43,11 +43,10 @@ public class TestCreateView extends AppCompatActivity {
         a2 = (EditText) findViewById(R.id.answer2);
         a3 = (EditText) findViewById(R.id.answer3);
         a4 = (EditText) findViewById(R.id.answer4);
-        ac1= (CheckBox) findViewById(R.id.check_answer1);
-        ac2= (CheckBox) findViewById(R.id.check_answer2);
-        ac3= (CheckBox) findViewById(R.id.check_answer3);
-        ac4= (CheckBox) findViewById(R.id.check_answer4);
-        back = (Button)findViewById(R.id.bck_button);
+        ac1 = (CheckBox) findViewById(R.id.check_answer1);
+        ac2 = (CheckBox) findViewById(R.id.check_answer2);
+        ac3 = (CheckBox) findViewById(R.id.check_answer3);
+        ac4 = (CheckBox) findViewById(R.id.check_answer4);
         text = (TextView) findViewById(R.id.question);
         save = (Button) findViewById(R.id.save_btn);
         final Intent intent = getIntent();
@@ -81,10 +80,10 @@ public class TestCreateView extends AppCompatActivity {
                         data.put(count, Answers.get(i).toString());
 
                     }
-                    data.put("is_cor_"+0,ac1.isChecked());
-                    data.put("is_cor_"+1,ac2.isChecked());
-                    data.put("is_cor_"+2,ac3.isChecked());
-                    data.put("is_cor_"+3,ac4.isChecked());
+                    data.put("is_cor_" + 0, ac1.isChecked());
+                    data.put("is_cor_" + 1, ac2.isChecked());
+                    data.put("is_cor_" + 2, ac3.isChecked());
+                    data.put("is_cor_" + 3, ac4.isChecked());
                     doc.set(data);
                     TestCreateView.this.finish();
 
@@ -93,14 +92,5 @@ public class TestCreateView extends AppCompatActivity {
             }
 
         });
-
-         back.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 TestCreateView.this.finish();
-             }
-         });
-         }
-        
-
+    }
 }
