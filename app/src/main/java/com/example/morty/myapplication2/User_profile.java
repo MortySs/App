@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ public class User_profile extends AppCompatActivity {
     private TextView mTextMessage2;
     private ImageView Avatar;
     private Button btn;
+    private ProgressBar progressBar;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -99,7 +101,7 @@ public class User_profile extends AppCompatActivity {
    //       }
    //   });
 
-
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         mTextMessage = (TextView) findViewById(R.id.uzname_field);
         mTextMessage2 = (TextView) findViewById(R.id.uz_email);
         Avatar = (ImageView) findViewById(R.id.uz_avatar);
@@ -113,6 +115,7 @@ public class User_profile extends AppCompatActivity {
                 Toast.makeText(User_profile.this, "Вы успешно вышли из аккаунта", Toast.LENGTH_SHORT).show();
             }
         });
+        progressBar.setVisibility(View.VISIBLE);
 
         final FirebaseUser cus = mAuth.getCurrentUser();
         DocumentReference users = db.collection("users").document(cus.getEmail());
@@ -120,11 +123,13 @@ public class User_profile extends AppCompatActivity {
             @Override
             public void onSuccess(Uri uri) {
                 Picasso.get().load(uri).into(Avatar);
+                progressBar.setVisibility(View.GONE);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/leotest-2k1n.appspot.com/o/Default%2Favatar_pic.png?alt=media&token=0a264da6-7d1b-44cd-aaee-9230bd2d0b2d").into(Avatar);
+                progressBar.setVisibility(View.GONE);
             }
         });
 
