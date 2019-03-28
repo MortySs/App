@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
         } else if (id == R.id.nav_tests) {
-            Intent intent = new Intent(MainActivity.this,test_view.class);
+            Intent intent = new Intent(MainActivity.this,MyTestsActivity.class);
             startActivity(intent);
             //Toast.makeText(this, "Ещё чуть-чуть и вы сможете создать собственный тест!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_done) {
