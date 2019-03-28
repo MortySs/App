@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
@@ -34,21 +35,26 @@ public class MyTestsActivity extends AppCompatActivity {
     private final CollectionReference tests = db.collection("tests");
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private  HashMap<String, String> map;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FloatingActionButton btn = (FloatingActionButton) findViewById(R.id.test_btn);
+
         mAuth = FirebaseAuth.getInstance();
-        final FirebaseUser cus = mAuth.getCurrentUser();
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_tests);
+        final FirebaseUser cus = mAuth.getCurrentUser();
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
         final ListView questions = (ListView) findViewById(R.id.list);
         tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
+
                         Log.d("MortyList", document.getId() + " => " + document.getData());
                         map = new HashMap<>();
                         map.put("Test_name","'"+document.getId()+"'");
@@ -61,6 +67,7 @@ public class MyTestsActivity extends AppCompatActivity {
                         questions.setAdapter(adapter);
                     }
                 } else {
+                    progressBar.setVisibility(View.GONE);
                     Log.d("MortyList", "Error getting documents: ", task.getException());
                 }
             }
