@@ -23,4 +23,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="LogOut">Выйти из аккаунта</string>
+    <color name="greenColor">#a800ff00</color>
+    <color name="redColor">#b8ff000d</color>
 </resources>

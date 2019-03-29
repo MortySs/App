@@ -34,8 +34,9 @@
             android:label="@string/title_activity_user_profile" />
         <activity android:name=".test_view" />
         <activity android:name=".prompt" />
-        <activity android:name=".MyTestsActivity"></activity>
-        <activity android:name=".TestCreateView"></activity>
+        <activity android:name=".MyTestsActivity" />
+        <activity android:name=".TestCreateView" />
+        <activity android:name=".test_end"></activity>
     </application>
 
 </manifest>

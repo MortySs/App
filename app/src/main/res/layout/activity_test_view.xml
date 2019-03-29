@@ -16,6 +16,42 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="0dp">
 
+        <FrameLayout
+            android:id="@+id/b4_back"
+            android:layout_width="368dp"
+            android:layout_height="49dp"
+            app:layout_constraintBottom_toBottomOf="@+id/a_button4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/a_button4">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/b3_back"
+            android:layout_width="368dp"
+            android:layout_height="49dp"
+            app:layout_constraintBottom_toBottomOf="@+id/a_button3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/a_button3">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/b2_back"
+            android:layout_width="368dp"
+            android:layout_height="49dp"
+            app:layout_constraintBottom_toBottomOf="@+id/a_button2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/a_button2"
+            app:layout_constraintVertical_bias="0.0">
+
+        </FrameLayout>
+
         <TextView
             android:id="@+id/q_text"
             android:layout_width="0dp"
@@ -90,5 +126,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+        <FrameLayout
+            android:id="@+id/b1_back"
+            android:layout_width="368dp"
+            android:layout_height="49dp"
+            app:layout_constraintBottom_toBottomOf="@+id/a_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/a_button">
+
+        </FrameLayout>
     </android.support.constraint.ConstraintLayout>
+
 </RelativeLayout>
