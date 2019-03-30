@@ -46,7 +46,7 @@ public class MyTestsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_tests);
-        Avatar = (ImageView) findViewById(R.id.us_avatar);
+        Avatar = (ImageView) findViewById(R.id.image_view2);
         final FirebaseUser cus = mAuth.getCurrentUser();
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);

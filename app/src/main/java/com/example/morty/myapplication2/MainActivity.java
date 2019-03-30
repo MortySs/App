@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity
         View myView = inflater.inflate(R.layout.my_tests_item, null);
         View myView2 = inflater.inflate(R.layout.my_tests,null);
 
-        Avatar = (ImageView) myView.findViewById(R.id.us_avatar);
+        Avatar = (ImageView) myView.findViewById(R.id.image_view2);
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
