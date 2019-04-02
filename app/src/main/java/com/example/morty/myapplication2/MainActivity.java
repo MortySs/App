@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity
                                 new String[]{"Test_name", "Q_count", "P_name"},
                                 new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
                         questions.setAdapter(adapter);
+                        progressBar.setVisibility(View.GONE);
                     }
                 } else {
                     not_auth.setVisibility(View.VISIBLE);

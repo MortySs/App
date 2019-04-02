@@ -87,13 +87,15 @@ private int c_a_n,c_a_c;
                 f1.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
                 c_a_c++;
             }else{
-                switch (c_a_n){
-                    case 1:
-                        f2.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                    case 2:
-                        f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                    case 3:
-                        f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+
+                if (cor_a.get(1).equals("true")){
+                    f2.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                }
+                if (cor_a.get(2).equals("true")){
+                    f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                }
+                if (cor_a.get(3).equals("true")){
+                    f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
                 }
                 f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.redColor));
             }
@@ -131,13 +133,14 @@ private int c_a_n,c_a_c;
                         c_a_c++;
                         f2.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
                     }else{
-                        switch (c_a_n){
-                            case 0:
-                                f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                            case 2:
-                                f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                            case 3:
-                                f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                        if (cor_a.get(0).equals("true")){
+                            f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                        }
+                        if (cor_a.get(2).equals("true")){
+                            f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                        }
+                        if (cor_a.get(3).equals("true")){
+                            f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
                         }
                         f2.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.redColor));
                     }
@@ -175,13 +178,14 @@ private int c_a_n,c_a_c;
                         c_a_c++;
                         f3.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
                     }else{
-                        switch (c_a_n){
-                            case 0:
-                                f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                            case 1:
-                                f2.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                            case 3:
-                                f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                        if (cor_a.get(1).equals("true")){
+                            f2.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                        }
+                        if (cor_a.get(0).equals("true")){
+                            f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                        }
+                        if (cor_a.get(3).equals("true")){
+                            f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
                         }
                         f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.redColor));
                     }
@@ -219,14 +223,16 @@ private int c_a_n,c_a_c;
                     if(cor_a.get(3).equals("true")){
                         c_a_c++;
                         f4.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
-                    }else{ switch (c_a_n){
-                        case 0:
-                            f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        case 1:
+                    }else{
+                        if (cor_a.get(1).equals("true")){
                             f2.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        case 2:
+                        }
+                        if (cor_a.get(2).equals("true")){
                             f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                    }
+                        }
+                        if (cor_a.get(0).equals("true")){
+                            f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                        }
 
                         f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.redColor));
                     }
