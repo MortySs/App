@@ -99,12 +99,9 @@ public class test_view extends AppCompatActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                a_1.setClickable(true);
-                                a_2.setClickable(true);
-                                a_3.setClickable(true);
-                                a_4.setClickable(true);
                                 cor_a.clear();
                                 Upd();
+
                             }
                         }, 2000);
                     }else {
@@ -169,12 +166,9 @@ public class test_view extends AppCompatActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                a_1.setClickable(true);
-                                a_2.setClickable(true);
-                                a_3.setClickable(true);
-                                a_4.setClickable(true);
                                 cor_a.clear();
                                 Upd();
+
                             }
                         }, 2000);
                     }else {
@@ -239,12 +233,9 @@ public class test_view extends AppCompatActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                a_1.setClickable(true);
-                                a_2.setClickable(true);
-                                a_3.setClickable(true);
-                                a_4.setClickable(true);
                                 cor_a.clear();
                                 Upd();
+
                             }
                         }, 2000);
                     }else {
@@ -309,10 +300,6 @@ public class test_view extends AppCompatActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                a_1.setClickable(true);
-                                a_2.setClickable(true);
-                                a_3.setClickable(true);
-                                a_4.setClickable(true);
                                 cor_a.clear();
                                 Upd();
                             }
@@ -400,5 +387,18 @@ public class test_view extends AppCompatActivity {
                 }
             }
         });
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                a_1.setClickable(true);
+                a_2.setClickable(true);
+                a_3.setClickable(true);
+                a_4.setClickable(true);
+
+            }
+        }, 1000);
     }
 }

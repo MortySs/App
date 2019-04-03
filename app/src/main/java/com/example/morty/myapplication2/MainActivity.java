@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar progressBar;
     private ImageView Avatar ;
     private TextView not_auth;
+    private ListView listView;
     byte pressedCount = 1;
     Date pressedMoment1 = new Date(0);
     Date pressedMoment2 = new Date(0);
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
-
+        listView = myView2.findViewById(R.id.list);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
                         Log.d("MortyList", document.getId() + " => " + document.getData());
                         map = new HashMap<>();
-                        map.put("Test_name", "'" + document.getId() + "'");
+                        map.put("Test_name",document.getId());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
                         map.put("P_name", document.get("name").toString());
                         arrayList.add(map);
@@ -116,6 +118,14 @@ public class MainActivity extends AppCompatActivity
                     progressBar.setVisibility(View.GONE);
                     Log.d("MortyList", "Error getting documents: ", task.getException());
                 }
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                Intent intent = new Intent(MainActivity.this,test_view.class);
+                intent.putExtra("Test_name",arrayList.get((int)id).get("Test_name"));
+
             }
         });
   //     if (mAuth.getCurrentUser()!=null) {
