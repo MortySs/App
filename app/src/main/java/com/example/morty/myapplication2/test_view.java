@@ -22,6 +22,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class test_view extends AppCompatActivity {
     private Button a1,a2,a3,a4;
@@ -30,10 +31,11 @@ public class test_view extends AppCompatActivity {
     private long q_count,i;
     private TextView question;
     private FrameLayout f1,f2,f3,f4;
+    LinkedHashMap<Button,FrameLayout> btnAndBackground = new LinkedHashMap<>();
     private int c_a_c; // кол-во правильных ответов, на которые отвечал пользователь
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    final DocumentReference tests = db.collection("tests").document("Тест тест тест");
-    final CollectionReference test_a = db.collection("tests").document("Тест тест тест").collection("answers");
+    final DocumentReference tests = db.collection("tests").document("FirstTest");
+    final CollectionReference test_a = db.collection("tests").document("FirstTest").collection("answers");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,10 @@ public class test_view extends AppCompatActivity {
         f2 = (FrameLayout)findViewById(R.id.b2_back);
         f3 = (FrameLayout)findViewById(R.id.b3_back);
         f4 = (FrameLayout)findViewById(R.id.b4_back);
+        btnAndBackground.put(a1,f1);
+        btnAndBackground.put(a2,f2);
+        btnAndBackground.put(a3,f3);
+        btnAndBackground.put(a4,f4);
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser cus = mAuth.getCurrentUser();
 
@@ -58,233 +64,88 @@ public class test_view extends AppCompatActivity {
         a1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickable(false);
-                defaultBackgroundColor();
-                if(i!=q_count){
-                    i++;
-                    if(cor_a.get(0).equals("true")){
-                        c_a_c++;
-                        f1.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
-                    }else{
-                        if (cor_a.get(1).equals("true")){
-                            f2.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        if (cor_a.get(2).equals("true")){
-                            f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        if (cor_a.get(3).equals("true")){
-                            f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.redColor));
-                    }
-                    if(i<q_count) {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                cor_a.clear();
-                                Upd();
-
-                            }
-                        }, 2000);
-                    }else {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                cor_a.clear();
-                            }
-                        }, 2000);
-                    }
-                }
-                if(i==q_count){
-                    Handler h = new Handler();
-                    h.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            clickable(true);
-                            Intent intent = new Intent(test_view.this,test_end.class);
-                            intent.putExtra("c_a_c",c_a_c);
-                            intent.putExtra("q_count",q_count);
-                            startActivity(intent);
-                        }
-                    },2000);
-                }
+                click(a1);
             }
         });
 
         a2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickable(false);
-                defaultBackgroundColor();
-                if(i!=q_count){
-                    i++;
-                    if(cor_a.get(1).equals("true")){
-                        c_a_c++;
-                        f2.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
-                    }else{
-                        if (cor_a.get(0).equals("true")){
-                            f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        if (cor_a.get(2).equals("true")){
-                            f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        if (cor_a.get(3).equals("true")){
-                            f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        f2.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.redColor));
-                    }
-                    if(i<q_count) {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                cor_a.clear();
-                                Upd();
-
-                            }
-                        }, 2000);
-                    }else {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                cor_a.clear();
-                            }
-                        }, 2000);
-                    }
-                }
-                if(i==q_count){
-                    Handler h = new Handler();
-                    h.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            clickable(true);
-                            Intent intent = new Intent(test_view.this,test_end.class);
-                            intent.putExtra("c_a_c",c_a_c);
-                            intent.putExtra("q_count",q_count);
-                            startActivity(intent);
-                        }
-                    },2000);
-                }
+                click(a2);
             }
         });
 
         a3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickable(false);
-                defaultBackgroundColor();
-                if(i!=q_count){
-                    i++;
-                    if(cor_a.get(2).equals("true")){
-                        c_a_c++;
-                        f3.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
-                    }else{
-                        if (cor_a.get(0).equals("true")){
-                            f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        if (cor_a.get(1).equals("true")){
-                            f2.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        if (cor_a.get(3).equals("true")){
-                            f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.redColor));
-                    }
-                    if(i<q_count) {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                cor_a.clear();
-                                Upd();
-
-                            }
-                        }, 2000);
-                    }else {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                cor_a.clear();
-                            }
-                        }, 2000);
-                    }
-                }
-                if(i==q_count){
-                    Handler h = new Handler();
-                    h.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            clickable(true);
-                            Intent intent = new Intent(test_view.this,test_end.class);
-                            intent.putExtra("c_a_c",c_a_c);
-                            intent.putExtra("q_count",q_count);
-                            startActivity(intent);
-                        }
-                    },2000);
-                }
+                click(a3);
             }
         });
 
         a4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickable(false);
-                defaultBackgroundColor();
-                if(i!=q_count){
-                    i++;
-                    if(cor_a.get(3).equals("true")){
-                        c_a_c++;
-                        f4.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
-                    }else{
-                        if (cor_a.get(0).equals("true")){
-                            f1.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        if (cor_a.get(2).equals("true")){
-                            f3.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        if (cor_a.get(1).equals("true")){
-                            f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
-                        }
-                        f4.setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.redColor));
-                    }
-                    if(i<q_count) {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                cor_a.clear();
-                                Upd();
-                            }
-                        }, 2000);
-                    }else {
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                cor_a.clear();
-                            }
-                        }, 2000);
-                    }
-                }
-                if(i==q_count){
-                    Handler h = new Handler();
-                    h.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            clickable(true);
-                            Intent intent = new Intent(test_view.this,test_end.class);
-                            intent.putExtra("c_a_c",c_a_c);
-                            intent.putExtra("q_count",q_count);
-                            startActivity(intent);
-                        }
-                    },2000);
-                }
+                click(a4);
             }
         });
+    }
+
+    private void click(Button clickBtn){
+        clickable(false);
+        defaultBackgroundColor();
+        if(i!=q_count){
+            i++;
+                if ((cor_a.get(0).equals("true") && btnAndBackground.get(clickBtn).equals(f1)) || (cor_a.get(1).equals("true") && btnAndBackground.get(clickBtn).equals(f2))
+                 || (cor_a.get(2).equals("true") && btnAndBackground.get(clickBtn).equals(f3)) || (cor_a.get(3).equals("true") && btnAndBackground.get(clickBtn).equals(f4))){
+                    c_a_c++;
+                    btnAndBackground.get(clickBtn).setBackgroundColor(ContextCompat.getColor(test_view.this,R.color.greenColor));
+                }else {
+                    if (cor_a.get(0).equals("true") && !(btnAndBackground.get(clickBtn).equals(f1))) {
+                        f1.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
+                    }
+                    if (cor_a.get(1).equals("true") && !(btnAndBackground.get(clickBtn).equals(f2))) {
+                        f2.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
+                    }
+                    if (cor_a.get(2).equals("true") && !(btnAndBackground.get(clickBtn).equals(f3))) {
+                        f3.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
+                    }
+                    if (cor_a.get(3).equals("true") && !(btnAndBackground.get(clickBtn).equals(f4))) {
+                        f4.setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.greenColor));
+                    }
+                    btnAndBackground.get(clickBtn).setBackgroundColor(ContextCompat.getColor(test_view.this, R.color.redColor));
+                }
+            }
+            if(i<q_count) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        cor_a.clear();
+                        Upd();
+                    }
+                }, 2000);
+            }else {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        cor_a.clear();
+                    }
+                }, 2000);
+            }
+        if(i==q_count){
+            Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    clickable(true);
+                    Intent intent = new Intent(test_view.this,test_end.class);
+                    intent.putExtra("c_a_c",c_a_c);
+                    intent.putExtra("q_count",q_count);
+                    startActivity(intent);
+                }
+            },2000);
+        }
     }
 
     private void Upd(){
