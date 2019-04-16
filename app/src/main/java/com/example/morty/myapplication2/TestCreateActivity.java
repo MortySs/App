@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -110,12 +111,18 @@ public class TestCreateActivity extends AppCompatActivity{
                                     public void onClick(DialogInterface dialog,int id) {
                                         //Вводим текст и отображаем в строке ввода на основном экране:
                                         Questions.add(userInput.getText().toString());
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                     }
                                 })
                         .setNegativeButton("Отмена",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,int id) {
                                         dialog.cancel();
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                     }
                                 });
 
