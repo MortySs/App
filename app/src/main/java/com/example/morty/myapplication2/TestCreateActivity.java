@@ -27,10 +27,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,21 +60,21 @@ public class TestCreateActivity extends AppCompatActivity{
         ListView listView = (ListView)findViewById(R.id.list_tag);
         ListView questionView = (ListView)findViewById(R.id.test_create_list);
 
-       final String[] TagNames = getResources().getStringArray(R.array.tag_names);
+        final String[] TagNames = getResources().getStringArray(R.array.tag_names);
 
-       final ExpansionLayout expansionLayout = findViewById(R.id.expansionLayout);
+        final ExpansionLayout expansionLayout = findViewById(R.id.expansionLayout);
 
-       questionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        questionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-               Intent intent = new Intent(TestCreateActivity.this,TestCreateView.class);
-               intent.putExtra("q_text",Questions.get((int)id));
-               intent.putExtra("number",(int)id+1);
-               startActivity(intent);
-               //Toast.makeText(TestCreateActivity.this, "Нажат вопрос номер " + id, Toast.LENGTH_SHORT).show();
-           }
-       });
+                Intent intent = new Intent(TestCreateActivity.this,TestCreateView.class);
+                intent.putExtra("q_text",Questions.get((int)id));
+                intent.putExtra("number",(int)id+1);
+                startActivity(intent);
+                //Toast.makeText(TestCreateActivity.this, "Нажат вопрос номер " + id, Toast.LENGTH_SHORT).show();
+            }
+        });
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
@@ -136,56 +139,97 @@ public class TestCreateActivity extends AppCompatActivity{
     private void Upd_test(){
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser cus = mAuth.getCurrentUser();
-        long q_count;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
         final CollectionReference tests = db.collection("tests"); //document(name.getText().toString());
+        final DocumentReference other_tests = db.collection("oth_info").document("tests");
         final DocumentReference us = db.collection("users").document(cus.getEmail().toString());
-        Map<String, Object> data = new HashMap<>();
+        final Map<String, Object> data = new HashMap<>();
+        final Map<String, Object> id = new HashMap<>();
+        final Map<String, Object> id1 = new HashMap<>();
         final Map<String, Object> data3 = new HashMap<>();
         final Map<String, Object> us_data = new HashMap<>();
         final Map<String, Object> data1 = new HashMap<>();
-        for (int i = 0;i<Questions.size();i++){
-            final String count = ""+i;
-            data.put(count, Questions.get(i).toString());
-
-            for (int j = 0;j<4;j++){
-                final int k = j;
-                DocumentReference a = a_draft.document(""+(i+1));
-                a.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                data1.put(""+k,document.get(""+k).toString());
-                                data3.put("is_cor_"+k,document.get("is_cor_"+k));
-                                tests.document(name.getText().toString()).collection("answers").document(count).set(data1);
-                                tests.document(name.getText().toString()).collection("answers").document(count).update(data3);
-                                Log.d("LOL", "DocumentSnapshot data: " + document.get(""+k));
-                            } else {
-                                Log.d("LOL", "No such document");
-                            }
-                        } else {
-                            Log.d("LOL", "get failed with ", task.getException());
-                        }
-                    }
-                });
-            }
-
-            data1.clear();
-        }
-        data.put("q_count",Questions.size());
-        tests.document(name.getText().toString()).set(data);
-        us.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        /*other_tests.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        us_data.put("name",document.get("name").toString());
-                        tests.document(name.getText().toString()).update(us_data);
-                        Log.d("LOL", "DocumentSnapshot data: " + document.get("name"));
+                        Integer integer = (Integer)document.get("lastId");
+                        id.put("lastId",Integer.valueOf((integer.intValue() + 1)));
+                        Log.d("LOL", "DocumentSnapshot data: " + document.getData());
+                    } else {
+                        Log.d("LOL", "No such document");
+                    }
+                } else {
+                    Log.d("LOL", "get failed with ", task.getException());
+                }
+            }
+        });*/
+
+        other_tests.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        id.put("last_id",(long)document.get("last_id")+1);
+                        id1.put("test_name",name.getText().toString());
+                        Log.d("LOL", "DocumentSnapshot data: " + document.get("last_id")+id.get("test_id"));
+                        other_tests.update(id);
+                        tests.document(id.get("last_id").toString()).set(id1);
+                        for (int i = 0;i<Questions.size();i++){
+                            final String count = ""+i;
+                            data.put(count, Questions.get(i).toString());
+
+                            for (int j = 0;j<4;j++){
+                                final int k = j;
+                                DocumentReference a = a_draft.document(""+(i+1));
+                                a.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            DocumentSnapshot document = task.getResult();
+                                            if (document.exists()) {
+                                                data1.put(""+k,document.get(""+k).toString());
+                                                data3.put("is_cor_"+k,document.get("is_cor_"+k));
+                                                tests.document(id.get("last_id").toString()).collection("answers").document(count).set(data1);
+                                                tests.document(id.get("last_id").toString()).collection("answers").document(count).update(data3);
+                                                Log.d("LOL", "DocumentSnapshot data: " + document.get(""+k));
+                                            } else {
+                                                Log.d("LOL", "No such document");
+                                            }
+                                        } else {
+                                            Log.d("LOL", "get failed with ", task.getException());
+                                        }
+                                    }
+                                });
+                            }
+
+                            data1.clear();
+                        }
+                        data.put("q_count",Questions.size());
+
+                        tests.document(id.get("last_id").toString()).update(data);
+                        us.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        us_data.put("name",document.get("name").toString());
+                                        tests.document(id.get("last_id").toString()).update(us_data);
+                                        Log.d("LOL", "DocumentSnapshot data: " + document.get("name"));
+                                    } else {
+                                        Log.d("LOL", "No such document");
+                                    }
+                                } else {
+                                    Log.d("LOL", "get failed with ", task.getException());
+                                }
+                            }
+                        });
+
                     } else {
                         Log.d("LOL", "No such document");
                     }
@@ -195,11 +239,10 @@ public class TestCreateActivity extends AppCompatActivity{
             }
         });
 
+
+
+
+
     }
 
 }
-
-
-
-
-
