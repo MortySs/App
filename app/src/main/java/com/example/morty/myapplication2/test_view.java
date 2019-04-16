@@ -33,14 +33,16 @@ public class test_view extends AppCompatActivity {
     private FrameLayout f1,f2,f3,f4;
     LinkedHashMap<Button,FrameLayout> btnAndBackground = new LinkedHashMap<>();
     private int c_a_c; // кол-во правильных ответов, на которые отвечал пользователь
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    final DocumentReference tests = db.collection("tests").document("FirstTest");
-    final CollectionReference test_a = db.collection("tests").document("FirstTest").collection("answers");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_view);
+
+
         i=0; // индекс вопроса, на который отвечает пользователь
         c_a_c=0;
         a1 = (Button)findViewById(R.id.a_button);
@@ -149,7 +151,10 @@ public class test_view extends AppCompatActivity {
     }
 
     private void Upd(){
-
+        final Intent intent = getIntent();
+        String Test_id = intent.getStringExtra("Test_id");
+        final DocumentReference tests = db.collection("tests").document(Test_id);
+        final CollectionReference test_a = db.collection("tests").document(Test_id).collection("answers");
         tests.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {

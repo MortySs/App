@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         final FirebaseUser cus = mAuth.getCurrentUser();
         final StorageReference storageRef = storage.getReference();
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         final ListView questions = (ListView) findViewById(R.id.list);
@@ -103,15 +105,26 @@ public class MainActivity extends AppCompatActivity
 
                         Log.d("MortyList", document.getId() + " => " + document.getData());
                         map = new HashMap<>();
-                        map.put("Test_name",document.getId());
+                        map.put("Test_id",document.getId());
+                        map.put("Test_name",document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
-                        map.put("P_name", document.get("name").toString());
+                       if(document.get("name")!=null)
+                           map.put("P_name", document.get("name").toString());
+
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
                                 new String[]{"Test_name", "Q_count", "P_name"},
                                 new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
                         questions.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
+                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                Intent intent = new Intent(MainActivity.this,test_view.class);
+                                intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id").toString());
+                                startActivity(intent);
+                            }
+                        });
                     }
                 } else {
                     not_auth.setVisibility(View.VISIBLE);
@@ -120,14 +133,7 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                Intent intent = new Intent(MainActivity.this,test_view.class);
-                intent.putExtra("Test_name",arrayList.get((int)id).get("Test_name"));
 
-            }
-        });
   //     if (mAuth.getCurrentUser()!=null) {
   //         storageRef.child(cus.getEmail() + "/user_avatar/avatar_pic.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
   //             @Override
