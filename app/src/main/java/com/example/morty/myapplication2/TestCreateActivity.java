@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,52 +42,59 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class TestCreateActivity extends AppCompatActivity{
+public class TestCreateActivity extends AppCompatActivity {
     public final ArrayList<String> Questions = new ArrayList<>();
     private EditText name;
     private FirebaseAuth mAuth;
     private TextView mTextMessage;
-    private Button q_create,t_create;
+    private Button q_create, t_create;
     private ProgressBar progressBar;
     final Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_create);
-        mTextMessage = (TextView) findViewById(R.id.tag_name);
-        q_create = (Button)findViewById(R.id.q_add);
+        q_create = (Button) findViewById(R.id.q_add);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        name = (EditText)findViewById(R.id.name_of_test);
-        t_create = (Button)findViewById(R.id.t_create);
-        ListView listView = (ListView)findViewById(R.id.list_tag);
-        ListView questionView = (ListView)findViewById(R.id.test_create_list);
+        name = (EditText) findViewById(R.id.name_of_test);
+        t_create = (Button) findViewById(R.id.t_create);
+        Spinner listView = (Spinner) findViewById(R.id.list_tag);
+        ListView questionView = (ListView) findViewById(R.id.test_create_list);
 
         final String[] TagNames = getResources().getStringArray(R.array.tag_names);
 
-        final ExpansionLayout expansionLayout = findViewById(R.id.expansionLayout);
 
         questionView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(TestCreateActivity.this,TestCreateView.class);
-                intent.putExtra("q_text",Questions.get((int)id));
-                intent.putExtra("number",(int)id+1);
+                Intent intent = new Intent(TestCreateActivity.this, TestCreateView.class);
+                intent.putExtra("q_text", Questions.get((int) id));
+                intent.putExtra("number", (int) id + 1);
                 startActivity(intent);
                 //Toast.makeText(TestCreateActivity.this, "Нажат вопрос номер " + id, Toast.LENGTH_SHORT).show();
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+
+
+        AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
-                                    long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                expansionLayout.toggle(true);
+                //KAMIL LOH
+                String item = (String) parent.getItemAtPosition(position);
 
-                TextView textView = (TextView) itemClicked;
-                mTextMessage.setText( textView.getText().toString());
             }
-        });
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
+        listView.setOnItemSelectedListener(itemSelectedListener);
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, TagNames);
         listView.setAdapter(adapter);
