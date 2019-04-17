@@ -37,73 +37,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <com.github.florent37.expansionpanel.ExpansionHeader
-                android:id="@+id/sampleHeader"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Категория"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="10dp"/>
+
+            <RelativeLayout
+                android:id="@+id/tag_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:expansion_headerIndicator="@id/headerIndicator"
-                app:expansion_layout="@id/expansionLayout"
-                app:expansion_toggleOnClick="true">
-
-
-                <RelativeLayout
-                    android:id="@+id/tag_list"
+                android:background="@android:color/white"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+                <Spinner
+                    android:id="@+id/list_tag"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:background="@android:color/white"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp">
+                    android:layout_height="wrap_content"
+                    />
+            </RelativeLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:text="Категория"
-                        android:textColor="#3E3E3E" />
-
-                    <TextView
-                        android:id="@+id/tag_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="120dp"
-                        android:text="@string/tag"
-                        android:textColor="#AAA" />
-
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/headerIndicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="16dp"
-                        android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/ic_expansion_header_indicator_grey_24dp" />
-
-
-                </RelativeLayout>
-
-            </com.github.florent37.expansionpanel.ExpansionHeader>
-
-            <com.github.florent37.expansionpanel.ExpansionLayout
-                android:id="@+id/expansionLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:expansion_expanded="false">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ListView
-                        android:id="@+id/list_tag"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_margin="15dp" />
-                </RelativeLayout>
-            </com.github.florent37.expansionpanel.ExpansionLayout>
 
         </LinearLayout>
 
