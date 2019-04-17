@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +32,7 @@ public class TestCreateView extends AppCompatActivity {
     private TextView text;
     final Context context = this;
     private FirebaseAuth mAuth;
-    private CheckBox ac1,ac2,ac3,ac4;
+    private RadioButton rb1,rb2,rb3,rb4;
     private boolean c1,c2,c3,c4;
     private int n;
     public final ArrayList<String> Answers = new ArrayList<>();
@@ -43,15 +45,19 @@ public class TestCreateView extends AppCompatActivity {
         a2 = (EditText) findViewById(R.id.answer2);
         a3 = (EditText) findViewById(R.id.answer3);
         a4 = (EditText) findViewById(R.id.answer4);
-        ac1 = (CheckBox) findViewById(R.id.check_answer1);
-        ac2 = (CheckBox) findViewById(R.id.check_answer2);
-        ac3 = (CheckBox) findViewById(R.id.check_answer3);
-        ac4 = (CheckBox) findViewById(R.id.check_answer4);
+        rb1 = (RadioButton) findViewById(R.id.check_answer1);
+        rb2 = (RadioButton) findViewById(R.id.check_answer2);
+        rb3 = (RadioButton) findViewById(R.id.check_answer3);
+        rb4 = (RadioButton) findViewById(R.id.check_answer4);
         text = (TextView) findViewById(R.id.question);
         save = (Button) findViewById(R.id.save_btn);
         final Intent intent = getIntent();
         n = intent.getIntExtra("number", 0);
         text.setText(intent.getStringExtra("q_text"));
+        rb1.setOnClickListener(radioButtonClickListener);
+        rb2.setOnClickListener(radioButtonClickListener);
+        rb3.setOnClickListener(radioButtonClickListener);
+        rb4.setOnClickListener(radioButtonClickListener);
 
 
         save.setOnClickListener(new View.OnClickListener() {
@@ -80,10 +86,10 @@ public class TestCreateView extends AppCompatActivity {
                         data.put(count, Answers.get(i).toString());
 
                     }
-                    data.put("is_cor_" + 0, ac1.isChecked());
-                    data.put("is_cor_" + 1, ac2.isChecked());
-                    data.put("is_cor_" + 2, ac3.isChecked());
-                    data.put("is_cor_" + 3, ac4.isChecked());
+                    data.put("is_cor_" + 0, c1);
+                    data.put("is_cor_" + 1, c2);
+                    data.put("is_cor_" + 2, c3);
+                    data.put("is_cor_" + 3, c4);
                     doc.set(data);
                     TestCreateView.this.finish();
 
@@ -92,5 +98,46 @@ public class TestCreateView extends AppCompatActivity {
             }
 
         });
+    }
+
+    View.OnClickListener radioButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            RadioButton rb = (RadioButton)v;
+            switch (rb.getId()) {
+                case R.id.check_answer1: click(rb1);
+                    break;
+                case R.id.check_answer2: click(rb2);
+                    break;
+                case R.id.check_answer3: click(rb3);
+                    break;
+                case R.id.check_answer4: click(rb4);
+                    break;
+            }
+        }
+    };
+
+    void click(RadioButton clickBox){
+        clickBox.toggle();
+        if(rb1.equals(clickBox)) c1=true;
+        else {
+            rb1.setChecked(false);
+             c1 = false;
+        }
+        if(rb2.equals(clickBox)) c2=true;
+        else {
+            rb2.setChecked(false);
+            c2 = false;
+        }
+        if(rb3.equals(clickBox)) c3=true;
+        else {
+            rb3.setChecked(false);
+            c3 = false;
+        }
+        if(rb4.equals(clickBox)) c4=true;
+        else {
+            rb4.setChecked(false);
+            c4 = false;
+        }
     }
 }
