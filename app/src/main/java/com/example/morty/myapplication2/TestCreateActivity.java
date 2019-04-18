@@ -50,7 +50,7 @@ public class TestCreateActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         name = (EditText) findViewById(R.id.name_of_test);
         t_create = (Button) findViewById(R.id.t_create);
-        Spinner listView = (Spinner) findViewById(R.id.list_tag);
+        Spinner category = (Spinner) findViewById(R.id.list_tag);
         ListView questionView = (ListView) findViewById(R.id.test_create_list);
 
         final String[] TagNames = getResources().getStringArray(R.array.tag_names);
@@ -116,11 +116,11 @@ public class TestCreateActivity extends AppCompatActivity {
 
             }
         };
-        listView.setOnItemSelectedListener(itemSelectedListener);
+        category.setOnItemSelectedListener(itemSelectedListener);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, TagNames);
-        listView.setAdapter(adapter);
+        category.setAdapter(adapter);
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, Questions);
         questionView.setAdapter(adapter2);
@@ -178,11 +178,13 @@ public class TestCreateActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser cus = mAuth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         final CollectionReference createdTests = db.collection("users").document(cus.getEmail()).collection("created");
         final CollectionReference a_draft = db.collection("users").document(cus.getEmail()).collection("tests").document("draft").collection("answers");
         final CollectionReference tests = db.collection("tests"); //document(name.getText().toString());
         final DocumentReference other_tests = db.collection("oth_info").document("tests");
         final DocumentReference us = db.collection("users").document(cus.getEmail());
+
         final Map<String, Object> data = new HashMap<>();
         final Map<String, Object> id_inf = new HashMap<>();
         final Map<String, Object> test_inf = new HashMap<>();
@@ -190,12 +192,16 @@ public class TestCreateActivity extends AppCompatActivity {
         final Map<String, Object> us_data = new HashMap<>();
         final Map<String, Object> data1 = new HashMap<>();
 
+        final Spinner category = (Spinner) findViewById(R.id.list_tag);
+
+
         other_tests.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        data.put("category",category.getSelectedItem().toString());
                         id_inf.put("last_id",(long)document.get("last_id")+1);
                         test_inf.put("test_name",name.getText().toString());
                         Log.d("LOL", "DocumentSnapshot data: " + document.get("last_id")+id_inf.get("test_id"));
