@@ -1,7 +1,6 @@
 package com.example.morty.myapplication2;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,22 +19,15 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.github.florent37.expansionpanel.ExpansionLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +38,6 @@ public class TestCreateActivity extends AppCompatActivity {
     public final ArrayList<String> Questions = new ArrayList<>();
     private EditText name;
     private FirebaseAuth mAuth;
-    private TextView mTextMessage;
     private Button q_create, t_create;
     private ProgressBar progressBar;
     final Context context = this;
@@ -59,7 +50,7 @@ public class TestCreateActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         name = (EditText) findViewById(R.id.name_of_test);
         t_create = (Button) findViewById(R.id.t_create);
-        Spinner listView = (Spinner) findViewById(R.id.list_tag);
+        Spinner category = (Spinner) findViewById(R.id.list_tag);
         ListView questionView = (ListView) findViewById(R.id.test_create_list);
 
         final String[] TagNames = getResources().getStringArray(R.array.tag_names);
@@ -77,6 +68,42 @@ public class TestCreateActivity extends AppCompatActivity {
             }
         });
 
+        questionView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
+                LayoutInflater li = LayoutInflater.from(context);
+                View promptsView = li.inflate(R.layout.delete_prompt, null);
+                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
+                mDialogBuilder.setView(promptsView);
+
+                final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
+                delete.setText("Удалить вопрос?");
+                mDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Да",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        Questions.remove(position);
+                                        Log.d("deleting", "onClick: удален вопрос номер "+q_id);
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                    }
+                                })
+                        .setNegativeButton("Отмена",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                    }
+                                });
+                AlertDialog alertDialog = mDialogBuilder.create();
+                alertDialog.show();
+                return true;
+            }});
+
 
 
         AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
@@ -92,11 +119,11 @@ public class TestCreateActivity extends AppCompatActivity {
 
             }
         };
-        listView.setOnItemSelectedListener(itemSelectedListener);
+        category.setOnItemSelectedListener(itemSelectedListener);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, TagNames);
-        listView.setAdapter(adapter);
+        category.setAdapter(adapter);
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, Questions);
         questionView.setAdapter(adapter2);
@@ -154,16 +181,22 @@ public class TestCreateActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser cus = mAuth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
+
+        final CollectionReference createdTests = db.collection("users").document(cus.getEmail()).collection("created");
+        final CollectionReference a_draft = db.collection("users").document(cus.getEmail()).collection("tests").document("draft").collection("answers");
         final CollectionReference tests = db.collection("tests"); //document(name.getText().toString());
         final DocumentReference other_tests = db.collection("oth_info").document("tests");
-        final DocumentReference us = db.collection("users").document(cus.getEmail().toString());
+        final DocumentReference us = db.collection("users").document(cus.getEmail());
+
         final Map<String, Object> data = new HashMap<>();
-        final Map<String, Object> id = new HashMap<>();
-        final Map<String, Object> id1 = new HashMap<>();
+        final Map<String, Object> id_inf = new HashMap<>();
+        final Map<String, Object> test_inf = new HashMap<>();
         final Map<String, Object> data3 = new HashMap<>();
         final Map<String, Object> us_data = new HashMap<>();
         final Map<String, Object> data1 = new HashMap<>();
+
+        final Spinner category = (Spinner) findViewById(R.id.list_tag);
+
 
         other_tests.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -171,14 +204,16 @@ public class TestCreateActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        id.put("last_id",(long)document.get("last_id")+1);
-                        id1.put("test_name",name.getText().toString());
-                        Log.d("LOL", "DocumentSnapshot data: " + document.get("last_id")+id.get("test_id"));
-                        other_tests.update(id);
-                        tests.document(id.get("last_id").toString()).set(id1);
+                        data.put("category",category.getSelectedItem().toString());
+                        id_inf.put("last_id",(long)document.get("last_id")+1);
+                        test_inf.put("test_name",name.getText().toString());
+                        Log.d("LOL", "DocumentSnapshot data: " + document.get("last_id")+id_inf.get("test_id"));
+                        other_tests.update(id_inf);
+                        tests.document(id_inf.get("last_id").toString()).set(test_inf);
+                        createdTests.document(id_inf.get("last_id").toString()).set(test_inf);
                         for (int i = 0;i<Questions.size();i++){
                             final String count = ""+i;
-                            data.put(count, Questions.get(i).toString());
+                            data.put(count, Questions.get(i));
 
                             for (int j = 0;j<4;j++){
                                 final int k = j;
@@ -191,8 +226,10 @@ public class TestCreateActivity extends AppCompatActivity {
                                             if (document.exists()) {
                                                 data1.put(""+k,document.get(""+k).toString());
                                                 data3.put("is_cor_"+k,document.get("is_cor_"+k));
-                                                tests.document(id.get("last_id").toString()).collection("answers").document(count).set(data1);
-                                                tests.document(id.get("last_id").toString()).collection("answers").document(count).update(data3);
+                                                tests.document(id_inf.get("last_id").toString()).collection("answers").document(count).set(data1);
+                                                tests.document(id_inf.get("last_id").toString()).collection("answers").document(count).update(data3);
+                                                createdTests.document(id_inf.get("last_id").toString()).collection("answers").document(count).set(data1);
+                                                createdTests.document(id_inf.get("last_id").toString()).collection("answers").document(count).update(data3);
                                                 Log.d("LOL", "DocumentSnapshot data: " + document.get(""+k));
                                             } else {
                                                 Log.d("LOL", "No such document");
@@ -208,7 +245,8 @@ public class TestCreateActivity extends AppCompatActivity {
                         }
                         data.put("q_count",Questions.size());
 
-                        tests.document(id.get("last_id").toString()).update(data);
+                        tests.document(id_inf.get("last_id").toString()).update(data);
+                        createdTests.document(id_inf.get("last_id").toString()).update(data);
                         us.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -216,7 +254,8 @@ public class TestCreateActivity extends AppCompatActivity {
                                     DocumentSnapshot document = task.getResult();
                                     if (document.exists()) {
                                         us_data.put("name",document.get("name").toString());
-                                        tests.document(id.get("last_id").toString()).update(us_data);
+                                        tests.document(id_inf.get("last_id").toString()).update(us_data);
+                                        createdTests.document(id_inf.get("last_id").toString()).update(us_data);
                                         Log.d("LOL", "DocumentSnapshot data: " + document.get("name"));
                                     } else {
                                         Log.d("LOL", "No such document");

@@ -30,10 +30,15 @@
     <string name="forgot_password_msg">Введите адрес электронной почты, на которую зарегистрирован ваш аккаунт</string>
     <string name="new_us">Нам нужно больше информации о вас, пожалуйста, заполните поля ниже</string>
     <string-array name="tag_names">
-        <item>Русский язык</item>
-        <item>Алгебра</item>
-        <item>Геометрия</item>
-        <item>Немецкий язык</item>
+        <item>Английский язык</item>
+        <item>Биология</item>
         <item>География</item>
+        <item>Информатика</item>
+        <item>Математика</item>
+        <item>Немецкий язык</item>
+        <item>Русский язык</item>
+        <item>Физика</item>
+        <item>Химия</item>
+        <item>Другое</item>
     </string-array>
 </resources>

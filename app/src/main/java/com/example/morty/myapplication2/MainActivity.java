@@ -108,8 +108,8 @@ public class MainActivity extends AppCompatActivity
                         map.put("Test_id",document.getId());
                         map.put("Test_name",document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
-                       if(document.get("name")!=null)
-                           map.put("P_name", document.get("name").toString());
+                        if(document.get("name")!=null)
+                            map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
@@ -134,23 +134,23 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-  //     if (mAuth.getCurrentUser()!=null) {
-  //         storageRef.child(cus.getEmail() + "/user_avatar/avatar_pic.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-  //             @Override
-  //             public void onSuccess(Uri uri) {
-  //                 Picasso.get().load(uri).into(Avatar);
-  //                 progressBar.setVisibility(View.GONE);
-  //             }
-  //         }).addOnFailureListener(new OnFailureListener() {
-  //             @Override
-  //             public void onFailure(@NonNull Exception exception) {
-  //                 Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/leotest-2k1n.appspot.com/o/Default%2Favatar_pic.png?alt=media&token=0a264da6-7d1b-44cd-aaee-9230bd2d0b2d").into(Avatar);
-  //                 progressBar.setVisibility(View.GONE);
-  //             }
-  //         });
-  //     }else{
-  //         not_auth.setVisibility(View.VISIBLE);
-  //     }
+        //     if (mAuth.getCurrentUser()!=null) {
+        //         storageRef.child(cus.getEmail() + "/user_avatar/avatar_pic.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        //             @Override
+        //             public void onSuccess(Uri uri) {
+        //                 Picasso.get().load(uri).into(Avatar);
+        //                 progressBar.setVisibility(View.GONE);
+        //             }
+        //         }).addOnFailureListener(new OnFailureListener() {
+        //             @Override
+        //             public void onFailure(@NonNull Exception exception) {
+        //                 Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/leotest-2k1n.appspot.com/o/Default%2Favatar_pic.png?alt=media&token=0a264da6-7d1b-44cd-aaee-9230bd2d0b2d").into(Avatar);
+        //                 progressBar.setVisibility(View.GONE);
+        //             }
+        //         });
+        //     }else{
+        //         not_auth.setVisibility(View.VISIBLE);
+        //     }
     }
 
     @Override
@@ -208,19 +208,19 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_profile) {
             FirebaseUser currentUser = mAuth.getCurrentUser();
-                if (currentUser!=null){
-                    Intent intent = new Intent(MainActivity.this, User_profile.class);
-                    startActivity(intent);
+            if (currentUser!=null){
+                Intent intent = new Intent(MainActivity.this, User_profile.class);
+                startActivity(intent);
 
-         }else{
-                    Intent intent = new Intent(MainActivity.this, EmailPasswordActivity.class);
-                    startActivity(intent);
-                }
+            }else{
+                Intent intent = new Intent(MainActivity.this, EmailPasswordActivity.class);
+                startActivity(intent);
+            }
 
         } else if (id == R.id.nav_tests) {
-            Intent intent = new Intent(MainActivity.this,test_view.class);
+            Intent intent = new Intent(MainActivity.this,MyTestsActivity.class);
             startActivity(intent);
-           // Toast.makeText(this, "Ещё чуть-чуть и вы сможете создать собственный тест!", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Ещё чуть-чуть и вы сможете создать собственный тест!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_done) {
             Toast.makeText(this, "Вы пока не выполнили ни одного теста", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_manage) {
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_writes) {
             Toast.makeText(this, "У вас пока нет ни одного черновика", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
-           //Toast.makeText(this, "Скоро вы сможете поделиться вашим прогрессом", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "Скоро вы сможете поделиться вашим прогрессом", Toast.LENGTH_SHORT).show();
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

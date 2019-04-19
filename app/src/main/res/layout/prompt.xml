@@ -14,11 +14,15 @@
         android:text="Введите текст вопроса: "
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <EditText
-        android:id="@+id/input_text"
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <requestFocus />
-    </EditText>
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/input_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+            <requestFocus />
+        </EditText>
+    </android.support.design.widget.TextInputLayout>
 
 </LinearLayout>
