@@ -77,41 +77,6 @@ public class TestCreateActivity extends AppCompatActivity {
             }
         });
 
-        questionView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.delete_prompt, null);
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-                mDialogBuilder.setView(promptsView);
-
-                final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
-                delete.setText("Удалить вопрос?");
-                mDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("Да",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        Questions.remove(position);
-                                        Log.d("deleting", "onClick: удален вопрос номер "+q_id);
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                    }
-                                });
-                AlertDialog alertDialog = mDialogBuilder.create();
-                alertDialog.show();
-                return true;
-            }});
 
 
         AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
