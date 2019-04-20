@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -50,6 +52,10 @@ public class MainActivity extends AppCompatActivity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference tests = db.collection("tests");
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
+    private final ArrayList<String> categoryList = new ArrayList<>();
+    //String[] category = getResources().getStringArray(R.array.tag_names);
+    String[] category = {"Английский язык", "Математика"};
+    private ListView testsList;
     private  HashMap<String, String> map;
     private ProgressBar progressBar;
     private ImageView Avatar ;
@@ -61,8 +67,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        testsList = (ListView) findViewById(R.id.tests_list);
         LayoutInflater inflater = getLayoutInflater();
-        View myView = inflater.inflate(R.layout.my_tests_item, null);
+        View myView = inflater.inflate(R.layout.tests, null);
         View myView2 = inflater.inflate(R.layout.my_tests,null);
 
         Avatar = (ImageView) myView.findViewById(R.id.image_view2);
@@ -97,6 +104,8 @@ public class MainActivity extends AppCompatActivity
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         final ListView questions = (ListView) findViewById(R.id.list);
+        ArrayAdapter<String> adapter  =  new ArrayAdapter<String>(MainActivity.this, R.layout.tests, category);
+        questions.setAdapter(adapter);
         tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -112,12 +121,12 @@ public class MainActivity extends AppCompatActivity
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
-                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.tests,
                                 new String[]{"Test_name", "Q_count", "P_name"},
                                 new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
-                        questions.setAdapter(adapter);
+                        testsList.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
-                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        testsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
                                 Intent intent = new Intent(MainActivity.this,test_view.class);

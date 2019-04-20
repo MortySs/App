@@ -47,7 +47,7 @@ public class MyTestsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LayoutInflater inflater = getLayoutInflater();
-        View myView = inflater.inflate(R.layout.my_tests_item, null);
+        View myView = inflater.inflate(R.layout.tests, null);
         View myView2 = inflater.inflate(R.layout.my_tests,null);
 
         Avatar = (ImageView) myView.findViewById(R.id.image_view2);
@@ -89,7 +89,7 @@ public class MyTestsActivity extends AppCompatActivity {
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
-                        SimpleAdapter adapter = new SimpleAdapter(MyTestsActivity.this, arrayList, R.layout.my_tests_item,
+                        SimpleAdapter adapter = new SimpleAdapter(MyTestsActivity.this, arrayList, R.layout.tests,
                                 new String[]{"Test_name", "Q_count", "P_name"},
                                 new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
                         questions.setAdapter(adapter);
@@ -98,7 +98,7 @@ public class MyTestsActivity extends AppCompatActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
                                 Intent intent = new Intent(MyTestsActivity.this,test_view.class);
-                                intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id").toString());
+                                intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id"));
                                 startActivity(intent);
                             }
                         });
