@@ -32,10 +32,10 @@ import com.squareup.picasso.Picasso;
 public class User_profile extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private TextView mTextMessage;
-    private TextView mTextMessage2;
+    private TextView uzname_field;
+    private TextView uzemail_field;
     private ImageView Avatar;
-    private Button btn;
+    private Button logout_btn;
     private ProgressBar progressBar;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -45,13 +45,10 @@ public class User_profile extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-
                     return true;
                 case R.id.navigation_dashboard:
-
                     return true;
                 case R.id.navigation_notifications:
-
                     return true;
             }
             return false;
@@ -102,11 +99,11 @@ public class User_profile extends AppCompatActivity {
    //   });
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mTextMessage = (TextView) findViewById(R.id.uzname_field);
-        mTextMessage2 = (TextView) findViewById(R.id.uz_email);
+        uzname_field = (TextView) findViewById(R.id.uzname_field);
+        uzemail_field = (TextView) findViewById(R.id.uz_email);
         Avatar = (ImageView) findViewById(R.id.uz_avatar);
-        btn = (Button) findViewById(R.id.LogOut);
-        btn.setOnClickListener(new View.OnClickListener() {
+        logout_btn = (Button) findViewById(R.id.LogOut);
+        logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
@@ -145,11 +142,11 @@ public class User_profile extends AppCompatActivity {
 
                 if (snapshot != null && snapshot.exists()) {
                     if (snapshot.get("name")!=null) {
-                        mTextMessage.setText(snapshot.get("name").toString());
+                        uzname_field.setText(snapshot.get("name").toString());
                     }else{
-                        mTextMessage.setText("Ошибка загрузки данных");
+                        uzname_field.setText("Ошибка загрузки данных");
                     }
-                    mTextMessage2.setText(cus.getEmail());
+                    uzemail_field.setText(cus.getEmail());
 
 
 

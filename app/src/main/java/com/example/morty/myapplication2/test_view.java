@@ -42,7 +42,6 @@ public class test_view extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_view);
 
-
         i=0; // индекс вопроса, на который отвечает пользователь
         c_a_c=0;
         a1 = (Button)findViewById(R.id.a_button);
@@ -141,9 +140,12 @@ public class test_view extends AppCompatActivity {
                 @Override
                 public void run() {
                     clickable(true);
+                    final Intent intent2 = getIntent();
+                    final String Test_id = intent2.getStringExtra("Test_id");
                     Intent intent = new Intent(test_view.this,test_end.class);
                     intent.putExtra("c_a_c",c_a_c);
                     intent.putExtra("q_count",q_count);
+                    intent.putExtra("Test_id",Test_id);
                     startActivity(intent);
                 }
             },2000);

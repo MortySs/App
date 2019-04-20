@@ -113,7 +113,7 @@ public class MyTestsActivity extends AppCompatActivity {
 
         questions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 LayoutInflater li = LayoutInflater.from(context);
                 View promptsView = li.inflate(R.layout.delete_prompt, null);
                 AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
@@ -126,6 +126,8 @@ public class MyTestsActivity extends AppCompatActivity {
                         .setPositiveButton("Да",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,int id) {
+                                        Log.d("deleting", "onClick: deleted "+arrayList.get(position).get("Test_name"));
+
                                         //TODO: удаление теста
                                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);

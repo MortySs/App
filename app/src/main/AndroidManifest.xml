@@ -37,6 +37,7 @@
         <activity android:name=".MyTestsActivity" />
         <activity android:name=".TestCreateView" />
         <activity android:name=".test_end"></activity>
+
     </application>
 
 </manifest>
