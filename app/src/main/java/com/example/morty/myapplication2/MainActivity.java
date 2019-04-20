@@ -134,6 +134,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+
   //     if (mAuth.getCurrentUser()!=null) {
   //         storageRef.child(cus.getEmail() + "/user_avatar/avatar_pic.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
   //             @Override

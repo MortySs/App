@@ -67,10 +67,9 @@ public class TestCreateActivity extends AppCompatActivity {
                 //Toast.makeText(TestCreateActivity.this, "Нажат вопрос номер " + id, Toast.LENGTH_SHORT).show();
             }
         });
-
         questionView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
                 LayoutInflater li = LayoutInflater.from(context);
                 View promptsView = li.inflate(R.layout.delete_prompt, null);
                 AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
@@ -83,7 +82,8 @@ public class TestCreateActivity extends AppCompatActivity {
                         .setPositiveButton("Да",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,int id) {
-                                        //TODO: удаление теста
+                                        Questions.remove(position);
+                                        Log.d("deleting", "onClick: удален вопрос номер "+q_id+" "+Questions.get(position));
                                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
@@ -98,8 +98,20 @@ public class TestCreateActivity extends AppCompatActivity {
                                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                     }
                                 });
+                AlertDialog alertDialog = mDialogBuilder.create();
+                alertDialog.show();
                 return true;
             }});
+        t_create.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Upd_test();
+                Intent intent = new Intent(TestCreateActivity.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
 
 
 
@@ -163,14 +175,6 @@ public class TestCreateActivity extends AppCompatActivity {
             }
         });
 
-        t_create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Upd_test();
-                Intent intent = new Intent(TestCreateActivity.this,MainActivity.class);
-                startActivity(intent);
-            }
-        });
 
     }
 
