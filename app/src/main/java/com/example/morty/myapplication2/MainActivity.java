@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private final ArrayList<String> categoryList = new ArrayList<>();
     //String[] category = getResources().getStringArray(R.array.tag_names);
-    String[] category = {"Английский язык", "Математика"};
+    String[] category = {"Английский язык", "Математика","Немецкий язык"};
     private ListView testsList;
     private  HashMap<String, String> map;
     private ProgressBar progressBar;
@@ -67,10 +67,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        testsList = (ListView) findViewById(R.id.tests_list);
+
         LayoutInflater inflater = getLayoutInflater();
         View myView = inflater.inflate(R.layout.tests, null);
         View myView2 = inflater.inflate(R.layout.my_tests,null);
+        testsList = (ListView) myView.findViewById(R.id.tests_list);
 
         Avatar = (ImageView) myView.findViewById(R.id.image_view2);
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
@@ -104,8 +105,7 @@ public class MainActivity extends AppCompatActivity
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         final ListView questions = (ListView) findViewById(R.id.list);
-        ArrayAdapter<String> adapter  =  new ArrayAdapter<String>(MainActivity.this, R.layout.tests, category);
-        questions.setAdapter(adapter);
+
         tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -121,10 +121,13 @@ public class MainActivity extends AppCompatActivity
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
-                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.tests,
+                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.tests_item,
                                 new String[]{"Test_name", "Q_count", "P_name"},
                                 new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
                         testsList.setAdapter(adapter);
+
+                        ArrayAdapter<String> adapter2  =  new ArrayAdapter<String>(MainActivity.this, R.layout.tests,R.id.textView, category);
+                        questions.setAdapter(adapter2);
                         progressBar.setVisibility(View.GONE);
                         testsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override

@@ -89,7 +89,7 @@ public class MyTestsActivity extends AppCompatActivity {
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
-                        SimpleAdapter adapter = new SimpleAdapter(MyTestsActivity.this, arrayList, R.layout.tests,
+                        SimpleAdapter adapter = new SimpleAdapter(MyTestsActivity.this, arrayList, R.layout.tests_item,
                                 new String[]{"Test_name", "Q_count", "P_name"},
                                 new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
                         questions.setAdapter(adapter);
