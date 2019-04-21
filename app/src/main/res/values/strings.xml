@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Тесты</string>
+    <string name="app_name">LeoTests</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Войдите или зарегистрирйтесь</string>
     <string name="nav_header_subtitle">nkrotovskaya@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Настройки</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Электронная почта</string>
     <string name="prompt_password">Пароль</string>

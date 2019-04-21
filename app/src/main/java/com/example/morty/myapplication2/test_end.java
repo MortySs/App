@@ -35,7 +35,7 @@ public class test_end extends AppCompatActivity {
         btn_end = findViewById(R.id.test_end_btn);
         final CollectionReference user_completed = db.collection("users").document(cus.getEmail().toString()).collection("completed");
         final Intent intent = getIntent();
-       correct_answers_count = intent.getIntExtra("c_a_c", 0);
+        correct_answers_count = intent.getIntExtra("c_a_c", 0);
         q_count=intent.getLongExtra("q_count",0) ;//("q_count",0);
         test_end_data.put("correct_a_count",correct_answers_count);
         user_completed.document(intent.getStringExtra("Test_id")).set(test_end_data);
