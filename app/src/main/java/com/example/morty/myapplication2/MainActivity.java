@@ -77,7 +77,13 @@ public class MainActivity extends AppCompatActivity
         tabLayout.addTab(tabLayout.newTab().setText("Английский язык"),1);
         tabLayout.addTab(tabLayout.newTab().setText("Математика"),2);
         tabLayout.addTab(tabLayout.newTab().setText("Русский язык"),3);
-        tabLayout.addTab(tabLayout.newTab().setText("Немецкий язык"),4);
+        tabLayout.addTab(tabLayout.newTab().setText("Биология"),4);
+        tabLayout.addTab(tabLayout.newTab().setText("География"),5);
+        tabLayout.addTab(tabLayout.newTab().setText("Информатика"),6);
+        tabLayout.addTab(tabLayout.newTab().setText("Физика"),7);
+        tabLayout.addTab(tabLayout.newTab().setText("Химия"),8);
+        tabLayout.addTab(tabLayout.newTab().setText("Другое"),9);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mAuth = FirebaseAuth.getInstance();
@@ -353,6 +359,202 @@ public class MainActivity extends AppCompatActivity
                             }
                         });
                         break;
+                    case 5:
+                        progressBar.setVisibility(View.VISIBLE);
+                        questions.setAdapter(null);
+                        arrayList.clear();
+                        Query geog_q = tests.whereEqualTo("category","География");
+                        geog_q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    for (QueryDocumentSnapshot document : task.getResult()){
+                                        Log.d("MortyList", document.getId() + " => " + document.getData());
+                                        map = new HashMap<>();
+                                        map.put("Test_id", document.getId());
+                                        map.put("Test_name", document.get("test_name").toString());
+                                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+
+                                        if (document.get("name") != null)
+                                            map.put("P_name", document.get("name").toString());
+
+                                        arrayList.add(map);
+                                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                                new String[]{"Test_name", "Q_count", "P_name"},
+                                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
+                                        questions.setAdapter(adapter);
+                                        progressBar.setVisibility(View.GONE);
+                                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                                Intent intent = new Intent(MainActivity.this, test_view.class);
+                                                intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                                startActivity(intent);
+                                            }
+                                        });
+
+                                    }
+                                }
+                            }
+                        });
+                        break;
+                    case 6:
+                        progressBar.setVisibility(View.VISIBLE);
+                        questions.setAdapter(null);
+                        arrayList.clear();
+                        Query inf_q = tests.whereEqualTo("category","Информатика");
+                        inf_q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    for (QueryDocumentSnapshot document : task.getResult()){
+                                        Log.d("MortyList", document.getId() + " => " + document.getData());
+                                        map = new HashMap<>();
+                                        map.put("Test_id", document.getId());
+                                        map.put("Test_name", document.get("test_name").toString());
+                                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+
+                                        if (document.get("name") != null)
+                                            map.put("P_name", document.get("name").toString());
+
+                                        arrayList.add(map);
+                                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                                new String[]{"Test_name", "Q_count", "P_name"},
+                                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
+                                        questions.setAdapter(adapter);
+                                        progressBar.setVisibility(View.GONE);
+                                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                                Intent intent = new Intent(MainActivity.this, test_view.class);
+                                                intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                                startActivity(intent);
+                                            }
+                                        });
+
+                                    }
+                                }
+                            }
+                        });
+                        break;
+                    case 7:
+                        progressBar.setVisibility(View.VISIBLE);
+                        questions.setAdapter(null);
+                        arrayList.clear();
+                        Query phs_q = tests.whereEqualTo("category","Физика");
+                        phs_q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    for (QueryDocumentSnapshot document : task.getResult()){
+                                        Log.d("MortyList", document.getId() + " => " + document.getData());
+                                        map = new HashMap<>();
+                                        map.put("Test_id", document.getId());
+                                        map.put("Test_name", document.get("test_name").toString());
+                                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+
+                                        if (document.get("name") != null)
+                                            map.put("P_name", document.get("name").toString());
+
+                                        arrayList.add(map);
+                                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                                new String[]{"Test_name", "Q_count", "P_name"},
+                                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
+                                        questions.setAdapter(adapter);
+                                        progressBar.setVisibility(View.GONE);
+                                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                                Intent intent = new Intent(MainActivity.this, test_view.class);
+                                                intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                                startActivity(intent);
+                                            }
+                                        });
+
+                                    }
+                                }
+                            }
+                        });
+                        break;
+                    case 8:
+                        progressBar.setVisibility(View.VISIBLE);
+                        questions.setAdapter(null);
+                        arrayList.clear();
+                        Query chem_q = tests.whereEqualTo("category","Химия");
+                        chem_q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    for (QueryDocumentSnapshot document : task.getResult()){
+                                        Log.d("MortyList", document.getId() + " => " + document.getData());
+                                        map = new HashMap<>();
+                                        map.put("Test_id", document.getId());
+                                        map.put("Test_name", document.get("test_name").toString());
+                                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+
+                                        if (document.get("name") != null)
+                                            map.put("P_name", document.get("name").toString());
+
+                                        arrayList.add(map);
+                                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                                new String[]{"Test_name", "Q_count", "P_name"},
+                                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
+                                        questions.setAdapter(adapter);
+                                        progressBar.setVisibility(View.GONE);
+                                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                                Intent intent = new Intent(MainActivity.this, test_view.class);
+                                                intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                                startActivity(intent);
+                                            }
+                                        });
+
+                                    }
+                                }
+                            }
+                        });
+                        break;
+                    case 9:
+                        progressBar.setVisibility(View.VISIBLE);
+                        questions.setAdapter(null);
+                        arrayList.clear();
+                        Query othr_q = tests.whereEqualTo("category","Другое");
+                        othr_q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()){
+                                    for (QueryDocumentSnapshot document : task.getResult()){
+                                        Log.d("MortyList", document.getId() + " => " + document.getData());
+                                        map = new HashMap<>();
+                                        map.put("Test_id", document.getId());
+                                        map.put("Test_name", document.get("test_name").toString());
+                                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+
+                                        if (document.get("name") != null)
+                                            map.put("P_name", document.get("name").toString());
+
+                                        arrayList.add(map);
+                                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                                new String[]{"Test_name", "Q_count", "P_name"},
+                                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
+                                        questions.setAdapter(adapter);
+                                        progressBar.setVisibility(View.GONE);
+                                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                                Intent intent = new Intent(MainActivity.this, test_view.class);
+                                                intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                                startActivity(intent);
+                                            }
+                                        });
+
+                                    }
+                                }
+                            }
+                        });
+                        break;
+
                 }
                 Log.i("TAG", "onTabSelected: " + tab.getPosition());
             }
