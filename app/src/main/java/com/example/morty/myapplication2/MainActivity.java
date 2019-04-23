@@ -19,6 +19,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -55,18 +57,21 @@ public class MainActivity extends AppCompatActivity
     private  HashMap<String, String> map;
     private ProgressBar progressBar;
     private ImageView Avatar ;
-    private TextView not_auth;
+    private TextView not_auth,leo;
     private ListView listView;
+    private EditText search_text;
     ListView questions;
     byte pressedCount = 1;
     Date pressedMoment1 = new Date(0);
     Date pressedMoment2 = new Date(0);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LayoutInflater inflater = getLayoutInflater();
         View myView = inflater.inflate(R.layout.my_tests_item, null);
         View myView2 = inflater.inflate(R.layout.my_tests,null);
+        View appb = inflater.inflate(R.layout.app_bar_main,null);
 
         Avatar = (ImageView) myView.findViewById(R.id.image_view2);
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
@@ -87,6 +92,7 @@ public class MainActivity extends AppCompatActivity
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -231,12 +237,21 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.search_item) {
+            LayoutInflater inflater = getLayoutInflater();
+            View appb = inflater.inflate(R.layout.app_bar_main,null);
+            leo = (TextView) appb.findViewById(R.id.leo);
+            leo.setVisibility(View.GONE);
+            search_text = (EditText) appb.findViewById(R.id.search_text);
+            search_text.setVisibility(View.VISIBLE);
+            Log.d("action bar", "onOptionsItemSelected: "+ id);
+            //TODO доделать поиск
+
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
