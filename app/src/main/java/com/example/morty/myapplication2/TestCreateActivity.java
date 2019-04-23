@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -170,6 +171,32 @@ public class TestCreateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Upd_test();
+
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        final Map<String, Object> data3_draft = new HashMap<>();
+                        final Map<String, Object> data1_draft = new HashMap<>();
+                        mAuth = FirebaseAuth.getInstance();
+                        final FirebaseUser cus = mAuth.getCurrentUser();
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                        final CollectionReference a_draft = db.collection("users").document(cus.getEmail()).collection("tests").document("draft").collection("answers");
+                        for (int i = 0;i<Questions.size();i++) {
+                            DocumentReference a = a_draft.document("" + (i+1));
+                            data1_draft.put("0", "");
+                            data1_draft.put("1", "");
+                            data1_draft.put("2", "");
+                            data1_draft.put("3", "");
+                            data3_draft.put("is_cor_0", false);
+                            data3_draft.put("is_cor_1", false);
+                            data3_draft.put("is_cor_2", false);
+                            data3_draft.put("is_cor_3", false);
+                            a.update(data1_draft);
+                            a.update(data3_draft);
+                        }
+                    }
+                }, 5000);
                 Intent intent = new Intent(TestCreateActivity.this,MainActivity.class);
                 startActivity(intent);
             }
