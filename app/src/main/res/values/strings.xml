@@ -23,4 +23,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="LogOut">Выйти из аккаунта</string>
+    <string name="search_hint">Поиск</string>
+    <string name="search_title">search title</string>
 </resources>
