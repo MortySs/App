@@ -54,7 +54,6 @@ public class MyTestsActivity extends AppCompatActivity {
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_tests);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser cus = mAuth.getCurrentUser();
         final CollectionReference tests = db.collection("users").document(cus.getEmail()).collection("created");
