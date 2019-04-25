@@ -33,15 +33,16 @@ import java.util.Map;
 
 public class TestCreateView extends AppCompatActivity {
     static final String LOG_TAG = "LOL";
-    private EditText a1,a2,a3,a4,c_a;
+    private EditText a1, a2, a3, a4, c_a;
     private Button save;
     private TextView text;
     final Context context = this;
     private FirebaseAuth mAuth;
-    private RadioButton rb1,rb2,rb3,rb4;
-    private boolean c1,c2,c3,c4;
+    private RadioButton rb1, rb2, rb3, rb4;
+    private boolean c1, c2, c3, c4;
     private int n;
     public final ArrayList<String> Answers = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +71,7 @@ public class TestCreateView extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        if(document.get("0") != null){
+                        if (document.get("0") != null) {
                             a1.setText(document.get("0").toString());
                             a2.setText(document.get("1").toString());
                             a3.setText(document.get("2").toString());
@@ -102,7 +103,7 @@ public class TestCreateView extends AppCompatActivity {
                 if (a1.getText().toString().equals("") || a2.getText().toString().equals("") || a3.getText().toString().equals("") || a4.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Введите все варианты ответов", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (c1 == false && c2 == false && c3 == false && c4 == false) {
+                    if (!rb1.isChecked() && !rb2.isChecked() && !rb3.isChecked() && !rb4.isChecked()) {
                         Toast.makeText(getApplicationContext(), "Выберите правильный ответ", Toast.LENGTH_SHORT).show();
                     } else {
                         Answers.add(a1.getText().toString());
@@ -136,6 +137,19 @@ public class TestCreateView extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (a1.getText().toString().equals("") || a2.getText().toString().equals("") || a3.getText().toString().equals("") || a4.getText().toString().equals("")) {
+            Toast.makeText(getApplicationContext(), "Введите все варианты ответов", Toast.LENGTH_SHORT).show();
+        } else {
+            if (!rb1.isChecked() && !rb2.isChecked() && !rb3.isChecked() && !rb4.isChecked()) {
+                Toast.makeText(getApplicationContext(), "Выберите правильный ответ", Toast.LENGTH_SHORT).show();
+            } else {
+                super.onBackPressed();
+            }
+        }
     }
 
     View.OnClickListener radioButtonClickListener = new View.OnClickListener() {

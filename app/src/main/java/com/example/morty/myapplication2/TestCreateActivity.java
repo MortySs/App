@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,6 +43,7 @@ public class TestCreateActivity extends AppCompatActivity {
     private Button q_create, t_create;
     private ProgressBar progressBar;
     final Context context = this;
+    private int questionId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class TestCreateActivity extends AppCompatActivity {
         name = (EditText) findViewById(R.id.name_of_test);
         t_create = (Button) findViewById(R.id.t_create);
         Spinner category = (Spinner) findViewById(R.id.list_tag);
-        ListView questionView = (ListView) findViewById(R.id.test_create_list);
+        final ListView questionView = (ListView) findViewById(R.id.test_create_list);
 
         final String[] TagNames = getResources().getStringArray(R.array.tag_names);
 
@@ -145,10 +147,19 @@ public class TestCreateActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,int id) {
                                         //Вводим текст и отображаем в строке ввода на основном экране:
-                                        Questions.add(userInput.getText().toString());
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        if (userInput.getText().toString().equals("")) {
+                                            Toast.makeText(getApplicationContext(), "Нельзя создать пустой вопрос", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Questions.add(userInput.getText().toString());
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                            questionId++;
+                                            Intent intent = new Intent(TestCreateActivity.this, TestCreateView.class);
+                                            intent.putExtra("q_text", userInput.getText().toString());
+                                            intent.putExtra("number", (int) questionId);
+                                            startActivity(intent);
+                                        }
                                     }
                                 })
                         .setNegativeButton("Отмена",
@@ -170,38 +181,27 @@ public class TestCreateActivity extends AppCompatActivity {
         t_create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Upd_test();
-
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        final Map<String, Object> data3_draft = new HashMap<>();
-                        final Map<String, Object> data1_draft = new HashMap<>();
-                        mAuth = FirebaseAuth.getInstance();
-                        final FirebaseUser cus = mAuth.getCurrentUser();
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        final CollectionReference a_draft = db.collection("users").document(cus.getEmail()).collection("tests").document("draft").collection("answers");
-                        for (int i = 0;i<Questions.size();i++) {
-                            DocumentReference a = a_draft.document("" + (i+1));
-                            data1_draft.put("0", "");
-                            data1_draft.put("1", "");
-                            data1_draft.put("2", "");
-                            data1_draft.put("3", "");
-                            data3_draft.put("is_cor_0", false);
-                            data3_draft.put("is_cor_1", false);
-                            data3_draft.put("is_cor_2", false);
-                            data3_draft.put("is_cor_3", false);
-                            a.update(data1_draft);
-                            a.update(data3_draft);
-                        }
+                if(name.getText().toString().equals("")){
+                    Toast.makeText(getApplicationContext(), "Введите название теста", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (questionView.getCount() == 0) {
+                        Toast.makeText(getApplicationContext(), "Нельзя создать тест без вопросов", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Upd_test();
+                        revertDraft();
+                        Intent intent = new Intent(TestCreateActivity.this, MainActivity.class);
+                        startActivity(intent);
                     }
-                }, 5000);
-                Intent intent = new Intent(TestCreateActivity.this,MainActivity.class);
-                startActivity(intent);
+                }
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        revertDraft();
+        super.onBackPressed();
     }
 
     private void Upd_test(){
@@ -301,5 +301,33 @@ public class TestCreateActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void revertDraft(){
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final Map<String, Object> data3_draft = new HashMap<>();
+                final Map<String, Object> data1_draft = new HashMap<>();
+                mAuth = FirebaseAuth.getInstance();
+                final FirebaseUser cus = mAuth.getCurrentUser();
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                final CollectionReference a_draft = db.collection("users").document(cus.getEmail()).collection("tests").document("draft").collection("answers");
+                for (int i = 0;i<Questions.size();i++) {
+                    DocumentReference a = a_draft.document("" + (i+1));
+                    data1_draft.put("0", "");
+                    data1_draft.put("1", "");
+                    data1_draft.put("2", "");
+                    data1_draft.put("3", "");
+                    data3_draft.put("is_cor_0", false);
+                    data3_draft.put("is_cor_1", false);
+                    data3_draft.put("is_cor_2", false);
+                    data3_draft.put("is_cor_3", false);
+                    a.update(data1_draft);
+                    a.update(data3_draft);
+                }
+            }
+        }, 2000);
     }
 }
