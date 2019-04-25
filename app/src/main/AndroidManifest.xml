@@ -39,6 +39,7 @@
         <activity android:name=".prompt" />
         <activity android:name=".MyTestsActivity" />
         <activity android:name=".TestCreateView" />
+        <activity android:name=".SearchableActivity"></activity>
         <activity android:name=".test_end"></activity>
 
     </application>

@@ -243,12 +243,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onQueryTextSubmit(String query) {
         // User pressed the search button
+        Toast.makeText(this, "Нажата кнопка поиск "+ query, Toast.LENGTH_SHORT).show();
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
         // User changed the text
+        if (newText.equals("")){
+            setAllTests();
+        }
+        searchTests(newText);
+        Toast.makeText(this, "Вы ищите: "+ newText, Toast.LENGTH_SHORT).show();
         return false;
     }
 
@@ -341,6 +347,46 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    void searchTests(String name){
+        progressBar.setVisibility(View.VISIBLE);
+        questions.setAdapter(null);
+        arrayList.clear();
+        Query q = tests.whereGreaterThanOrEqualTo("test_name",name);
+        q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()){
+                        Log.d("MortyList", document.getId() + " => " + document.getData());
+                        map = new HashMap<>();
+                        map.put("Test_id", document.getId());
+                        map.put("Test_name", document.get("test_name").toString());
+                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+
+                        if (document.get("name") != null)
+                            map.put("P_name", document.get("name").toString());
+
+                        arrayList.add(map);
+                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                new String[]{"Test_name", "Q_count", "P_name"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
+                        questions.setAdapter(adapter);
+                        progressBar.setVisibility(View.GONE);
+                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                Intent intent = new Intent(MainActivity.this, test_view.class);
+                                intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                startActivity(intent);
+                            }
+                        });
+
+                    }
+                }
+            }
+        });
     }
     void setAllTests(){
         tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
