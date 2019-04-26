@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -50,13 +51,13 @@ public class MyTestsActivity extends AppCompatActivity {
         View myView = inflater.inflate(R.layout.my_tests_item, null);
         View myView2 = inflater.inflate(R.layout.my_tests,null);
 
-        Avatar = (ImageView) myView.findViewById(R.id.image_view2);
+
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_tests);
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser cus = mAuth.getCurrentUser();
-        final CollectionReference tests = db.collection("users").document(cus.getEmail()).collection("created");
+        final CollectionReference tests = db.collection("tests");
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -73,7 +74,8 @@ public class MyTestsActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         final ListView questions = (ListView) findViewById(R.id.list);
-        tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Query q = tests.whereEqualTo("test_maker_email",cus.getEmail());
+       q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -84,13 +86,14 @@ public class MyTestsActivity extends AppCompatActivity {
                         map.put("Test_id",document.getId());
                         map.put("Test_name",document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+                        map.put("S_count",document.get("solved_cnt").toString());
                         if(document.get("name")!=null)
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MyTestsActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
+                                new String[]{"Test_name", "Q_count", "P_name","S_count"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
                         questions.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {

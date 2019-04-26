@@ -233,11 +233,14 @@ public class TestCreateActivity extends AppCompatActivity {
                     if (document.exists()) {
                         data.put("category",category.getSelectedItem().toString());
                         id_inf.put("last_id",(long)document.get("last_id")+1);
+                        test_inf.put("solved_cnt",0);
                         test_inf.put("test_name",name.getText().toString());
+                        createdTests.document(id_inf.get("last_id").toString()).set(test_inf);
+
+                        test_inf.put("test_maker_email",cus.getEmail());
                         Log.d("LOL", "DocumentSnapshot data: " + document.get("last_id")+id_inf.get("test_id"));
                         other_tests.update(id_inf);
                         tests.document(id_inf.get("last_id").toString()).set(test_inf);
-                        createdTests.document(id_inf.get("last_id").toString()).set(test_inf);
                         for (int i = 0;i<Questions.size();i++){
                             final String count = ""+i;
                             data.put(count, Questions.get(i));
@@ -255,8 +258,6 @@ public class TestCreateActivity extends AppCompatActivity {
                                                 data3.put("is_cor_"+k,document.get("is_cor_"+k));
                                                 tests.document(id_inf.get("last_id").toString()).collection("answers").document(count).set(data1);
                                                 tests.document(id_inf.get("last_id").toString()).collection("answers").document(count).update(data3);
-                                                createdTests.document(id_inf.get("last_id").toString()).collection("answers").document(count).set(data1);
-                                                createdTests.document(id_inf.get("last_id").toString()).collection("answers").document(count).update(data3);
                                                 Log.d("LOL", "DocumentSnapshot data: " + document.get(""+k));
                                             } else {
                                                 Log.d("LOL", "No such document");
@@ -273,7 +274,6 @@ public class TestCreateActivity extends AppCompatActivity {
                         data.put("q_count",Questions.size());
 
                         tests.document(id_inf.get("last_id").toString()).update(data);
-                        createdTests.document(id_inf.get("last_id").toString()).update(data);
                         us.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -282,7 +282,6 @@ public class TestCreateActivity extends AppCompatActivity {
                                     if (document.exists()) {
                                         us_data.put("name",document.get("name").toString());
                                         tests.document(id_inf.get("last_id").toString()).update(us_data);
-                                        createdTests.document(id_inf.get("last_id").toString()).update(us_data);
                                         Log.d("LOL", "DocumentSnapshot data: " + document.get("name"));
                                     } else {
                                         Log.d("LOL", "No such document");
