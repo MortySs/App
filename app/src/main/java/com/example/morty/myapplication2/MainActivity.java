@@ -5,11 +5,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,7 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener{
+        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, SwipeRefreshLayout.OnRefreshListener{
     private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference tests = db.collection("tests");
@@ -61,6 +63,10 @@ public class MainActivity extends AppCompatActivity
     byte pressedCount = 1;
     Date pressedMoment1 = new Date(0);
     Date pressedMoment2 = new Date(0);
+    TabLayout tabLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    String[] categories = {"Все тесты", "Английский язык", "Математика", "Русский язык", "Биология",
+            "География", "Информатика", "Физика", "Химия", "Другое"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +80,21 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Все тесты"),0);
-        tabLayout.addTab(tabLayout.newTab().setText("Английский язык"),1);
-        tabLayout.addTab(tabLayout.newTab().setText("Математика"),2);
-        tabLayout.addTab(tabLayout.newTab().setText("Русский язык"),3);
-        tabLayout.addTab(tabLayout.newTab().setText("Биология"),4);
-        tabLayout.addTab(tabLayout.newTab().setText("География"),5);
-        tabLayout.addTab(tabLayout.newTab().setText("Информатика"),6);
-        tabLayout.addTab(tabLayout.newTab().setText("Физика"),7);
-        tabLayout.addTab(tabLayout.newTab().setText("Химия"),8);
-        tabLayout.addTab(tabLayout.newTab().setText("Другое"),9);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[0]),0);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[1]),1);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[2]),2);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[3]),3);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[4]),4);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[5]),5);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[6]),6);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[7]),7);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[8]),8);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[9]),9);
 
 
 
@@ -476,5 +486,17 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+    }
+
+    @Override
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
+                else caseVoid(categories[tabLayout.getSelectedTabPosition()]);
+            }
+        }, 1000);
     }
 }
