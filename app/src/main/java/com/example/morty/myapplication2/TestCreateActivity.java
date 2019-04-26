@@ -233,9 +233,7 @@ public class TestCreateActivity extends AppCompatActivity {
                     if (document.exists()) {
                         data.put("category",category.getSelectedItem().toString());
                         id_inf.put("last_id",(long)document.get("last_id")+1);
-                        ArrayList<String> testName = new ArrayList<>();
-                        for (int i = 0; i < name.getText().toString().length(); i++) testName.add(String.valueOf(name.getText().toString().charAt(i)));
-                        test_inf.put("test_name",testName);
+                        test_inf.put("test_name",name.getText().toString());
                         Log.d("LOL", "DocumentSnapshot data: " + document.get("last_id")+id_inf.get("test_id"));
                         other_tests.update(id_inf);
                         tests.document(id_inf.get("last_id").toString()).set(test_inf);
