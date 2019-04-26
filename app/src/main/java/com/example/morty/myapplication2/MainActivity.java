@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         View myView2 = inflater.inflate(R.layout.my_tests,null);
         View bar = inflater.inflate(R.layout.app_bar_main, null);
 
-        Avatar = (ImageView) myView.findViewById(R.id.image_view2);
+
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -165,6 +165,42 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+                switch (tab.getPosition()){
+                    default:
+                        break;
+
+                    case 0:
+                        setAllTests();
+                        break;
+
+                    case 1:
+                        caseVoid("Английский язык");
+                        break;
+                    case 2:
+                        caseVoid("Математика");
+                        break;
+                    case 3:
+                        caseVoid("Русский язык");
+                        break;
+                    case 4:
+                        caseVoid("Немецкий язык");
+                        break;
+                    case 5:
+                        caseVoid("География");
+                        break;
+                    case 6:
+                        caseVoid("Информатика");
+                        break;
+                    case 7:
+                        caseVoid("Физика");
+                        break;
+                    case 8:
+                        caseVoid("Химия");
+                        break;
+                    case 9:
+                        caseVoid("Другое");
+                        break;
+                }
                 Log.i("TAG", "onTabReselected: " + tab.getPosition());
             }
         });
@@ -295,7 +331,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             // Toast.makeText(this, "Ещё чуть-чуть и вы сможете создать собственный тест!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_done) {
-            Toast.makeText(this, "Вы пока не выполнили ни одного теста", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this,SolvedTestsActivity.class);
+            startActivity(intent);
+            //Toast.makeText(this, "Вы пока не выполнили ни одного теста", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_manage) {
             Toast.makeText(this, "Настройки ещё не настроены(", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_writes) {
@@ -313,35 +351,42 @@ public class MainActivity extends AppCompatActivity
         questions.setAdapter(null);
         arrayList.clear();
         Query q = tests.whereEqualTo("category",category);
+
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
             if (task.isSuccessful()){
-                for (QueryDocumentSnapshot document : task.getResult()){
-                    Log.d("MortyList", document.getId() + " => " + document.getData());
-                    map = new HashMap<>();
-                    map.put("Test_id", document.getId());
-                    map.put("Test_name", document.get("test_name").toString());
-                    map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+                if(!task.getResult().isEmpty()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Log.d("MortyList", document.getId() + " => " + document.getData());
+                        map = new HashMap<>();
+                        map.put("Test_id", document.getId());
+                        map.put("Test_name", document.get("test_name").toString());
+                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+                        map.put("S_count",document.get("solved_cnt").toString());
+                        if (document.get("name") != null)
+                            map.put("P_name", document.get("name").toString());
 
-                    if (document.get("name") != null)
-                        map.put("P_name", document.get("name").toString());
+                        arrayList.add(map);
+                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                new String[]{"Test_name", "Q_count", "P_name", "S_count"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
+                        questions.setAdapter(adapter);
+                        progressBar.setVisibility(View.GONE);
+                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                Intent intent = new Intent(MainActivity.this, test_view.class);
+                                intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                startActivity(intent);
+                            }
+                        });
 
-                    arrayList.add(map);
-                    SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                            new String[]{"Test_name", "Q_count", "P_name"},
-                            new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
-                    questions.setAdapter(adapter);
+                    }
+                }else{
                     progressBar.setVisibility(View.GONE);
-                    questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                            Intent intent = new Intent(MainActivity.this, test_view.class);
-                            intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
-                            startActivity(intent);
-                        }
-                    });
-
+                    not_auth.setVisibility(View.VISIBLE);
+                    not_auth.setText("Нет тестов");
                 }
             }
             }
@@ -353,7 +398,10 @@ public class MainActivity extends AppCompatActivity
         progressBar.setVisibility(View.VISIBLE);
         questions.setAdapter(null);
         arrayList.clear();
-        Query q = tests.whereGreaterThanOrEqualTo("test_name",name);
+        ArrayList<String> testName = new ArrayList<>();
+        for (int i = 0; i < name.length(); i++) testName.add(String.valueOf(name.charAt(i)));
+        Log.d("ssss", "testName: "+testName);
+        Query q = tests.whereArrayContains("arr_name",testName);
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -364,14 +412,14 @@ public class MainActivity extends AppCompatActivity
                         map.put("Test_id", document.getId());
                         map.put("Test_name", document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
-
+                        map.put("S_count",document.get("solved_cnt").toString());
                         if (document.get("name") != null)
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
+                                new String[]{"Test_name", "Q_count", "P_name","S_count"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
                         questions.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -389,6 +437,8 @@ public class MainActivity extends AppCompatActivity
         });
     }
     void setAllTests(){
+        arrayList.clear();
+        questions.setAdapter(null);
         tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -399,14 +449,14 @@ public class MainActivity extends AppCompatActivity
                         map.put("Test_id", document.getId());
                         map.put("Test_name", document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
-
+                        map.put("S_count",document.get("solved_cnt").toString());
                         if (document.get("name") != null)
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name});
+                                new String[]{"Test_name", "Q_count", "P_name", "S_count"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
                         questions.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
