@@ -28,10 +28,11 @@ import java.util.LinkedHashMap;
 
 public class test_view extends AppCompatActivity {
     private Button a1,a2,a3,a4;
+    long minute, seconds, testTime;
     private final ArrayList<String> cor_a = new ArrayList<>();
     private FirebaseAuth mAuth;
     private long q_count,i;
-    private TextView question,curQuestCount;
+    private TextView question,curQuestCount, time;
     private FrameLayout f1,f2,f3,f4;
     LinkedHashMap<Button,FrameLayout> btnAndBackground = new LinkedHashMap<>();
     private int c_a_c; // кол-во правильных ответов, на которые отвечал пользователь
@@ -50,6 +51,7 @@ public class test_view extends AppCompatActivity {
         a2 = (Button)findViewById(R.id.a_button2);
         a3 = (Button)findViewById(R.id.a_button3);
         a4 = (Button)findViewById(R.id.a_button4);
+        time = (TextView) findViewById(R.id.time_test);
         question = (TextView)findViewById(R.id.q_text);
         curQuestCount = (TextView)findViewById(R.id.cur_q);
         f1 = (FrameLayout)findViewById(R.id.b1_back);
@@ -62,6 +64,8 @@ public class test_view extends AppCompatActivity {
         btnAndBackground.put(a4,f4);
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser cus = mAuth.getCurrentUser();
+
+        startTimerThread();
 
         Upd();
 
@@ -92,6 +96,30 @@ public class test_view extends AppCompatActivity {
                 click(a4);
             }
         });
+    }
+
+    private void startTimerThread() {
+        Thread th = new Thread(new Runnable() {
+            public void run() {
+                while (true) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            testTime += 1;
+                            minute = testTime / 60;
+                            seconds = testTime % 60;
+                            time.setText(minute + " : " + seconds);
+                        }
+                    });
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        th.start();
     }
 
     private void click(Button clickBtn){
@@ -149,6 +177,8 @@ public class test_view extends AppCompatActivity {
                     intent.putExtra("c_a_c",c_a_c);
                     intent.putExtra("q_count",q_count);
                     intent.putExtra("Test_id",Test_id);
+                    intent.putExtra("minute", minute);
+                    intent.putExtra("seconds", seconds);
                     startActivity(intent);
                 }
             },2000);

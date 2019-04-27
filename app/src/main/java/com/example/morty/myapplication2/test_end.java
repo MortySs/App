@@ -25,7 +25,8 @@ import java.util.Map;
 
 public class test_end extends AppCompatActivity {
     private Button btn_end;
-    private TextView txt;
+    long seconds, minute;
+    private TextView txt, time;
     private int correct_answers_count;
     private long q_count;
     private FirebaseAuth auth;
@@ -41,16 +42,21 @@ public class test_end extends AppCompatActivity {
         final FirebaseUser cus = auth.getCurrentUser();
 
         txt = findViewById(R.id.test_result_txt);
+        time = findViewById(R.id.end_time);
         btn_end = findViewById(R.id.test_end_btn);
         ratingBar = findViewById(R.id.rating);
         ratingBar.setMax(5);
         ratingBar.setStepSize(1);
+
+        seconds = getIntent().getLongExtra("seconds", 0);
+        minute = getIntent().getLongExtra("minute", 0);
 
         final CollectionReference user_completed = db.collection("users").document(cus.getEmail().toString()).collection("completed");
         final CollectionReference tests = db.collection("tests");
         final Intent intent = getIntent();
         correct_answers_count = intent.getIntExtra("c_a_c", 0);
         q_count=intent.getLongExtra("q_count",0) ;//("q_count",0);
+        time.setText("Время: " + minute + " : " + seconds);
         test_end_data.put("correct_a_count",correct_answers_count);
         user_completed.document(intent.getStringExtra("Test_id")).set(test_end_data);
         final DocumentReference cur_test = tests.document(intent.getStringExtra("Test_id"));
@@ -105,11 +111,11 @@ public class test_end extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         if (document.get("rating") != null){
-                            test_end_data.put("rating_sum", ratingBar.getRating() + (float)document.get("rating_sum"));
+                            test_end_data.put("rating_sum", ratingBar.getRating() + (double)document.get("rating_sum"));
                             Log.d("Rating","r s " + test_end_data.get("rating_sum").toString());
-                            test_end_data.put("rating_count", 1 + (float)document.get("rating_count"));
+                            test_end_data.put("rating_count", 1 + (long)document.get("rating_count"));
                             Log.d("Rating","r c "+ test_end_data.get("rating_count").toString());
-                            test_end_data.put("rating", (float)test_end_data.get("rating_sum") / (float)test_end_data.get("rating_count"));
+                            test_end_data.put("rating", (double)test_end_data.get("rating_sum") / (long)test_end_data.get("rating_count"));
                             Log.d("Rating","r "+ test_end_data.get("rating").toString());
                         }else {
                             test_end_data.put("rating_sum", (double)ratingBar.getRating());
