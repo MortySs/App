@@ -297,7 +297,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onQueryTextChange(String newText) {
         // User changed the text
         if (newText.equals("")){
-            setAllTests();
+            if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
+                else caseVoid(categories[tabLayout.getSelectedTabPosition()]);
         }
         searchTests(newText);
         Toast.makeText(this, "Вы ищите: "+ newText, Toast.LENGTH_SHORT).show();
