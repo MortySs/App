@@ -105,11 +105,11 @@ public class test_end extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         if (document.get("rating") != null){
-                            test_end_data.put("rating_sum", ratingBar.getRating() + (double)document.get("rating_sum"));
+                            test_end_data.put("rating_sum", ratingBar.getRating() + (float)document.get("rating_sum"));
                             Log.d("Rating","r s " + test_end_data.get("rating_sum").toString());
-                            test_end_data.put("rating_count", 1 + (long)document.get("rating_count"));
+                            test_end_data.put("rating_count", 1 + (float)document.get("rating_count"));
                             Log.d("Rating","r c "+ test_end_data.get("rating_count").toString());
-                            test_end_data.put("rating", (double)test_end_data.get("rating_sum") / (long)test_end_data.get("rating_count"));
+                            test_end_data.put("rating", (float)test_end_data.get("rating_sum") / (float)test_end_data.get("rating_count"));
                             Log.d("Rating","r "+ test_end_data.get("rating").toString());
                         }else {
                             test_end_data.put("rating_sum", (double)ratingBar.getRating());
