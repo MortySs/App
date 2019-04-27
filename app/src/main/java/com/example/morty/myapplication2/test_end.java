@@ -25,8 +25,7 @@ import java.util.Map;
 
 public class test_end extends AppCompatActivity {
     private Button btn_end;
-    long seconds, minute;
-    private TextView txt, time;
+    private TextView txt;
     private int correct_answers_count;
     private long q_count;
     private FirebaseAuth auth;
@@ -42,21 +41,16 @@ public class test_end extends AppCompatActivity {
         final FirebaseUser cus = auth.getCurrentUser();
 
         txt = findViewById(R.id.test_result_txt);
-        time = findViewById(R.id.end_time);
         btn_end = findViewById(R.id.test_end_btn);
         ratingBar = findViewById(R.id.rating);
         ratingBar.setMax(5);
         ratingBar.setStepSize(1);
-
-        seconds = getIntent().getLongExtra("seconds", 0);
-        minute = getIntent().getLongExtra("minute", 0);
 
         final CollectionReference user_completed = db.collection("users").document(cus.getEmail().toString()).collection("completed");
         final CollectionReference tests = db.collection("tests");
         final Intent intent = getIntent();
         correct_answers_count = intent.getIntExtra("c_a_c", 0);
         q_count=intent.getLongExtra("q_count",0) ;//("q_count",0);
-        time.setText("Время: " + minute + " : " + seconds);
         test_end_data.put("correct_a_count",correct_answers_count);
         user_completed.document(intent.getStringExtra("Test_id")).set(test_end_data);
         final DocumentReference cur_test = tests.document(intent.getStringExtra("Test_id"));
