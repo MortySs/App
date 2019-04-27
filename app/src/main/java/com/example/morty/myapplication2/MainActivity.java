@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         View myView2 = inflater.inflate(R.layout.my_tests,null);
         View bar = inflater.inflate(R.layout.app_bar_main, null);
 
-        testRt = (RatingBar) myView.findViewById(R.id.test_rating);
+
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -364,6 +364,7 @@ public class MainActivity extends AppCompatActivity
         progressBar.setVisibility(View.VISIBLE);
         questions.setAdapter(null);
         arrayList.clear();
+
         Query q = tests.whereEqualTo("category",category);
 
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -377,17 +378,17 @@ public class MainActivity extends AppCompatActivity
                         map.put("Test_id", document.getId());
                         map.put("Test_name", document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+                        if (document.get("rating")!=null)
+                        map.put("Rating",document.get("rating").toString());
                         map.put("S_count",document.get("solved_cnt").toString());
                         if (document.get("name") != null)
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name", "S_count"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
+                                new String[]{"Test_name", "Q_count", "P_name", "S_count","Rating"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
                         questions.setAdapter(adapter);
-                        testRt.setIsIndicator(true);
-                       // testRt.setRating((float)document.get("rating"));
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -428,13 +429,15 @@ public class MainActivity extends AppCompatActivity
                         map.put("Test_name", document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
                         map.put("S_count",document.get("solved_cnt").toString());
+                        if (document.get("rating")!=null)
+                            map.put("Rating",document.get("rating").toString());
                         if (document.get("name") != null)
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name","S_count"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
+                                new String[]{"Test_name", "Q_count", "P_name","S_count","Rating"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
                         questions.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -465,13 +468,15 @@ public class MainActivity extends AppCompatActivity
                         map.put("Test_name", document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
                         map.put("S_count",document.get("solved_cnt").toString());
+                        if (document.get("rating")!=null)
+                            map.put("Rating",document.get("rating").toString());
                         if (document.get("name") != null)
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name", "S_count"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
+                                new String[]{"Test_name", "Q_count", "P_name", "S_count","Rating"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
                         questions.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
