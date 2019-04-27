@@ -21,6 +21,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -29,7 +31,7 @@ public class test_view extends AppCompatActivity {
     private final ArrayList<String> cor_a = new ArrayList<>();
     private FirebaseAuth mAuth;
     private long q_count,i;
-    private TextView question;
+    private TextView question,curQuestCount;
     private FrameLayout f1,f2,f3,f4;
     LinkedHashMap<Button,FrameLayout> btnAndBackground = new LinkedHashMap<>();
     private int c_a_c; // кол-во правильных ответов, на которые отвечал пользователь
@@ -49,6 +51,7 @@ public class test_view extends AppCompatActivity {
         a3 = (Button)findViewById(R.id.a_button3);
         a4 = (Button)findViewById(R.id.a_button4);
         question = (TextView)findViewById(R.id.q_text);
+        curQuestCount = (TextView)findViewById(R.id.cur_q);
         f1 = (FrameLayout)findViewById(R.id.b1_back);
         f2 = (FrameLayout)findViewById(R.id.b2_back);
         f3 = (FrameLayout)findViewById(R.id.b3_back);
@@ -164,6 +167,7 @@ public class test_view extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         q_count=(long) document.get("q_count");
+                        curQuestCount.setText("Вопрос "+(i+1)+"/"+q_count);
                         question.setText(document.get(""+i).toString());
                         Log.d("LOL", "DocumentSnapshot data: " + document.getData());
                     } else {

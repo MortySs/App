@@ -1,6 +1,7 @@
 package com.example.morty.myapplication2;
 
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ public class test_end extends AppCompatActivity {
     private long q_count;
     private FirebaseAuth auth;
     private RatingBar ratingBar;
+    final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private final Map<String, Object> test_end_data = new HashMap<>();
     @Override
@@ -37,7 +39,7 @@ public class test_end extends AppCompatActivity {
         setContentView(R.layout.activity_test_end);
         auth = FirebaseAuth.getInstance();
         final FirebaseUser cus = auth.getCurrentUser();
-        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         txt = findViewById(R.id.test_result_txt);
         btn_end = findViewById(R.id.test_end_btn);
         ratingBar = findViewById(R.id.rating);
@@ -54,21 +56,12 @@ public class test_end extends AppCompatActivity {
         final DocumentReference cur_test = tests.document(intent.getStringExtra("Test_id"));
         test_end_data.clear();
         cur_test.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        if (document.get("rating") != null){
-                            test_end_data.put("rating_sum", (double)ratingBar.getRating() + (double)document.get("rating_sum"));
-                            test_end_data.put("rating_count", 1 + (double)document.get("rating_count"));
-                            test_end_data.put("rating", (double)test_end_data.get("rating_sum") / (double)test_end_data.get("rating_count"));
-                        }else {
-                            test_end_data.put("rating_sum", (double)ratingBar.getRating());
-                            test_end_data.put("rating_count", (double)1);
-                            test_end_data.put("rating", (double)ratingBar.getRating());
-                        }
-                        Log.e("Rating", String.valueOf(ratingBar.getRating()));
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                        Log.d("Rating", " "+ratingBar.getRating());
                         test_end_data.put("solved_cnt", (long)document.get("solved_cnt")+1);
                         Log.d("testEnd", "onComplete: " + document.get("solved_cnt")+" "+test_end_data.get("solved_cnt"));
                     }
@@ -85,8 +78,51 @@ public class test_end extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(test_end.this,MainActivity.class);
                 startActivity(intent);
-                cur_test.update(test_end_data);
+                setRating();
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        cur_test.update(test_end_data);
+                    }
+
+                },2000);
+            }
+
+
+        });
+    }
+    public void setRating(){
+        final CollectionReference tests = db.collection("tests");
+        final Intent intent = getIntent();
+        final DocumentReference cur_test = tests.document(intent.getStringExtra("Test_id"));
+
+        cur_test.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        if (document.get("rating") != null){
+                            test_end_data.put("rating_sum", ratingBar.getRating() + (double)document.get("rating_sum"));
+                            Log.d("Rating","r s " + test_end_data.get("rating_sum").toString());
+                            test_end_data.put("rating_count", 1 + (long)document.get("rating_count"));
+                            Log.d("Rating","r c "+ test_end_data.get("rating_count").toString());
+                            test_end_data.put("rating", (double)test_end_data.get("rating_sum") / (long)test_end_data.get("rating_count"));
+                            Log.d("Rating","r "+ test_end_data.get("rating").toString());
+                        }else {
+                            test_end_data.put("rating_sum", (double)ratingBar.getRating());
+                            test_end_data.put("rating_count", (long)1);
+                            test_end_data.put("rating", (double)ratingBar.getRating());
+                        }
+                        Log.d("Rating", " "+ratingBar.getRating());
+                        Log.d("testEnd", "onComplete: " + document.get("solved_cnt")+" "+test_end_data.get("solved_cnt"));
+                    }
+                }
             }
         });
+        cur_test.update(test_end_data);
+
     }
 }

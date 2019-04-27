@@ -12,6 +12,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
 
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity
     private ImageView Avatar ;
     private TextView not_auth;
     private ListView listView;
+    private RatingBar testRt;
     ListView questions;
     byte pressedCount = 1;
     Date pressedMoment1 = new Date(0);
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         View myView2 = inflater.inflate(R.layout.my_tests,null);
         View bar = inflater.inflate(R.layout.app_bar_main, null);
 
-
+        testRt = (RatingBar) myView.findViewById(R.id.test_rating);
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -276,6 +278,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Toast.makeText(this, "Searching by: "+ query, Toast.LENGTH_SHORT).show();
@@ -383,6 +386,8 @@ public class MainActivity extends AppCompatActivity
                                 new String[]{"Test_name", "Q_count", "P_name", "S_count"},
                                 new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
                         questions.setAdapter(adapter);
+                        testRt.setIsIndicator(true);
+                       // testRt.setRating((float)document.get("rating"));
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
@@ -409,10 +414,9 @@ public class MainActivity extends AppCompatActivity
         progressBar.setVisibility(View.VISIBLE);
         questions.setAdapter(null);
         arrayList.clear();
-        ArrayList<String> testName = new ArrayList<>();
-        for (int i = 0; i < name.length(); i++) testName.add(String.valueOf(name.charAt(i)));
-        Log.d("ssss", "testName: "+testName);
-        Query q = tests.whereArrayContains("arr_name",testName);
+
+        Log.d("ssss", "testName: "+name);
+        Query q = tests.whereLessThanOrEqualTo("test_name",name);
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
