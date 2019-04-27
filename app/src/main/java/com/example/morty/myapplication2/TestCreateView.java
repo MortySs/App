@@ -42,6 +42,7 @@ public class TestCreateView extends AppCompatActivity {
     private boolean c1, c2, c3, c4;
     private int n;
     public final ArrayList<String> Answers = new ArrayList<>();
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class TestCreateView extends AppCompatActivity {
         rb4 = (RadioButton) findViewById(R.id.check_answer4);
         text = (TextView) findViewById(R.id.question);
         save = (Button) findViewById(R.id.save_btn);
-        final Intent intent = getIntent();
+        intent = getIntent();
         n = intent.getIntExtra("number", 0);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -106,33 +107,7 @@ public class TestCreateView extends AppCompatActivity {
                     if (!rb1.isChecked() && !rb2.isChecked() && !rb3.isChecked() && !rb4.isChecked()) {
                         Toast.makeText(getApplicationContext(), "Выберите правильный ответ", Toast.LENGTH_SHORT).show();
                     } else {
-                        Answers.add(a1.getText().toString());
-                        Answers.add(a2.getText().toString());
-                        Answers.add(a3.getText().toString());
-                        Answers.add(a4.getText().toString());
-
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        mAuth = FirebaseAuth.getInstance();
-                        final FirebaseUser cus = mAuth.getCurrentUser();
-                        final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
-                        DocumentReference doc = a_draft.document("" + n);
-                        DocumentReference draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft");
-                        Map<String, Object> data2 = new HashMap<>();
-                        data2.put("" + n, intent.getStringExtra("q_text"));
-                        draft.update(data2);
-                        Map<String, Object> data = new HashMap<>();
-                        for (int i = 0; i < 4; i++) {
-                            String count = "" + i;
-                            data.put(count, Answers.get(i).toString());
-                        }
-                        data.put("is_cor_" + 0, c1);
-                        data.put("is_cor_" + 1, c2);
-                        data.put("is_cor_" + 2, c3);
-                        data.put("is_cor_" + 3, c4);
-                        doc.set(data);
-                        TestCreateView.this.finish();
-
-                        //TODO else{ //Toast.makeText(TestCreateView.this,"Проверьте вопросы!",Toast.LENGTH_SHORT).show();}
+                        save();
                     }
                 }
             }
@@ -147,9 +122,38 @@ public class TestCreateView extends AppCompatActivity {
             if (!rb1.isChecked() && !rb2.isChecked() && !rb3.isChecked() && !rb4.isChecked()) {
                 Toast.makeText(getApplicationContext(), "Выберите правильный ответ", Toast.LENGTH_SHORT).show();
             } else {
+                save();
                 super.onBackPressed();
             }
         }
+    }
+
+    void save(){
+         Answers.add(a1.getText().toString());
+         Answers.add(a2.getText().toString());
+         Answers.add(a3.getText().toString());
+         Answers.add(a4.getText().toString());
+
+         FirebaseFirestore db = FirebaseFirestore.getInstance();
+         mAuth = FirebaseAuth.getInstance();
+         final FirebaseUser cus = mAuth.getCurrentUser();
+         final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
+         DocumentReference doc = a_draft.document("" + n);
+         DocumentReference draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft");
+         Map<String, Object> data2 = new HashMap<>();
+         data2.put("" + n, intent.getStringExtra("q_text"));
+         draft.update(data2);
+         Map<String, Object> data = new HashMap<>();
+         for (int i = 0; i < 4; i++) {
+             String count = "" + i;
+             data.put(count, Answers.get(i).toString());
+         }
+         data.put("is_cor_" + 0, c1);
+         data.put("is_cor_" + 1, c2);
+         data.put("is_cor_" + 2, c3);
+         data.put("is_cor_" + 3, c4);
+         doc.set(data);
+         TestCreateView.this.finish();
     }
 
     View.OnClickListener radioButtonClickListener = new View.OnClickListener() {
