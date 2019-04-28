@@ -108,7 +108,7 @@ public class test_view extends AppCompatActivity {
                             testTime += 1;
                             minute = testTime / 60;
                             seconds = testTime % 60;
-                            time.setText(minute + " : " + seconds);
+                            time.setText(minute + ":" + seconds);
                         }
                     });
                     try {

@@ -58,15 +58,17 @@ public class test_end extends AppCompatActivity {
         q_count=intent.getLongExtra("q_count",0) ;//("q_count",0);
         time.setText("Время: " + minute + " : " + seconds);
         test_end_data.put("correct_a_count",correct_answers_count);
+        test_end_data.put("minute",minute);
+        test_end_data.put("seconds",seconds);
         user_completed.document(intent.getStringExtra("Test_id")).set(test_end_data);
         final DocumentReference cur_test = tests.document(intent.getStringExtra("Test_id"));
         test_end_data.clear();
         cur_test.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentSnapshot document = task.getResult();
-                                    if (document.exists()) {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
                         Log.d("Rating", " "+ratingBar.getRating());
                         test_end_data.put("solved_cnt", (long)document.get("solved_cnt")+1);
                         Log.d("testEnd", "onComplete: " + document.get("solved_cnt")+" "+test_end_data.get("solved_cnt"));

@@ -45,6 +45,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity
         View myView2 = inflater.inflate(R.layout.my_tests,null);
         View bar = inflater.inflate(R.layout.app_bar_main, null);
 
-        testRt = (RatingBar) myView.findViewById(R.id.test_rating);
+
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -301,7 +302,7 @@ public class MainActivity extends AppCompatActivity
         // User changed the text
         if (newText.equals("")){
             if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
-                else caseVoid(categories[tabLayout.getSelectedTabPosition()]);
+            else caseVoid(categories[tabLayout.getSelectedTabPosition()]);
         }
         searchTests(newText);
         Toast.makeText(this, "Вы ищите: "+ newText, Toast.LENGTH_SHORT).show();
@@ -364,47 +365,49 @@ public class MainActivity extends AppCompatActivity
         progressBar.setVisibility(View.VISIBLE);
         questions.setAdapter(null);
         arrayList.clear();
+
         Query q = tests.whereEqualTo("category",category);
 
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-            if (task.isSuccessful()){
-                if(!task.getResult().isEmpty()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.d("MortyList", document.getId() + " => " + document.getData());
-                        map = new HashMap<>();
-                        map.put("Test_id", document.getId());
-                        map.put("Test_name", document.get("test_name").toString());
-                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
-                        map.put("S_count",document.get("solved_cnt").toString());
-                        if (document.get("name") != null)
-                            map.put("P_name", document.get("name").toString());
+                if (task.isSuccessful()){
+                    if(!task.getResult().isEmpty()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Log.d("MortyList", document.getId() + " => " + document.getData());
+                            DecimalFormat df = new DecimalFormat("#.##");
+                            map = new HashMap<>();
+                            map.put("Test_id", document.getId());
+                            map.put("Test_name", document.get("test_name").toString());
+                            map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+                            if (document.get("rating")!=null)
+                                map.put("Rating",df.format(document.get("rating")));
+                            map.put("S_count",document.get("solved_cnt").toString());
+                            if (document.get("name") != null)
+                                map.put("P_name", document.get("name").toString());
 
-                        arrayList.add(map);
-                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name", "S_count"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
-                        questions.setAdapter(adapter);
-                        testRt.setIsIndicator(true);
-                       // testRt.setRating((float)document.get("rating"));
+                            arrayList.add(map);
+                            SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                    new String[]{"Test_name", "Q_count", "P_name", "S_count","Rating"},
+                                    new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
+                            questions.setAdapter(adapter);
+                            progressBar.setVisibility(View.GONE);
+                            questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                    Intent intent = new Intent(MainActivity.this, test_view.class);
+                                    intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                    startActivity(intent);
+                                }
+                            });
+
+                        }
+                    }else{
                         progressBar.setVisibility(View.GONE);
-                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                                Intent intent = new Intent(MainActivity.this, test_view.class);
-                                intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
-                                startActivity(intent);
-                            }
-                        });
-
+                        not_auth.setVisibility(View.VISIBLE);
+                        not_auth.setText("Нет тестов");
                     }
-                }else{
-                    progressBar.setVisibility(View.GONE);
-                    not_auth.setVisibility(View.VISIBLE);
-                    not_auth.setText("Нет тестов");
                 }
-            }
             }
         });
 
@@ -423,18 +426,21 @@ public class MainActivity extends AppCompatActivity
                 if (task.isSuccessful()){
                     for (QueryDocumentSnapshot document : task.getResult()){
                         Log.d("MortyList", document.getId() + " => " + document.getData());
+                        DecimalFormat df = new DecimalFormat("#.##");
                         map = new HashMap<>();
                         map.put("Test_id", document.getId());
                         map.put("Test_name", document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
                         map.put("S_count",document.get("solved_cnt").toString());
+                        if (document.get("rating")!=null)
+                            map.put("Rating",df.format(document.get("rating")));
                         if (document.get("name") != null)
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name","S_count"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
+                                new String[]{"Test_name", "Q_count", "P_name","S_count","Rating"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
                         questions.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -460,18 +466,21 @@ public class MainActivity extends AppCompatActivity
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Log.d("MortyList", document.getId() + " => " + document.getData());
+                        DecimalFormat df = new DecimalFormat("#.##");
                         map = new HashMap<>();
                         map.put("Test_id", document.getId());
                         map.put("Test_name", document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
                         map.put("S_count",document.get("solved_cnt").toString());
+                        if (document.get("rating")!=null)
+                            map.put("Rating",df.format(document.get("rating")));
                         if (document.get("name") != null)
                             map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name", "S_count"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
+                                new String[]{"Test_name", "Q_count", "P_name", "S_count","Rating"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
                         questions.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
