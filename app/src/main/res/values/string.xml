@@ -29,6 +29,7 @@
     <string name="lbl_forgot_password">Забыли пароль?</string>
     <string name="forgot_password_msg">Введите адрес электронной почты, на которую зарегистрирован ваш аккаунт</string>
     <string name="new_us">Нам нужно больше информации о вас, пожалуйста, заполните поля ниже</string>
+    <string name="title_choose_file">ssss</string>
     <string-array name="tag_names">
         <item>Английский язык</item>
         <item>Биология</item>

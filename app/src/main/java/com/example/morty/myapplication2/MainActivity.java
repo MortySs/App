@@ -352,7 +352,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
             Toast.makeText(this, "Настройки ещё не настроены(", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_writes) {
-            Toast.makeText(this, "У вас пока нет ни одного черновика", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this,ParsingActivity.class);
+            startActivity(intent);
+            //Toast.makeText(this, "У вас пока нет ни одного черновика", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_share) {
             //Toast.makeText(this, "Скоро вы сможете поделиться вашим прогрессом", Toast.LENGTH_SHORT).show();
         }

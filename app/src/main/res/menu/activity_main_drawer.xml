@@ -19,7 +19,7 @@
         <item
             android:id="@+id/nav_writes"
             android:icon="@drawable/ic_baseline_receipt_24px"
-            android:title="Черновики" />
+            android:title="Парсинг тестов" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
