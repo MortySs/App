@@ -513,4 +513,11 @@ public class MainActivity extends AppCompatActivity
             }
         }, 1000);
     }
+
+    @Override
+    protected void onStart() {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        for (int i = 0; i < navigationView.getMenu().size(); i++)  navigationView.getMenu().getItem(i).setChecked(false);
+        super.onStart();
+    }
 }
