@@ -38,12 +38,15 @@ private TextView file_inf;
     find_btn.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            new FileChooser(ParsingActivity.this).setFileListener(new FileChooser.FileSelectedListener() {
+            new FileChooser(ParsingActivity.this)
+                    .setFileListener(new FileChooser.FileSelectedListener() {
                 @Override public void fileSelected(final File file) {
+
                     //TODO здесь получаем всю инфу о файле
                     file_inf.setText("имя файла: "+file.getName()+"\n"+"путь к файлу: "+file.getAbsolutePath());
                     Log.d("file", "file selected name: "+file.getName()+" | file selected path" +file.getAbsolutePath());
                 }}).showDialog();
+
         }
     });
     }
