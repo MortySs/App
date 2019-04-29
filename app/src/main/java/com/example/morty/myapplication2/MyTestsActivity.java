@@ -127,6 +127,8 @@ public class MyTestsActivity extends AppCompatActivity {
     }
 
     void updateTests(){
+        arrayList.clear();
+        questions.setAdapter(null);
         final FirebaseUser cus = mAuth.getCurrentUser();
         final CollectionReference tests = db.collection("tests");
         Query q = tests.whereEqualTo("test_maker_email",cus.getEmail());

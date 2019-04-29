@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,9 +43,10 @@ public class SolvedTestsActivity extends AppCompatActivity {
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private  HashMap<String, String> map;
     private ProgressBar progressBar;
-    public ImageView Avatar;
     private TextView not_auth;
-    final Context context = this;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    ListView questions;
+    ArrayList<String> str;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +60,22 @@ public class SolvedTestsActivity extends AppCompatActivity {
         setContentView(R.layout.my_tests);
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser cus = mAuth.getCurrentUser();
-        final CollectionReference usSolved = db.collection("users").document(cus.getEmail()).collection("completed");
-        final CollectionReference tests = db.collection("tests");
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        updateTests();
+                    }
+                }, 1000);
+            }
+        });
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,12 +85,12 @@ public class SolvedTestsActivity extends AppCompatActivity {
             }
         });
 
-        final StorageReference storageRef = storage.getReference();
-
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        final ListView questions = (ListView) findViewById(R.id.list);
-        final ArrayList<String> str = new ArrayList<>() ;
+        questions = (ListView) findViewById(R.id.list);
+        updateTests();
+        str = new ArrayList<>() ;
+        final CollectionReference usSolved = db.collection("users").document(cus.getEmail()).collection("completed");
         usSolved.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -83,46 +98,6 @@ public class SolvedTestsActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot document : task.getResult()){
                         str.add(document.getId());
                     }
-                }
-            }
-        });
-
-        tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-
-                        Log.d("MortyList", document.getId() + " => " + document.getData());
-                        map = new HashMap<>();
-                        if (str.contains(document.getId())){
-                            map.put("Test_id",document.getId());
-                            map.put("Test_name",document.get("test_name").toString());
-                            map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
-                            map.put("S_count",document.get("solved_cnt").toString());
-                            if(document.get("name")!=null)
-                                map.put("P_name", document.get("name").toString());
-
-                            arrayList.add(map);
-                            SimpleAdapter adapter = new SimpleAdapter(SolvedTestsActivity.this, arrayList, R.layout.my_tests_item,
-                                    new String[]{"Test_name", "Q_count", "P_name", "S_count"},
-                                    new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
-                            questions.setAdapter(adapter);
-                            progressBar.setVisibility(View.GONE);
-                            questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                                    Intent intent = new Intent(SolvedTestsActivity.this,test_view.class);
-                                    intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id").toString());
-                                    startActivity(intent);
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    not_auth.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                    Log.d("MortyList", "Error getting documents: ", task.getException());
                 }
             }
         });
@@ -162,4 +137,50 @@ public class SolvedTestsActivity extends AppCompatActivity {
     //         return true;
     //     }});
     }
+
+    void updateTests(){
+        arrayList.clear();
+        questions.setAdapter(null);
+        final CollectionReference tests = db.collection("tests");
+        tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+
+                        Log.d("MortyList", document.getId() + " => " + document.getData());
+                        map = new HashMap<>();
+                        if (str.contains(document.getId())){
+                            map.put("Test_id",document.getId());
+                            map.put("Test_name",document.get("test_name").toString());
+                            map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+                            map.put("S_count",document.get("solved_cnt").toString());
+                            if(document.get("name")!=null)
+                                map.put("P_name", document.get("name").toString());
+
+                            arrayList.add(map);
+                            SimpleAdapter adapter = new SimpleAdapter(SolvedTestsActivity.this, arrayList, R.layout.my_tests_item,
+                                    new String[]{"Test_name", "Q_count", "P_name", "S_count"},
+                                    new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
+                            questions.setAdapter(adapter);
+                            progressBar.setVisibility(View.GONE);
+                            questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                    Intent intent = new Intent(SolvedTestsActivity.this,test_view.class);
+                                    intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id").toString());
+                                    startActivity(intent);
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    not_auth.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    Log.d("MortyList", "Error getting documents: ", task.getException());
+                }
+            }
+        });
+    }
+
 }
