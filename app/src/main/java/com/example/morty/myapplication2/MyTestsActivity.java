@@ -47,7 +47,7 @@ public class MyTestsActivity extends AppCompatActivity {
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private  HashMap<String, String> map;
     private ProgressBar progressBar;
-    private ArrayList<Object> deletedId = new ArrayList<>();
+    private ArrayList<Integer> deletedId = new ArrayList<>();
     private TextView not_auth;
     final Context context = this;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -112,9 +112,15 @@ public class MyTestsActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog,int id) {
                                         final FirebaseUser cus = mAuth.getCurrentUser();
                                         final CollectionReference tests = db.collection("tests");
-                                            tests.document(arrayList.get(position).get("Test_id")).delete();
-                                            Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail()+" | "+arrayList.get(position).get("test_maker_email"));
-
+                                        deletedId.add(Integer.valueOf(arrayList.get(position).get("Test_id")));
+                                        Log.d("deletedId ArrayList", String.valueOf(deletedId.get(5)));
+                                        tests.document(arrayList.get(position).get("Test_id")).delete();
+                                        HashMap<String, Object> hashMap = new HashMap<>();
+                                        hashMap.put("deletedId",deletedId);
+                                        db.collection("oth_info").document("tests").update(hashMap);
+                                        Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail()+" | "+arrayList.get(position).get("test_maker_email"));
+                                        updateTests();
+                                        Log.d("deletedId ArrayList", "ya eblan");
                                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
@@ -184,7 +190,7 @@ public class MyTestsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
             if (task.isSuccessful()){
                 DocumentSnapshot document = task.getResult();
-                deletedId.add(document.get("deletedId"));
+                deletedId = (ArrayList)document.get("deletedId");
                 Log.d("deletedId", "onComplete: " +deletedId.get(0));
             }
             }

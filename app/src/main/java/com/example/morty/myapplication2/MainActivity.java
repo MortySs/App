@@ -431,6 +431,8 @@ public class MainActivity extends AppCompatActivity
                                                                 Toast.makeText(MainActivity.this,"Нужно быть создателем теста,чтобы его удалить!",Toast.LENGTH_LONG).show();
                                                                 dialog.cancel();
                                                             }
+                                                            if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
+                                                            else caseVoid(categories[tabLayout.getSelectedTabPosition()]);
                                                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                                             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                                             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
