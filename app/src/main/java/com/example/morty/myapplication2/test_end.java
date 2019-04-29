@@ -102,35 +102,36 @@ public class test_end extends AppCompatActivity {
         });
     }
     public void setRating(){
-        final CollectionReference tests = db.collection("tests");
-        final Intent intent = getIntent();
-        final DocumentReference cur_test = tests.document(intent.getStringExtra("Test_id"));
+        if (ratingBar.getRating() != 0) {
+            final CollectionReference tests = db.collection("tests");
+            final Intent intent = getIntent();
+            final DocumentReference cur_test = tests.document(intent.getStringExtra("Test_id"));
 
-        cur_test.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        if (document.get("rating") != null){
-                            test_end_data.put("rating_sum", ratingBar.getRating() + (double)document.get("rating_sum"));
-                            Log.d("Rating","r s " + test_end_data.get("rating_sum").toString());
-                            test_end_data.put("rating_count", 1 + (long)document.get("rating_count"));
-                            Log.d("Rating","r c "+ test_end_data.get("rating_count").toString());
-                            test_end_data.put("rating", (double)test_end_data.get("rating_sum") / (long)test_end_data.get("rating_count"));
-                            Log.d("Rating","r "+ test_end_data.get("rating").toString());
-                        }else {
-                            test_end_data.put("rating_sum", (double)ratingBar.getRating());
-                            test_end_data.put("rating_count", (long)1);
-                            test_end_data.put("rating", (double)ratingBar.getRating());
+            cur_test.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            if (document.get("rating") != null) {
+                                test_end_data.put("rating_sum", ratingBar.getRating() + (double) document.get("rating_sum"));
+                                Log.d("Rating", "r s " + test_end_data.get("rating_sum").toString());
+                                test_end_data.put("rating_count", 1 + (long) document.get("rating_count"));
+                                Log.d("Rating", "r c " + test_end_data.get("rating_count").toString());
+                                test_end_data.put("rating", (double) test_end_data.get("rating_sum") / (long) test_end_data.get("rating_count"));
+                                Log.d("Rating", "r " + test_end_data.get("rating").toString());
+                            } else {
+                                test_end_data.put("rating_sum", (double) ratingBar.getRating());
+                                test_end_data.put("rating_count", (long) 1);
+                                test_end_data.put("rating", (double) ratingBar.getRating());
+                            }
+                            Log.d("Rating", " " + ratingBar.getRating());
+                            Log.d("testEnd", "onComplete: " + document.get("solved_cnt") + " " + test_end_data.get("solved_cnt"));
                         }
-                        Log.d("Rating", " "+ratingBar.getRating());
-                        Log.d("testEnd", "onComplete: " + document.get("solved_cnt")+" "+test_end_data.get("solved_cnt"));
                     }
                 }
-            }
-        });
-        cur_test.update(test_end_data);
-
+            });
+            cur_test.update(test_end_data);
+        }
     }
 }

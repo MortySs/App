@@ -41,46 +41,74 @@ public class ParsingActivity extends AppCompatActivity {
     final ArrayList<String[]> Answers = new ArrayList<>();
     final ArrayList<Boolean[]> RightAnswers = new ArrayList<>();
     final ArrayList<String> Questions = new ArrayList<>();
-    String name;
+    String name,category;
     private FirebaseAuth mAuth;
     private Button find_btn,create_btn;
     private TextView file_inf;
     int n;
+    boolean isTxt, categoryIsRight, testIsCorrectly;
 
     void parse(String filePath) {
-        String[] words;
-        try {
-            FileInputStream fstream = new FileInputStream(filePath);
-            Scanner sc = new Scanner(fstream, "UTF-8");
-            String strLine;
-            name = sc.nextLine();
-            Log.d("parsing tests", "parse name: "+name);
-            while (sc.hasNext()) {
-                strLine = sc.nextLine();
-                words = strLine.split(";");
-                Questions.add(words[0]);
-                Log.d("parsing tests", "parse question: "+words[0]);
-                answers[0] = words[1];
-                Log.d("parsing tests", "parse answer [1]: "+words[1]);
-                answers[1] = words[2];
-                Log.d("parsing tests", "parse answer [2]: "+words[2]);
-                answers[2] = words[3];
-                Log.d("parsing tests", "parse answer [3]: "+words[3]);
-                answers[3] = words[4];
-                Log.d("parsing tests", "parse answer [4]: "+words[4]);
-                Answers.add(answers);
-
-                for (int i = 0; i < 4; i++) {
-                    if(words[5].equals(String.valueOf(i+1))) rightAnswers[i] = true;
-                    else rightAnswers[i] = false;
+        Log.d("filepath", filePath);
+        if (!(filePath.endsWith(".txt"))){
+            Toast.makeText(getApplicationContext(), "Файл должен иметь txt формат",Toast.LENGTH_SHORT).show();
+            isTxt = false;
+        }else {
+            isTxt = true;
+            String[] words;
+            String[] categories = getResources().getStringArray(R.array.tag_names);
+            try {
+                FileInputStream fstream = new FileInputStream(filePath);
+                Scanner sc = new Scanner(fstream, "UTF-8");
+                String strLine;
+                name = sc.nextLine();
+                category = sc.nextLine();
+                for (int i = 0; i < categories.length; i++) {
+                    if(category.equalsIgnoreCase(categories[i])){
+                        category = categories[i];
+                        categoryIsRight = true;
+                    }
                 }
+                if(!categoryIsRight){
+                    Toast.makeText(getApplicationContext(), "Проверьте категорию", Toast.LENGTH_SHORT).show();
+                }else {
+                    Log.d("parsing tests", "parse name: " + name);
+                    while (sc.hasNext()) {
+                        strLine = sc.nextLine();
+                        words = strLine.split(";");
+                        if (words.length == 6 && (words[5].equals("1")
+                                || words[5].equals("2") || words[5].equals("3") || words[5].equals("4"))) {
+                            testIsCorrectly = true;
+                            Questions.add(words[0]);
+                            Log.d("parsing tests", "parse question: " + words[0]);
+                            answers[0] = words[1];
+                            Log.d("parsing tests", "parse answer [1]: " + words[1]);
+                            answers[1] = words[2];
+                            Log.d("parsing tests", "parse answer [2]: " + words[2]);
+                            answers[2] = words[3];
+                            Log.d("parsing tests", "parse answer [3]: " + words[3]);
+                            answers[3] = words[4];
+                            Log.d("parsing tests", "parse answer [4]: " + words[4]);
+                            Answers.add(answers);
 
-                RightAnswers.add(rightAnswers);
-                save();
-                n++;
+                            for (int i = 0; i < 4; i++) {
+                                if (words[5].equals(String.valueOf(i + 1))) {
+                                    rightAnswers[i] = true;
+                                } else rightAnswers[i] = false;
+                            }
+
+                            RightAnswers.add(rightAnswers);
+                            save();
+                            n++;
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Проверьте файл", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                Log.e("Parse", e.getMessage());
             }
-        } catch (IOException e) {
-            Log.e("Parse", e.getMessage());
+
         }
     }
 
@@ -116,10 +144,16 @@ public class ParsingActivity extends AppCompatActivity {
         create_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Upd_test();
-                revertDraft();
-                Intent intent = new Intent(ParsingActivity.this, MainActivity.class);
-                startActivity(intent);
+                if(isTxt == true) {
+                    if(categoryIsRight){
+                        if(testIsCorrectly) {
+                            Upd_test();
+                            revertDraft();
+                            Intent intent = new Intent(ParsingActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }else Toast.makeText(getApplicationContext(), "Проверьте файл", Toast.LENGTH_SHORT).show();
+                    }else Toast.makeText(getApplicationContext(), "Проверьте категорию", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(getApplicationContext(), "Файл должен иметь txt формат",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -142,8 +176,6 @@ public class ParsingActivity extends AppCompatActivity {
         final Map<String, Object> us_data = new HashMap<>();
         final Map<String, Object> data1 = new HashMap<>();
 
-        final Spinner category = (Spinner) findViewById(R.id.list_tag);
-
 
         other_tests.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -151,7 +183,7 @@ public class ParsingActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        data.put("category","Английский язык");
+                        data.put("category",category);
                         id_inf.put("last_id",(long)document.get("last_id")+1);
                         test_inf.put("solved_cnt",0);
                         test_inf.put("test_name",name);

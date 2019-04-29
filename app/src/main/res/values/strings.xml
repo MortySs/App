@@ -25,4 +25,5 @@
     <string name="LogOut">Выйти из аккаунта</string>
     <string name="search_hint">Поиск</string>
     <string name="search_title">search title</string>
+    <string name="parsing_file_inf">Чтобы сделать парсинг тестов с файла, нажмите на кнопку и выберите файл.</string>
 </resources>

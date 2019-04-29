@@ -1,42 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ParsingActivity">
 
-    <Button
-        android:id="@+id/find_file_btn"
+    <TextView
+        android:id="@+id/parsing_regulations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="найти файл"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.339" />
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:gravity="center"
+        android:text="@string/parsing_regulations"
+        android:textIsSelectable="true"
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/parsing_file_inf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:gravity="center"
-        android:text="Чтобы сделать парсинг тестов с файла, нажмите на кнопку и выберите файл"
-        app:layout_constraintBottom_toTopOf="@+id/find_file_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/parsing_file_inf"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/find_file_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:text="найти файл" />
 
     <Button
         android:id="@+id/create_parsed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="создать тест"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/find_file_btn"
-        app:layout_constraintVertical_bias="0.41" />
-</android.support.constraint.ConstraintLayout>
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        android:text="создать тест" />
+</LinearLayout>
