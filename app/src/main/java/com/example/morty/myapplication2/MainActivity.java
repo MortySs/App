@@ -519,10 +519,11 @@ public class MainActivity extends AppCompatActivity
                                                     public void onClick(DialogInterface dialog,int id) {
                                                         final FirebaseUser cus = mAuth.getCurrentUser();
                                                         if (cus.getEmail().equals(arrayList.get(position).get("test_maker_email"))){
-                                                        Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id"));
-                                                        tests.document(arrayList.get(position).get("Test_id")).delete();
+                                                            Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail());
+                                                            tests.document(arrayList.get(position).get("Test_id")).delete();
                                                         }else{
-                                                            Toast.makeText(MainActivity.this,"Нужно быть создателем теста,чтобы его удалить!",Toast.LENGTH_LONG);
+                                                            Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail()+" | "+arrayList.get(position).get("test_maker_email"));
+                                                            Toast.makeText(MainActivity.this,"Нужно быть создателем теста,чтобы его удалить!",Toast.LENGTH_LONG).show();
                                                             dialog.cancel();
                                                         }
                                                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -564,6 +565,7 @@ public class MainActivity extends AppCompatActivity
                         map.put("Test_name", document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
                         map.put("S_count",document.get("solved_cnt").toString());
+                        map.put("test_maker_email",document.get("test_maker_email").toString());
                         if (document.get("rating")!=null)
                             map.put("Rating",df.format(document.get("rating")));
                         if (document.get("name") != null)
@@ -600,10 +602,11 @@ public class MainActivity extends AppCompatActivity
                                                     public void onClick(DialogInterface dialog,int id) {
                                                         final FirebaseUser cus = mAuth.getCurrentUser();
                                                         if (cus.getEmail().equals(arrayList.get(position).get("test_maker_email"))){
-                                                            Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id"));
+                                                            Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail());
                                                             tests.document(arrayList.get(position).get("Test_id")).delete();
                                                         }else{
-                                                            Toast.makeText(MainActivity.this,"Нужно быть создателем теста,чтобы его удалить!",Toast.LENGTH_LONG);
+                                                            Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail()+" | "+arrayList.get(position).get("test_maker_email"));
+                                                            Toast.makeText(MainActivity.this,"Нужно быть создателем теста,чтобы его удалить!",Toast.LENGTH_LONG).show();
                                                             dialog.cancel();
                                                         }
                                                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
