@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,9 +43,10 @@ public class MyTestsActivity extends AppCompatActivity {
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private  HashMap<String, String> map;
     private ProgressBar progressBar;
-    public ImageView Avatar;
     private TextView not_auth;
     final Context context = this;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    ListView questions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +54,27 @@ public class MyTestsActivity extends AppCompatActivity {
         View myView = inflater.inflate(R.layout.my_tests_item, null);
         View myView2 = inflater.inflate(R.layout.my_tests,null);
 
-
-        not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_tests);
         mAuth = FirebaseAuth.getInstance();
-        final FirebaseUser cus = mAuth.getCurrentUser();
-        final CollectionReference tests = db.collection("tests");
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        updateTests();
+                    }
+                }, 1000);
+            }
+        });
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+
+        not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,13 +84,53 @@ public class MyTestsActivity extends AppCompatActivity {
             }
         });
 
-        final StorageReference storageRef = storage.getReference();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        final ListView questions = (ListView) findViewById(R.id.list);
+
+        questions = (ListView) findViewById(R.id.list);
+        updateTests();
+        questions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                LayoutInflater li = LayoutInflater.from(context);
+                View promptsView = li.inflate(R.layout.delete_prompt, null);
+                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
+                mDialogBuilder.setView(promptsView);
+
+                final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
+                delete.setText("Удалить тест?");
+                mDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("Да",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        Log.d("deleting", "onClick: deleted "+arrayList.get(position).get("Test_name"));
+
+                                        //TODO: удаление теста
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                    }
+                                })
+                        .setNegativeButton("Отмена",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,int id) {
+                                        dialog.cancel();
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                    }
+                                });
+                return true;
+            }});
+    }
+
+    void updateTests(){
+        final FirebaseUser cus = mAuth.getCurrentUser();
+        final CollectionReference tests = db.collection("tests");
         Query q = tests.whereEqualTo("test_maker_email",cus.getEmail());
-       q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -112,40 +167,6 @@ public class MyTestsActivity extends AppCompatActivity {
                 }
             }
         });
-
-        questions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.delete_prompt, null);
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-                mDialogBuilder.setView(promptsView);
-
-                final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
-                delete.setText("Удалить тест?");
-                mDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("Да",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        Log.d("deleting", "onClick: deleted "+arrayList.get(position).get("Test_name"));
-
-                                        //TODO: удаление теста
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                    }
-                                });
-                return true;
-            }});
     }
+
 }
