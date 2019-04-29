@@ -1,8 +1,10 @@
 package com.example.morty.myapplication2;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +14,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
 
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.util.Log;
@@ -382,6 +385,7 @@ public class MainActivity extends AppCompatActivity
                             map.put("Test_id", document.getId());
                             map.put("Test_name", document.get("test_name").toString());
                             map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+                            map.put("test_maker_email",document.get("test_maker_email").toString());
                             if (document.get("rating")!=null)
                                 map.put("Rating",df.format(document.get("rating")));
                             map.put("S_count",document.get("solved_cnt").toString());
@@ -402,6 +406,50 @@ public class MainActivity extends AppCompatActivity
                                     startActivity(intent);
                                 }
                             });
+                            questions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                                @Override
+                                public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
+                                    LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                                    View promptsView = li.inflate(R.layout.delete_prompt, null);
+                                    AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                                    mDialogBuilder.setView(promptsView);
+
+                                    final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
+                                    delete.setText("Удалить тест?");
+                                    mDialogBuilder
+                                            .setCancelable(false)
+                                            .setPositiveButton("Да",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog,int id) {
+
+                                                            final FirebaseUser cus = mAuth.getCurrentUser();
+                                                            if (cus.getEmail().equals(arrayList.get(position).get("test_maker_email"))){
+                                                                Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail());
+                                                                tests.document(arrayList.get(position).get("Test_id")).delete();
+                                                            }else{
+                                                                Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail()+" | "+arrayList.get(position).get("test_maker_email"));
+                                                                Toast.makeText(MainActivity.this,"Нужно быть создателем теста,чтобы его удалить!",Toast.LENGTH_LONG).show();
+                                                                dialog.cancel();
+                                                            }
+                                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                        }
+                                                    })
+                                            .setNegativeButton("Отмена",
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog,int id) {
+                                                            dialog.cancel();
+                                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                        }
+                                                    });
+                                    AlertDialog alertDialog = mDialogBuilder.create();
+                                    alertDialog.show();
+                                    return true;
+                                }});
+
 
                         }
                     }else{
@@ -431,6 +479,7 @@ public class MainActivity extends AppCompatActivity
                         DecimalFormat df = new DecimalFormat("#.##");
                         map = new HashMap<>();
                         map.put("Test_id", document.getId());
+                        map.put("test_maker_email",document.get("test_maker_email").toString());
                         map.put("Test_name", document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
                         map.put("S_count",document.get("solved_cnt").toString());
@@ -453,6 +502,47 @@ public class MainActivity extends AppCompatActivity
                                 startActivity(intent);
                             }
                         });
+                        questions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                            @Override
+                            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
+                                LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                                View promptsView = li.inflate(R.layout.delete_prompt, null);
+                                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                                mDialogBuilder.setView(promptsView);
+
+                                final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
+                                delete.setText("Удалить тест?");
+                                mDialogBuilder
+                                        .setCancelable(false)
+                                        .setPositiveButton("Да",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog,int id) {
+                                                        final FirebaseUser cus = mAuth.getCurrentUser();
+                                                        if (cus.getEmail().equals(arrayList.get(position).get("test_maker_email"))){
+                                                        Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id"));
+                                                        tests.document(arrayList.get(position).get("Test_id")).delete();
+                                                        }else{
+                                                            Toast.makeText(MainActivity.this,"Нужно быть создателем теста,чтобы его удалить!",Toast.LENGTH_LONG);
+                                                            dialog.cancel();
+                                                        }
+                                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                    }
+                                                })
+                                        .setNegativeButton("Отмена",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog,int id) {
+                                                        dialog.cancel();
+                                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                    }
+                                                });
+                                AlertDialog alertDialog = mDialogBuilder.create();
+                                alertDialog.show();
+                                return true;
+                            }});
 
                     }
                 }
@@ -493,6 +583,47 @@ public class MainActivity extends AppCompatActivity
                                 startActivity(intent);
                             }
                         });
+                        questions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                            @Override
+                            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
+                                LayoutInflater li = LayoutInflater.from(MainActivity.this);
+                                View promptsView = li.inflate(R.layout.delete_prompt, null);
+                                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                                mDialogBuilder.setView(promptsView);
+
+                                final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
+                                delete.setText("Удалить тест?");
+                                mDialogBuilder
+                                        .setCancelable(false)
+                                        .setPositiveButton("Да",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog,int id) {
+                                                        final FirebaseUser cus = mAuth.getCurrentUser();
+                                                        if (cus.getEmail().equals(arrayList.get(position).get("test_maker_email"))){
+                                                            Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id"));
+                                                            tests.document(arrayList.get(position).get("Test_id")).delete();
+                                                        }else{
+                                                            Toast.makeText(MainActivity.this,"Нужно быть создателем теста,чтобы его удалить!",Toast.LENGTH_LONG);
+                                                            dialog.cancel();
+                                                        }
+                                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                    }
+                                                })
+                                        .setNegativeButton("Отмена",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog,int id) {
+                                                        dialog.cancel();
+                                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                                    }
+                                                });
+                                AlertDialog alertDialog = mDialogBuilder.create();
+                                alertDialog.show();
+                                return true;
+                            }});
                     }
                 } else {
                     not_auth.setVisibility(View.VISIBLE);

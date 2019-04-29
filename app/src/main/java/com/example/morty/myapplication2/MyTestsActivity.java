@@ -21,12 +21,15 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -34,6 +37,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -43,6 +47,7 @@ public class MyTestsActivity extends AppCompatActivity {
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private  HashMap<String, String> map;
     private ProgressBar progressBar;
+    private ArrayList<Object> deletedId = new ArrayList<>();
     private TextView not_auth;
     final Context context = this;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -92,10 +97,10 @@ public class MyTestsActivity extends AppCompatActivity {
         updateTests();
         questions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                LayoutInflater li = LayoutInflater.from(context);
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
+                LayoutInflater li = LayoutInflater.from(MyTestsActivity.this);
                 View promptsView = li.inflate(R.layout.delete_prompt, null);
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
+                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(MyTestsActivity.this);
                 mDialogBuilder.setView(promptsView);
 
                 final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
@@ -105,9 +110,11 @@ public class MyTestsActivity extends AppCompatActivity {
                         .setPositiveButton("Да",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,int id) {
-                                        Log.d("deleting", "onClick: deleted "+arrayList.get(position).get("Test_name"));
+                                        final FirebaseUser cus = mAuth.getCurrentUser();
+                                        final CollectionReference tests = db.collection("tests");
+                                            tests.document(arrayList.get(position).get("Test_id")).delete();
+                                            Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail()+" | "+arrayList.get(position).get("test_maker_email"));
 
-                                        //TODO: удаление теста
                                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
@@ -122,6 +129,8 @@ public class MyTestsActivity extends AppCompatActivity {
                                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                                     }
                                 });
+                AlertDialog alertDialog = mDialogBuilder.create();
+                alertDialog.show();
                 return true;
             }});
     }
@@ -169,6 +178,18 @@ public class MyTestsActivity extends AppCompatActivity {
                 }
             }
         });
+        final DocumentReference other_tests = db.collection("oth_info").document("tests");
+        other_tests.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            if (task.isSuccessful()){
+                DocumentSnapshot document = task.getResult();
+                deletedId.add(document.get("deletedId"));
+                Log.d("deletedId", "onComplete: " +deletedId.get(0));
+            }
+            }
+        });
+
     }
 
 }
