@@ -353,7 +353,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             //Toast.makeText(this, "Вы пока не выполнили ни одного теста", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_manage) {
-            Toast.makeText(this, "Настройки ещё не настроены(", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this,Users_search.class);
+            startActivity(intent);
+            //Toast.makeText(this, "Настройки ещё не настроены(", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_writes) {
             Intent intent = new Intent(MainActivity.this,ParsingActivity.class);
             startActivity(intent);
