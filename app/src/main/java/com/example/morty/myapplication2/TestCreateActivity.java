@@ -56,6 +56,7 @@ public class TestCreateActivity extends AppCompatActivity {
         Spinner category = (Spinner) findViewById(R.id.list_tag);
         final ListView questionView = (ListView) findViewById(R.id.test_create_list);
 
+
         final String[] TagNames = getResources().getStringArray(R.array.tag_names);
 
 
@@ -232,7 +233,12 @@ public class TestCreateActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         data.put("category",category.getSelectedItem().toString());
-                        id_inf.put("last_id",(long)document.get("last_id")+1);
+                        ArrayList<Integer> deletedId = (ArrayList) document.get("deletedId");
+                        if(deletedId!=null){
+                            id_inf.put("last_id",(long)deletedId.get(0));
+                        } else{
+                            id_inf.put("last_id",(long)document.get("last_id")+1);
+                        }
                         test_inf.put("solved_cnt",0);
                         test_inf.put("test_name",name.getText().toString());
                         createdTests.document(id_inf.get("last_id").toString()).set(test_inf);
