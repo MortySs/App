@@ -41,6 +41,7 @@
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/linearLayout"
         app:layout_constraintTop_toTopOf="parent"
+        android:maxLines="1"
         tools:text="Камиль Туктагулов" />
 
     <TextView
