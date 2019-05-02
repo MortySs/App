@@ -33,13 +33,11 @@ import java.util.Map;
 
 public class TestCreateView extends AppCompatActivity {
     static final String LOG_TAG = "LOL";
-    private EditText a1, a2, a3, a4, c_a;
+    private EditText a1, a2, a3, a4;
     private Button save;
     private TextView text;
-    final Context context = this;
     private FirebaseAuth mAuth;
     private RadioButton rb1, rb2, rb3, rb4;
-    private boolean c1, c2, c3, c4;
     private int n;
     public final ArrayList<String> Answers = new ArrayList<>();
     Intent intent;
@@ -77,10 +75,10 @@ public class TestCreateView extends AppCompatActivity {
                             a2.setText(document.get("1").toString());
                             a3.setText(document.get("2").toString());
                             a4.setText(document.get("3").toString());
-                            if (document.get("is_cor_0").toString() == "true") rb1.setChecked(true);
-                            if (document.get("is_cor_1").toString() == "true") rb2.setChecked(true);
-                            if (document.get("is_cor_2").toString() == "true") rb3.setChecked(true);
-                            if (document.get("is_cor_3").toString() == "true") rb4.setChecked(true);
+                            if (document.get("is_cor_0").toString().equals("true")) rb1.setChecked(true);
+                            if (document.get("is_cor_1").toString().equals("true")) rb2.setChecked(true);
+                            if (document.get("is_cor_2").toString().equals("true")) rb3.setChecked(true);
+                            if (document.get("is_cor_3").toString().equals("true")) rb4.setChecked(true);
                         }
                         Log.d(LOG_TAG, "DocumentSnapshot data: " + document.getData());
                     } else {
@@ -148,10 +146,10 @@ public class TestCreateView extends AppCompatActivity {
              String count = "" + i;
              data.put(count, Answers.get(i).toString());
          }
-         data.put("is_cor_" + 0, c1);
-         data.put("is_cor_" + 1, c2);
-         data.put("is_cor_" + 2, c3);
-         data.put("is_cor_" + 3, c4);
+         data.put("is_cor_" + 0, rb1.isChecked());
+         data.put("is_cor_" + 1, rb2.isChecked());
+         data.put("is_cor_" + 2, rb3.isChecked());
+         data.put("is_cor_" + 3, rb4.isChecked());
          doc.set(data);
          TestCreateView.this.finish();
     }
@@ -175,25 +173,17 @@ public class TestCreateView extends AppCompatActivity {
 
     void click(RadioButton clickBox){
         clickBox.toggle();
-        if(rb1.equals(clickBox)) c1=true;
-        else {
+        if(!rb1.equals(clickBox)){
             rb1.setChecked(false);
-            c1 = false;
         }
-        if(rb2.equals(clickBox)) c2=true;
-        else {
+        if(!rb2.equals(clickBox)){
             rb2.setChecked(false);
-            c2 = false;
         }
-        if(rb3.equals(clickBox)) c3=true;
-        else {
+        if(!rb3.equals(clickBox)){
             rb3.setChecked(false);
-            c3 = false;
         }
-        if(rb4.equals(clickBox)) c4=true;
-        else {
+        if(!rb4.equals(clickBox)){
             rb4.setChecked(false);
-            c4 = false;
         }
     }
 }

@@ -232,15 +232,39 @@ public class TestCreateActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         data.put("category",category.getSelectedItem().toString());
-                        id_inf.put("last_id",(long)document.get("last_id")+1);
                         test_inf.put("solved_cnt",0);
                         test_inf.put("test_name",name.getText().toString());
-                        createdTests.document(id_inf.get("last_id").toString()).set(test_inf);
-
                         test_inf.put("test_maker_email",cus.getEmail());
-                        Log.d("LOL", "DocumentSnapshot data: " + document.get("last_id")+id_inf.get("test_id"));
-                        other_tests.update(id_inf);
+                        ArrayList<Long> deletedId = (ArrayList<Long>) document.get("deletedId");
+                        if(deletedId!=null){
+                            id_inf.put("last_id",(long)deletedId.get(0));
+                            deletedId.remove(0);
+                            HashMap<String,Object> deleted = new HashMap<>();
+                            deleted.put("deletedId",deletedId);
+                            other_tests.update(deleted);
+                        }else {
+                            id_inf.put("last_id", (long) document.get("last_id") + 1);
+                            other_tests.update(id_inf);
+                        }
+
+                        createdTests.document(id_inf.get("last_id").toString()).set(test_inf);
                         tests.document(id_inf.get("last_id").toString()).set(test_inf);
+                        Log.d("LOL", "DocumentSnapshot data: " + document.get("last_id")+id_inf.get("test_id"));
+
+                        /*ArrayList<Long> deletedId = (ArrayList<Long>) document.get("deletedId");
+                        if(deletedId!=null){
+                            id_inf.put("last_id", document.get("last_id"));
+                            tests.document(deletedId.get(0).toString()).set(test_inf);
+                            createdTests.document(deletedId.get(0).toString()).set(test_inf);
+                            deletedId.remove(0);
+                            HashMap<String,Object> deleted = new HashMap<>();
+                            deleted.put("deletedId",deletedId);
+                            other_tests.update(deleted);
+                        } else{
+                            id_inf.put("last_id",(long)document.get("last_id")+1);
+                            tests.document(id_inf.get("last_id").toString()).set(test_inf);
+                            createdTests.document(id_inf.get("last_id").toString()).set(test_inf);
+                        }*/
                         for (int i = 0;i<Questions.size();i++){
                             final String count = ""+i;
                             data.put(count, Questions.get(i));

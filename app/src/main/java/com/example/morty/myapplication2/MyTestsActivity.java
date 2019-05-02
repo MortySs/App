@@ -113,7 +113,7 @@ public class MyTestsActivity extends AppCompatActivity {
                                         final FirebaseUser cus = mAuth.getCurrentUser();
                                         final CollectionReference tests = db.collection("tests");
                                         deletedId.add(Integer.valueOf(arrayList.get(position).get("Test_id")));
-                                        Log.d("deletedId ArrayList", String.valueOf(deletedId.get(5)));
+                                        Log.d("deletedId ArrayList", String.valueOf(arrayList.get(position).get("Test_id")));
                                         tests.document(arrayList.get(position).get("Test_id")).delete();
                                         HashMap<String, Object> hashMap = new HashMap<>();
                                         hashMap.put("deletedId",deletedId);
