@@ -134,7 +134,6 @@ public class ParsingActivity extends AppCompatActivity {
                         .setFileListener(new FileChooser.FileSelectedListener() {
                             @Override public void fileSelected(final File file) {
                                 parse(file.getAbsolutePath());
-                                //TODO здесь получаем всю инфу о файле
                                 file_inf.setText("имя файла: "+file.getName()+"\n"+"путь к файлу: "+file.getAbsolutePath());
                                 Log.d("parsfile", "file selected name: "+file.getName()+" | file selected path" +file.getAbsolutePath() +" /// " );
                             }}).showDialog();
@@ -168,6 +167,7 @@ public class ParsingActivity extends AppCompatActivity {
         final CollectionReference tests = db.collection("tests"); //document(name.getText().toString());
         final DocumentReference other_tests = db.collection("oth_info").document("tests");
         final DocumentReference us = db.collection("users").document(cus.getEmail());
+        final DocumentReference user = db.collection("users").document(cus.getEmail());
 
         final Map<String, Object> data = new HashMap<>();
         final Map<String, Object> id_inf = new HashMap<>();
@@ -183,6 +183,29 @@ public class ParsingActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        Long testsCnt = (Long)document.get("tests_count");
+                                        HashMap<String,Object> tests_count = new HashMap<>();
+                                        if (testsCnt != null){
+                                            tests_count.put("tests_count", testsCnt + 1);
+                                        }else{
+                                            tests_count.put("tests_count", 1);
+                                        }
+                                        user.update(tests_count);
+                                        Log.d("testsCount", "DocumentSnapshot data: " + document.getData());
+                                    } else {
+                                        Log.d("testsCount", "No such document");
+                                    }
+                                } else {
+                                    Log.d("testsCount", "get failed with ", task.getException());
+                                }
+                            }
+                        });
                         data.put("category",category);
                         id_inf.put("last_id",(long)document.get("last_id")+1);
                         test_inf.put("solved_cnt",0);

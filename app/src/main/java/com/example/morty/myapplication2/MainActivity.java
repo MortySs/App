@@ -296,7 +296,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onQueryTextSubmit(String query) {
         // User pressed the search button
-        Toast.makeText(this, "Нажата кнопка поиск "+ query, Toast.LENGTH_SHORT).show();
         return false;
     }
 
@@ -308,7 +307,6 @@ public class MainActivity extends AppCompatActivity
             else caseVoid(categories[tabLayout.getSelectedTabPosition()]);
         }
         searchTests(newText);
-        Toast.makeText(this, "Вы ищите: "+ newText, Toast.LENGTH_SHORT).show();
         return false;
     }
 

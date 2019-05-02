@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,12 +37,14 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private  HashMap<String, String> map;
     ListView usersList;
+    TextView testsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_search);
         usersList = (ListView) findViewById(R.id.users_list);
+        Search("");
     }
 
     @Override
@@ -74,8 +77,7 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
     public boolean onQueryTextSubmit(String query) {
         // User pressed the search button
 
-        UsersSearch(query);
-        Toast.makeText(this, "Нажата кнопка поиск "+ query, Toast.LENGTH_SHORT).show();
+        Search(query);
         return false;
     }
 
@@ -83,11 +85,12 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
     public boolean onQueryTextChange(String newText) {
         // User changed the text
 
-
-        Toast.makeText(this, "Вы ищите: "+ newText, Toast.LENGTH_SHORT).show();
+        Search(newText);
         return false;
     }
-    void UsersSearch(String name){
+
+    void Search(String name){
+        Log.d("SearchUsers", "Search calling");
         usersList.setAdapter(null);
         arrayList.clear();
 
@@ -102,11 +105,38 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
                             Log.d("MortyList", document.getId() + " => " + document.getData());
                             map = new HashMap<>();
                             map.put("Email", document.getId());
+                            String testsCount = String.valueOf(document.get("tests_count"));
+                            if(testsCount.equals("null")) {
+                                map.put("TestsCount", "нет тестов");
+                            } else {
+                                if(document.getLong("tests_count") <= 20) {
+                                    if (testsCount.equals("1")) {
+                                        map.put("TestsCount", "1 тест");
+                                    } else {
+                                        if (testsCount.equals("2") || testsCount.equals("3") || testsCount.equals("4")) {
+                                            map.put("TestsCount", testsCount + " теста");
+                                        } else {
+                                            map.put("TestsCount", testsCount + " тестов");
+                                        }
+                                    }
+                                }else {
+                                    if (testsCount.endsWith("1")) {
+                                        map.put("TestsCount", testsCount + " тест");
+                                    } else {
+                                        if (testsCount.endsWith("2") || testsCount.endsWith("3") || testsCount.endsWith("4")) {
+                                            map.put("TestsCount", testsCount + " теста");
+                                        } else {
+                                            map.put("TestsCount", testsCount + " тестов");
+                                        }
+                                    }
+                                }
+                            }
+                            Log.d("users_testsCount", map.get("TestsCount"));
 
                             arrayList.add(map);
                             SimpleAdapter adapter = new SimpleAdapter(Users_search.this, arrayList, R.layout.users_item,
-                                    new String[]{"Email"},
-                                    new int[]{R.id.user_email});
+                                    new String[]{"Email","TestsCount"},
+                                    new int[]{R.id.user_email, R.id.tests_count});
                             usersList.setAdapter(adapter);
 
                             usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
