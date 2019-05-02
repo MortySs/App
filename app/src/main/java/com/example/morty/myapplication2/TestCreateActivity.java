@@ -209,7 +209,6 @@ public class TestCreateActivity extends AppCompatActivity {
         final FirebaseUser cus = mAuth.getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        final CollectionReference createdTests = db.collection("users").document(cus.getEmail()).collection("created");
         final CollectionReference a_draft = db.collection("users").document(cus.getEmail()).collection("tests").document("draft").collection("answers");
         final CollectionReference tests = db.collection("tests"); //document(name.getText().toString());
         final DocumentReference other_tests = db.collection("oth_info").document("tests");
@@ -247,7 +246,6 @@ public class TestCreateActivity extends AppCompatActivity {
                             other_tests.update(id_inf);
                         }
 
-                        createdTests.document(id_inf.get("last_id").toString()).set(test_inf);
                         tests.document(id_inf.get("last_id").toString()).set(test_inf);
                         Log.d("LOL", "DocumentSnapshot data: " + document.get("last_id")+id_inf.get("test_id"));
 

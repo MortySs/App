@@ -38,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -152,6 +153,7 @@ public class MyTestsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        DecimalFormat df = new DecimalFormat("#.##");
 
                         Log.d("MortyList", document.getId() + " => " + document.getData());
                         map = new HashMap<>();
@@ -159,13 +161,13 @@ public class MyTestsActivity extends AppCompatActivity {
                         map.put("Test_name",document.get("test_name").toString());
                         map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
                         map.put("S_count",document.get("solved_cnt").toString());
-                        if(document.get("name")!=null)
-                            map.put("P_name", document.get("name").toString());
+                        if (document.get("rating")!=null) map.put("Rating",df.format(document.get("rating")));
+                        if (document.get("name")!=null) map.put("P_name", document.get("name").toString());
 
                         arrayList.add(map);
                         SimpleAdapter adapter = new SimpleAdapter(MyTestsActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name","S_count"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count});
+                                new String[]{"Test_name", "Q_count", "P_name", "S_count", "Rating"},
+                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
                         questions.setAdapter(adapter);
                         progressBar.setVisibility(View.GONE);
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
