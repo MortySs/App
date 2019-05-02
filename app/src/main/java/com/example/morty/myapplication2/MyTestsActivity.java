@@ -193,7 +193,6 @@ public class MyTestsActivity extends AppCompatActivity {
             if (task.isSuccessful()){
                 DocumentSnapshot document = task.getResult();
                 deletedId = (ArrayList)document.get("deletedId");
-                Log.d("deletedId", "onComplete: " +deletedId.get(0));
             }
             }
         });

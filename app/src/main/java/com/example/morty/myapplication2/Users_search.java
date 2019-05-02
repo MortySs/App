@@ -105,6 +105,7 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
                             Log.d("MortyList", document.getId() + " => " + document.getData());
                             map = new HashMap<>();
                             map.put("Email", document.getId());
+                            map.put("Name", String.valueOf(document.get("name")));
                             String testsCount = String.valueOf(document.get("tests_count"));
                             if(testsCount.equals("null")) {
                                 map.put("TestsCount", "нет тестов");
@@ -135,8 +136,8 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
 
                             arrayList.add(map);
                             SimpleAdapter adapter = new SimpleAdapter(Users_search.this, arrayList, R.layout.users_item,
-                                    new String[]{"Email","TestsCount"},
-                                    new int[]{R.id.user_email, R.id.tests_count});
+                                    new String[]{"Email", "TestsCount", "Name"},
+                                    new int[]{R.id.user_email, R.id.tests_count, R.id.user_name});
                             usersList.setAdapter(adapter);
 
                             usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

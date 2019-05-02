@@ -26,4 +26,5 @@
     <string name="search_hint">Поиск</string>
     <string name="search_title">search title</string>
     <string name="parsing_file_inf">Чтобы сделать парсинг тестов с файла, нажмите на кнопку и выберите файл.</string>
+    <string name="choose_avatar">Bыбрать аватарку</string>
 </resources>
