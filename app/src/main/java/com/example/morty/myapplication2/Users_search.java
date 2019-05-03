@@ -144,7 +144,7 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
                                 @Override
                                 public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
                                     Intent intent = new Intent(Users_search.this, User_profile.class);
-                                    intent.putExtra("Email", arrayList.get((int) id).get("Email").toString());
+                                    intent.putExtra("Email", arrayList.get((int) id).get("Email"));
                                     startActivity(intent);
                                 }
                             });
