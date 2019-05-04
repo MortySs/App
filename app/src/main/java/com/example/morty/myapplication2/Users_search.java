@@ -107,7 +107,7 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
                             map.put("Email", document.getId());
                             map.put("Name", String.valueOf(document.get("name")));
                             String testsCount = String.valueOf(document.get("tests_count"));
-                            if(testsCount.equals("null")) {
+                            if(testsCount.equals("null") || testsCount.equals("0")) {
                                 map.put("TestsCount", "нет тестов");
                             } else {
                                 if(document.getLong("tests_count") <= 20) {
@@ -133,11 +133,15 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
                                 }
                             }
                             Log.d("users_testsCount", map.get("TestsCount"));
+                            ArrayList<String> subscribers = (ArrayList<String>)document.get("subscribers");
+                            ArrayList<String> subscriptions = (ArrayList<String>)document.get("subscriptions");
+                            String subs = subscribers.size() + "/" + subscriptions.size();
+                            map.put("Subs", subs);
 
                             arrayList.add(map);
                             SimpleAdapter adapter = new SimpleAdapter(Users_search.this, arrayList, R.layout.users_item,
-                                    new String[]{"Email", "TestsCount", "Name"},
-                                    new int[]{R.id.user_email, R.id.tests_count, R.id.user_name});
+                                    new String[]{"Email", "TestsCount", "Name", "Subs"},
+                                    new int[]{R.id.user_email, R.id.tests_count, R.id.user_name, R.id.subscribers_subscriptions});
                             usersList.setAdapter(adapter);
 
                             usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
