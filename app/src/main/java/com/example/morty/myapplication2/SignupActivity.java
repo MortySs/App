@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -109,6 +110,8 @@ public class SignupActivity extends AppCompatActivity {
                                 } else {
                                     Map<String, Object> user = new HashMap<>();
                                     user.put("name", name);
+                                    user.put("subscribers", new ArrayList<>());
+                                    user.put("subscriptions", new ArrayList<>());
 
                                     db.collection("users").document(email)
                                             .set(user)
@@ -130,8 +133,6 @@ public class SignupActivity extends AppCompatActivity {
                                 }
                             }
                         });
-
-
             }
         });
     }

@@ -71,8 +71,7 @@ public class MainActivity extends AppCompatActivity
     Date pressedMoment2 = new Date(0);
     TabLayout tabLayout;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    String[] categories = {"Все тесты", "Английский язык", "Математика", "Русский язык", "Биология",
-            "География", "Информатика", "Физика", "Химия", "Другое"};
+    String[] categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +80,7 @@ public class MainActivity extends AppCompatActivity
         View myView2 = inflater.inflate(R.layout.my_tests,null);
         View bar = inflater.inflate(R.layout.app_bar_main, null);
 
+        categories = getResources().getStringArray(R.array.tag_names);
 
         not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
@@ -91,16 +91,17 @@ public class MainActivity extends AppCompatActivity
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[0]),0);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[1]),1);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[2]),2);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[3]),3);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[4]),4);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[5]),5);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[6]),6);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[7]),7);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[8]),8);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[9]),9);
+        tabLayout.addTab(tabLayout.newTab().setText("Все тесты"),0);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[0]),1);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[1]),2);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[2]),3);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[3]),4);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[4]),5);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[5]),6);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[6]),7);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[7]),8);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[8]),9);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[9]),10);
 
 
 
@@ -143,31 +144,34 @@ public class MainActivity extends AppCompatActivity
                         break;
 
                     case 1:
-                        caseVoid("Английский язык");
+                        caseVoid(categories[0]);
                         break;
                     case 2:
-                        caseVoid("Математика");
+                        caseVoid(categories[1]);
                         break;
                     case 3:
-                        caseVoid("Русский язык");
+                        caseVoid(categories[2]);
                         break;
                     case 4:
-                        caseVoid("Немецкий язык");
+                        caseVoid(categories[3]);
                         break;
                     case 5:
-                        caseVoid("География");
+                        caseVoid(categories[4]);
                         break;
                     case 6:
-                        caseVoid("Информатика");
+                        caseVoid(categories[5]);
                         break;
                     case 7:
-                        caseVoid("Физика");
+                        caseVoid(categories[6]);
                         break;
                     case 8:
-                        caseVoid("Химия");
+                        caseVoid(categories[7]);
                         break;
                     case 9:
-                        caseVoid("Другое");
+                        caseVoid(categories[8]);
+                        break;
+                    case 10:
+                        caseVoid(categories[9]);
                         break;
                 }
                 Log.i("TAG", "onTabSelected: " + tab.getPosition());
@@ -190,31 +194,34 @@ public class MainActivity extends AppCompatActivity
                         break;
 
                     case 1:
-                        caseVoid("Английский язык");
+                        caseVoid(categories[0]);
                         break;
                     case 2:
-                        caseVoid("Математика");
+                        caseVoid(categories[1]);
                         break;
                     case 3:
-                        caseVoid("Русский язык");
+                        caseVoid(categories[2]);
                         break;
                     case 4:
-                        caseVoid("Немецкий язык");
+                        caseVoid(categories[3]);
                         break;
                     case 5:
-                        caseVoid("География");
+                        caseVoid(categories[4]);
                         break;
                     case 6:
-                        caseVoid("Информатика");
+                        caseVoid(categories[5]);
                         break;
                     case 7:
-                        caseVoid("Физика");
+                        caseVoid(categories[6]);
                         break;
                     case 8:
-                        caseVoid("Химия");
+                        caseVoid(categories[7]);
                         break;
                     case 9:
-                        caseVoid("Другое");
+                        caseVoid(categories[8]);
+                        break;
+                    case 10:
+                        caseVoid(categories[9]);
                         break;
                 }
                 Log.i("TAG", "onTabReselected: " + tab.getPosition());
@@ -296,6 +303,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onQueryTextSubmit(String query) {
         // User pressed the search button
+        if (query.equals("")){
+            if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
+            else caseVoid(categories[tabLayout.getSelectedTabPosition()-1]);
+        } else {
+            if(tabLayout.getSelectedTabPosition() == 0) searchAllTests(query);
+            else searchTestsInCategory(query, categories[tabLayout.getSelectedTabPosition()-1]);
+        }
         return false;
     }
 
@@ -304,9 +318,11 @@ public class MainActivity extends AppCompatActivity
         // User changed the text
         if (newText.equals("")){
             if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
-            else caseVoid(categories[tabLayout.getSelectedTabPosition()]);
+            else caseVoid(categories[tabLayout.getSelectedTabPosition() - 1]);
+        } else {
+            if(tabLayout.getSelectedTabPosition() == 0) searchAllTests(newText);
+            else searchTestsInCategory(newText, categories[tabLayout.getSelectedTabPosition() - 1]);
         }
-        searchTests(newText);
         return false;
     }
 
@@ -420,52 +436,126 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    void searchTests(String name){
+    void searchTestsInCategory(final String name, String category){
+        //Log.d("searchTests", name);
         progressBar.setVisibility(View.VISIBLE);
         questions.setAdapter(null);
         arrayList.clear();
 
-        Log.d("ssss", "testName: "+name);
-        Query q = tests.whereLessThanOrEqualTo("test_name",name);
+        Query q = tests.whereEqualTo("category",category);
+
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                boolean search = false;
                 if (task.isSuccessful()){
-                    for (QueryDocumentSnapshot document : task.getResult()){
-                        Log.d("MortyList", document.getId() + " => " + document.getData());
-                        DecimalFormat df = new DecimalFormat("#.##");
-                        map = new HashMap<>();
-                        map.put("Test_id", document.getId());
-                        map.put("test_maker_email",document.get("test_maker_email").toString());
-                        map.put("Test_name", document.get("test_name").toString());
-                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
-                        map.put("S_count",document.get("solved_cnt").toString());
-                        if (document.get("rating")!=null)
-                            map.put("Rating",df.format(document.get("rating")));
-                        if (document.get("name") != null)
-                            map.put("P_name", document.get("name").toString());
+                    if(!task.getResult().isEmpty()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String docName = (String)document.get("test_name");
+                            if (docName != null && !name.equals("") && !docName.equals("") && docName.contains(name)) {
+                                search = true;
+                                Log.d("MortyList", document.getId() + " => " + document.getData());
+                                DecimalFormat df = new DecimalFormat("#.##");
+                                map = new HashMap<>();
+                                map.put("Test_id", document.getId());
+                                map.put("Test_name", document.get("test_name").toString());
+                                map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+                                map.put("test_maker_email", document.get("test_maker_email").toString());
+                                if (document.get("rating") != null)
+                                    map.put("Rating", df.format(document.get("rating")));
+                                map.put("S_count", document.get("solved_cnt").toString());
+                                if (document.get("name") != null)
+                                    map.put("P_name", document.get("name").toString());
 
-                        arrayList.add(map);
-                        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name","S_count","Rating"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
-                        questions.setAdapter(adapter);
-                        progressBar.setVisibility(View.GONE);
-                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                                Intent intent = new Intent(MainActivity.this, test_view.class);
-                                intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
-                                startActivity(intent);
+                                arrayList.add(map);
+                                SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                        new String[]{"Test_name", "Q_count", "P_name", "S_count", "Rating"},
+                                        new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
+                                questions.setAdapter(adapter);
+                                progressBar.setVisibility(View.GONE);
+                                questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                        Intent intent = new Intent(MainActivity.this, test_view.class);
+                                        intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                        startActivity(intent);
+                                    }
+                                });
+
                             }
-                        });
-
+                        } if(!search){
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getApplicationContext(), "Нет тестов, удовлетворяющих вашему условию", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getApplicationContext(), "Нет тестов", Toast.LENGTH_SHORT).show();
 
                     }
                 }
             }
         });
     }
+
+    void searchAllTests(final String name){
+        Log.d("searchTests", name);
+        progressBar.setVisibility(View.VISIBLE);
+        questions.setAdapter(null);
+        arrayList.clear();
+
+        tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                boolean search = false;
+                if (task.isSuccessful()){
+                    if(!task.getResult().isEmpty()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String docName = (String)document.get("test_name");
+                            if (docName != null && !name.equals("") && !docName.equals("") && docName.contains(name)) {
+                                search = true;
+                                Log.d("MortyList", document.getId() + " => " + document.getData());
+                                DecimalFormat df = new DecimalFormat("#.##");
+                                map = new HashMap<>();
+                                map.put("Test_id", document.getId());
+                                map.put("Test_name", document.get("test_name").toString());
+                                map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
+                                map.put("test_maker_email", document.get("test_maker_email").toString());
+                                if (document.get("rating") != null)
+                                    map.put("Rating", df.format(document.get("rating")));
+                                map.put("S_count", document.get("solved_cnt").toString());
+                                if (document.get("name") != null)
+                                    map.put("P_name", document.get("name").toString());
+
+                                arrayList.add(map);
+                                SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, arrayList, R.layout.my_tests_item,
+                                        new String[]{"Test_name", "Q_count", "P_name", "S_count", "Rating"},
+                                        new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
+                                questions.setAdapter(adapter);
+                                progressBar.setVisibility(View.GONE);
+                                questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                        Intent intent = new Intent(MainActivity.this, test_view.class);
+                                        intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
+                                        startActivity(intent);
+                                    }
+                                });
+
+                            }
+                        } if(!search){
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getApplicationContext(), "Нет тестов, удовлетворяющих вашему условию", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getApplicationContext(), "Нет тестов", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+            }
+        });
+    }
+
     void setAllTests(){
         arrayList.clear();
         questions.setAdapter(null);
@@ -519,7 +609,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 mSwipeRefreshLayout.setRefreshing(false);
                 if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
-                else caseVoid(categories[tabLayout.getSelectedTabPosition()]);
+                else caseVoid(categories[tabLayout.getSelectedTabPosition() - 1]);
             }
         }, 1000);
     }

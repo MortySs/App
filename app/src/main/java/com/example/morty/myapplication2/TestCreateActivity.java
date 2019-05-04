@@ -260,7 +260,7 @@ public class TestCreateActivity extends AppCompatActivity {
                         test_inf.put("test_name",name.getText().toString());
                         test_inf.put("test_maker_email",cus.getEmail());
                         ArrayList<Long> deletedId = (ArrayList<Long>) document.get("deletedId");
-                        if(deletedId!=null){
+                        if(deletedId.size()!=0){
                             id_inf.put("last_id",(long)deletedId.get(0));
                             deletedId.remove(0);
                             HashMap<String,Object> deleted = new HashMap<>();

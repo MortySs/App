@@ -46,7 +46,7 @@ public class User_profile extends AppCompatActivity {
     private HashMap<String,Object> map;
     String email;
     Intent intent;
-    boolean isCus, subscribedToHim;
+    boolean isCus;
     ArrayList<String> CurrentSubscribers = new ArrayList<>(), CurrentSubscriptions = new ArrayList<>(),
             OtherSubscribers = new ArrayList<>(), OtherSubscriptions = new ArrayList<>();
 
@@ -86,12 +86,12 @@ public class User_profile extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("getFriends", "DocumentSnapshot data: " + document.getData());
-                        CurrentSubscribers = (ArrayList<String>) document.get("subscribers");
                         CurrentSubscriptions = (ArrayList<String>) document.get("subscriptions");
                         //узнаем подписаны ли мы на него(неё)
                         if(!isCus && CurrentSubscriptions.contains(email)){
-                            subscribedToHim = true;
-                        } else subscribedToHim = false;
+                            logout_btn.setText("Отписаться");
+                        } else if(!isCus) logout_btn.setText("Подписаться");
+
                     } else {
                         Log.d("getFriends", "No such document");
                     }
@@ -101,31 +101,6 @@ public class User_profile extends AppCompatActivity {
             }
         });
 
-        if(!isCus) {
-            OtherUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document.exists()) {
-                            Log.d("getFriends", "DocumentSnapshot data: " + document.getData());
-                            OtherSubscribers = (ArrayList<String>) document.get("subscribers");
-                            OtherSubscriptions = (ArrayList<String>) document.get("subscriptions");
-                        } else {
-                            Log.d("getFriends", "No such document");
-                        }
-                    } else {
-                        Log.d("getFriends", "get failed with ", task.getException());
-                    }
-                }
-            });
-        }
-
-        for (int i = 0; i < CurrentSubscriptions.size(); i++) {
-            Log.d("CurrentSubscriptions", "2" +CurrentSubscriptions.get(i));
-        }
-        Log.d("CurrentSubscriptions", "email: " + email);
-
         progressBar = findViewById(R.id.progressBar);
         uzname_field = findViewById(R.id.uzname_field);
         uzemail_field = findViewById(R.id.uz_email);
@@ -133,12 +108,7 @@ public class User_profile extends AppCompatActivity {
         logout_btn = findViewById(R.id.LogOut);
         avatarChoose_btn = findViewById(R.id.av_ch);
         avatarUri = findViewById(R.id.av_url);
-
-        if (!isCus && subscribedToHim){
-            logout_btn.setText("Отписаться");
-        } else if(!isCus){
-            logout_btn.setText("Подписаться");
-        }
+        if(!isCus) avatarChoose_btn.setVisibility(View.GONE);
 
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,30 +118,95 @@ public class User_profile extends AppCompatActivity {
                     Intent intent = new Intent(User_profile.this, MainActivity.class);
                     startActivity(intent);
                     Toast.makeText(User_profile.this, "Вы успешно вышли из аккаунта", Toast.LENGTH_SHORT).show();
-                }else if (subscribedToHim){
+                }else if (logout_btn.getText().equals("Отписаться")){
                     logout_btn.setText("Подписаться");
-                    subscribedToHim = false;
-                    CurrentSubscriptions.remove(email);
-                    HashMap<String, Object> Cmap = new HashMap<>();
-                    Cmap.put("subscriptions", CurrentSubscriptions);
-                    CurrentUser.update(Cmap);
+                    CurrentUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Log.d("getFriends", "DocumentSnapshot data: " + document.getData());
+                                    CurrentSubscriptions = (ArrayList<String>) document.get("subscriptions");
+                                    CurrentSubscriptions.remove(email);
+                                    HashMap<String, Object> Cmap = new HashMap<>();
+                                    Cmap.put("subscriptions", CurrentSubscriptions);
+                                    CurrentUser.update(Cmap);
 
-                    OtherSubscribers.remove(cus.getEmail());
-                    HashMap<String, Object> Omap = new HashMap<>();
-                    Omap.put("subscribers", OtherSubscribers);
-                    OtherUser.update(Omap);
+                                } else {
+                                    Log.d("getFriends", "No such document");
+                                }
+                            } else {
+                                Log.d("getFriends", "get failed with ", task.getException());
+                            }
+                        }
+                    });
+
+                    OtherUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Log.d("getFriends", "DocumentSnapshot data: " + document.getData());
+                                    OtherSubscribers = (ArrayList<String>) document.get("subscribers");
+                                    OtherSubscribers.remove(cus.getEmail());
+                                    HashMap<String, Object> Omap = new HashMap<>();
+                                    Omap.put("subscribers", OtherSubscribers);
+                                    OtherUser.update(Omap);
+                                } else {
+                                    Log.d("getFriends", "No such document");
+                                }
+                            } else {
+                                Log.d("getFriends", "get failed with ", task.getException());
+                            }
+                        }
+                    });
+
                 } else {
                     logout_btn.setText("Отписаться");
-                    subscribedToHim = true;
-                    CurrentSubscriptions.add(email);
-                    HashMap<String, Object> Cmap = new HashMap<>();
-                    Cmap.put("subscriptions", CurrentSubscriptions);
-                    CurrentUser.update(Cmap);
+                    CurrentUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Log.d("getFriends", "DocumentSnapshot data: " + document.getData());
+                                    CurrentSubscriptions = (ArrayList<String>) document.get("subscriptions");
+                                    CurrentSubscriptions.add(email);
+                                    HashMap<String, Object> Cmap = new HashMap<>();
+                                    Cmap.put("subscriptions", CurrentSubscriptions);
+                                    CurrentUser.update(Cmap);
 
-                    OtherSubscribers.add(cus.getEmail());
-                    HashMap<String, Object> Omap = new HashMap<>();
-                    Omap.put("subscribers", OtherSubscribers);
-                    OtherUser.update(Omap);
+                                } else {
+                                    Log.d("getFriends", "No such document");
+                                }
+                            } else {
+                                Log.d("getFriends", "get failed with ", task.getException());
+                            }
+                        }
+                    });
+
+                    OtherUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()) {
+                                    Log.d("getFriends", "DocumentSnapshot data: " + document.getData());
+                                    OtherSubscribers = (ArrayList<String>) document.get("subscribers");
+                                    OtherSubscribers.add(cus.getEmail());
+                                    HashMap<String, Object> Omap = new HashMap<>();
+                                    Omap.put("subscribers", OtherSubscribers);
+                                    OtherUser.update(Omap);
+                                } else {
+                                    Log.d("getFriends", "No such document");
+                                }
+                            } else {
+                                Log.d("getFriends", "get failed with ", task.getException());
+                            }
+                        }
+                    });
                 }
             }
         });
@@ -262,10 +297,6 @@ public class User_profile extends AppCompatActivity {
 
             }
         });
-    }
-
-    void copy(ArrayList copy, ArrayList original){
-        copy.addAll(original);
     }
 
 }
