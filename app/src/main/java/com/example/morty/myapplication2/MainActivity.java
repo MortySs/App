@@ -54,12 +54,13 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener, SwipeRefreshLayout.OnRefreshListener{
+        implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,
+        SwipeRefreshLayout.OnRefreshListener{
     private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference tests = db.collection("tests");
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
-    private  HashMap<String, String> map;
+    private HashMap<String, String> map;
     private ProgressBar progressBar;
     private ImageView Avatar ;
     private TextView not_auth;
@@ -135,45 +136,8 @@ public class MainActivity extends AppCompatActivity
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()){
-                    default:
-                        break;
-
-                    case 0:
-                        setAllTests();
-                        break;
-
-                    case 1:
-                        caseVoid(categories[0]);
-                        break;
-                    case 2:
-                        caseVoid(categories[1]);
-                        break;
-                    case 3:
-                        caseVoid(categories[2]);
-                        break;
-                    case 4:
-                        caseVoid(categories[3]);
-                        break;
-                    case 5:
-                        caseVoid(categories[4]);
-                        break;
-                    case 6:
-                        caseVoid(categories[5]);
-                        break;
-                    case 7:
-                        caseVoid(categories[6]);
-                        break;
-                    case 8:
-                        caseVoid(categories[7]);
-                        break;
-                    case 9:
-                        caseVoid(categories[8]);
-                        break;
-                    case 10:
-                        caseVoid(categories[9]);
-                        break;
-                }
+                if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
+                else caseVoid(categories[tabLayout.getSelectedTabPosition() - 1]);
                 Log.i("TAG", "onTabSelected: " + tab.getPosition());
             }
 
@@ -185,45 +149,8 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                switch (tab.getPosition()){
-                    default:
-                        break;
-
-                    case 0:
-                        setAllTests();
-                        break;
-
-                    case 1:
-                        caseVoid(categories[0]);
-                        break;
-                    case 2:
-                        caseVoid(categories[1]);
-                        break;
-                    case 3:
-                        caseVoid(categories[2]);
-                        break;
-                    case 4:
-                        caseVoid(categories[3]);
-                        break;
-                    case 5:
-                        caseVoid(categories[4]);
-                        break;
-                    case 6:
-                        caseVoid(categories[5]);
-                        break;
-                    case 7:
-                        caseVoid(categories[6]);
-                        break;
-                    case 8:
-                        caseVoid(categories[7]);
-                        break;
-                    case 9:
-                        caseVoid(categories[8]);
-                        break;
-                    case 10:
-                        caseVoid(categories[9]);
-                        break;
-                }
+                if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
+                else caseVoid(categories[tabLayout.getSelectedTabPosition() - 1]);
                 Log.i("TAG", "onTabReselected: " + tab.getPosition());
             }
         });
