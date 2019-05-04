@@ -22,18 +22,8 @@
             android:title="Парсинг тестов" />
         <item
             android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Настройки" />
+            android:icon="@drawable/person"
+            android:title="Сообщество" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Поделиться" />
-
-        </menu>
-    </item>
 
 </menu>

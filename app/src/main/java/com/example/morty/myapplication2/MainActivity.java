@@ -15,6 +15,7 @@ import android.support.v4.view.MenuItemCompat;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.SearchView;
 import android.util.Log;
@@ -41,6 +42,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,
         SwipeRefreshLayout.OnRefreshListener{
     private FirebaseAuth mAuth;
+    private FirebaseUser cus;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference tests = db.collection("tests");
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
@@ -77,15 +81,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         LayoutInflater inflater = getLayoutInflater();
-        View myView = inflater.inflate(R.layout.my_tests_item, null);
-        View myView2 = inflater.inflate(R.layout.my_tests,null);
-        View bar = inflater.inflate(R.layout.app_bar_main, null);
+        View myView = inflater.inflate(R.layout.my_tests,null);
 
         categories = getResources().getStringArray(R.array.tag_names);
 
-        not_auth = (TextView) myView2.findViewById(R.id.not_auth_text);
+        not_auth = (TextView) myView.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -104,12 +107,8 @@ public class MainActivity extends AppCompatActivity
         tabLayout.addTab(tabLayout.newTab().setText(categories[8]),9);
         tabLayout.addTab(tabLayout.newTab().setText(categories[9]),10);
 
-
-
-        mAuth = FirebaseAuth.getInstance();
-
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        listView = myView2.findViewById(R.id.list);
+        listView = myView.findViewById(R.id.list);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,12 +118,16 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        mAuth = FirebaseAuth.getInstance();
+        cus = mAuth.getCurrentUser();
 
-
+        if (cus == null){
+            fab.setClickable(false);
+            Toast.makeText(this, "Для доступа к контенту, пожалуйста, зарегистрируйтесь", Toast.LENGTH_LONG).show();
+        }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        final FirebaseUser cus = mAuth.getCurrentUser();
         final StorageReference storageRef = storage.getReference();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -286,23 +289,37 @@ public class MainActivity extends AppCompatActivity
             }
 
         } else if (id == R.id.nav_tests) {
-            Intent intent = new Intent(MainActivity.this,MyTestsActivity.class);
-            startActivity(intent);
+            if (cus == null){
+                Toast.makeText(this, "Для доступа к контенту, пожалуйста, зарегистрируйтесь", Toast.LENGTH_LONG).show();
+            }else {
+                Intent intent = new Intent(MainActivity.this, MyTestsActivity.class);
+                startActivity(intent);
+            }
             // Toast.makeText(this, "Ещё чуть-чуть и вы сможете создать собственный тест!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_done) {
-            Intent intent = new Intent(MainActivity.this,SolvedTestsActivity.class);
-            startActivity(intent);
+            if (cus == null){
+                Toast.makeText(this, "Для доступа к контенту, пожалуйста, зарегистрируйтесь", Toast.LENGTH_LONG).show();
+            }else {
+                Intent intent = new Intent(MainActivity.this, SolvedTestsActivity.class);
+                startActivity(intent);
+            }
             //Toast.makeText(this, "Вы пока не выполнили ни одного теста", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_manage) {
-            Intent intent = new Intent(MainActivity.this,Users_search.class);
-            startActivity(intent);
+            if (cus == null){
+                Toast.makeText(this, "Для доступа к контенту, пожалуйста, зарегистрируйтесь", Toast.LENGTH_LONG).show();
+            }else {
+                Intent intent = new Intent(MainActivity.this, Users_search.class);
+                startActivity(intent);
+            }
             //Toast.makeText(this, "Настройки ещё не настроены(", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_writes) {
-            Intent intent = new Intent(MainActivity.this,ParsingActivity.class);
-            startActivity(intent);
+            if (cus == null){
+                Toast.makeText(this, "Для доступа к контенту, пожалуйста, зарегистрируйтесь", Toast.LENGTH_LONG).show();
+            }else {
+                Intent intent = new Intent(MainActivity.this, ParsingActivity.class);
+                startActivity(intent);
+            }
             //Toast.makeText(this, "У вас пока нет ни одного черновика", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_share) {
-            //Toast.makeText(this, "Скоро вы сможете поделиться вашим прогрессом", Toast.LENGTH_SHORT).show();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
