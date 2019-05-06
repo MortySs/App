@@ -58,6 +58,15 @@ public class User_profile extends AppCompatActivity {
         final StorageReference storageRef = storage.getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+
+        progressBar = findViewById(R.id.progressBar);
+        uzname_field = findViewById(R.id.uzname_field);
+        uzemail_field = findViewById(R.id.uz_email);
+        Avatar = findViewById(R.id.uz_avatar);
+        logout_btn = findViewById(R.id.LogOut);
+        avatarChoose_btn = findViewById(R.id.av_ch);
+        avatarUri = findViewById(R.id.av_url);
+
         final FirebaseUser cus = mAuth.getCurrentUser();
         intent = getIntent();
         String stringIntent;
@@ -101,14 +110,10 @@ public class User_profile extends AppCompatActivity {
             }
         });
 
-        progressBar = findViewById(R.id.progressBar);
-        uzname_field = findViewById(R.id.uzname_field);
-        uzemail_field = findViewById(R.id.uz_email);
-        Avatar = findViewById(R.id.uz_avatar);
-        logout_btn = findViewById(R.id.LogOut);
-        avatarChoose_btn = findViewById(R.id.av_ch);
-        avatarUri = findViewById(R.id.av_url);
-        if(!isCus) avatarChoose_btn.setText("Посмотреть тесты");
+        if (isCus){
+            logout_btn.setText("Выйти из аккаунта");
+            avatarChoose_btn.setText("Выбрать аватарку");
+        }else avatarChoose_btn.setText("Посмотреть тесты");
 
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override

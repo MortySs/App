@@ -37,12 +37,12 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="24dp"
         android:background="@color/colorAccent"
-        android:text="@string/LogOut"
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uz_email" />
+        app:layout_constraintTop_toBottomOf="@+id/uz_email"
+        tools:text="@string/LogOut" />
 
     <ImageView
         android:id="@+id/uz_avatar"
@@ -89,10 +89,10 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:text="@string/choose_avatar"
         android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/av_url" />
+        app:layout_constraintTop_toBottomOf="@+id/av_url"
+        tools:text="@string/choose_avatar" />
 
 </android.support.constraint.ConstraintLayout>
