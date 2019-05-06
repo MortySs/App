@@ -108,7 +108,7 @@ public class User_profile extends AppCompatActivity {
         logout_btn = findViewById(R.id.LogOut);
         avatarChoose_btn = findViewById(R.id.av_ch);
         avatarUri = findViewById(R.id.av_url);
-        if(!isCus) avatarChoose_btn.setVisibility(View.GONE);
+        if(!isCus) avatarChoose_btn.setText("Посмотреть тесты");
 
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,46 +255,51 @@ public class User_profile extends AppCompatActivity {
         avatarChoose_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new FileChooser(User_profile.this)
-                        .setFileListener(new FileChooser.FileSelectedListener() {
-                            @Override public void fileSelected(final File file) {
-                                if(file.getAbsolutePath().endsWith(".png")||file.getAbsolutePath().endsWith(".jpg")){
-                                    Uri file2 = Uri.fromFile(new File(file.getAbsolutePath()));
-                                    StorageReference riversRef = storageRef.child("users_avatars/" + email + "/" + file2.getLastPathSegment());
-                                    UploadTask uploadTask = riversRef.putFile(file2);
+                if (isCus) {
+                    new FileChooser(User_profile.this).setFileListener(new FileChooser.FileSelectedListener() {
+                         @Override
+                         public void fileSelected(final File file) {
+                             if (file.getAbsolutePath().endsWith(".png") || file.getAbsolutePath().endsWith(".jpg")) {
+                                 Uri file2 = Uri.fromFile(new File(file.getAbsolutePath()));
+                                 StorageReference riversRef = storageRef.child("users_avatars/" + email + "/" + file2.getLastPathSegment());
+                                 UploadTask uploadTask = riversRef.putFile(file2);
 
-                                    // Register observers to listen for when the download is done or if it fails
-                                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception exception) {
-                                            // Handle unsuccessful uploads
-                                        }
-                                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                                            Log.d("avatar", "onSuccess: " + taskSnapshot.getMetadata().getPath());
-                                            Handler handler = new Handler();
-                                            handler.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    map = new HashMap<>();
-                                                    map.put("avatar_link", taskSnapshot.getMetadata().getPath());
-                                                    users.update(map);
+                                 // Register observers to listen for when the download is done or if it fails
+                                 uploadTask.addOnFailureListener(new OnFailureListener() {
+                                     @Override
+                                     public void onFailure(@NonNull Exception exception) {
+                                         // Handle unsuccessful uploads
+                                     }
+                                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                     @Override
+                                     public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
+                                         Log.d("avatar", "onSuccess: " + taskSnapshot.getMetadata().getPath());
+                                         Handler handler = new Handler();
+                                         handler.postDelayed(new Runnable() {
+                                             @Override
+                                             public void run() {
+                                                 map = new HashMap<>();
+                                                 map.put("avatar_link", taskSnapshot.getMetadata().getPath());
+                                                 users.update(map);
 
-                                                    // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                                                    // ...
-                                                }
-                                            }, 5000);
-                                        }
-                                    });
-                                }else
-                                    Toast.makeText(User_profile.this,"Неверный формат файла!",Toast.LENGTH_LONG).show();
+                                                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                                                 // ...
+                                             }
+                                         }, 5000);
+                                     }
+                                 });
+                             } else
+                                 Toast.makeText(User_profile.this, "Неверный формат файла!", Toast.LENGTH_LONG).show();
 
-                                //TODO здесь получаем всю инфу о файле
-                                avatarUri.setText(file.getAbsolutePath());
-                                Log.d("parsfile", "file selected name: "+file.getName()+" | file selected path" +file.getAbsolutePath() +" /// " );
-                            }}).showDialog();
-
+                             avatarUri.setText(file.getAbsolutePath());
+                             Log.d("parsfile", "file selected name: " + file.getName() + " | file selected path" + file.getAbsolutePath() + " /// ");
+                         }
+                    }).showDialog();
+                } else {
+                    Intent intent = new Intent(User_profile.this, MyTestsActivity.class);
+                    intent.putExtra("email", email);
+                    startActivity(intent);
+                }
             }
         });
     }

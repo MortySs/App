@@ -44,15 +44,17 @@ import java.util.HashMap;
 
 public class MyTestsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    FirebaseUser cus;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
-    private  HashMap<String, String> map;
+    private HashMap<String, String> map;
     private ProgressBar progressBar;
     private ArrayList<Integer> deletedId = new ArrayList<>();
     private TextView not_auth;
-    final Context context = this;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     ListView questions;
+    String email;
+    boolean isCus, isThereTest = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class MyTestsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_tests);
         mAuth = FirebaseAuth.getInstance();
+        cus = mAuth.getCurrentUser();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -95,64 +98,77 @@ public class MyTestsActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
         questions = (ListView) findViewById(R.id.list);
-        updateTests();
-        questions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
-                LayoutInflater li = LayoutInflater.from(MyTestsActivity.this);
-                View promptsView = li.inflate(R.layout.delete_prompt, null);
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(MyTestsActivity.this);
-                mDialogBuilder.setView(promptsView);
 
-                final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
-                delete.setText("Удалить тест?");
-                mDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("Да",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        final FirebaseUser cus = mAuth.getCurrentUser();
-                                        final CollectionReference tests = db.collection("tests");
-                                        deletedId.add(Integer.valueOf(arrayList.get(position).get("Test_id")));
-                                        Log.d("deletedId ArrayList", String.valueOf(arrayList.get(position).get("Test_id")));
-                                        tests.document(arrayList.get(position).get("Test_id")).delete();
-                                        HashMap<String, Object> hashMap = new HashMap<>();
-                                        hashMap.put("deletedId",deletedId);
-                                        db.collection("oth_info").document("tests").update(hashMap);
-                                        Log.d("deleting test", "test id: "+arrayList.get(position).get("Test_id")+"cur email: "+cus.getEmail()+" | "+arrayList.get(position).get("test_maker_email"));
-                                        updateTests();
-                                        Log.d("deletedId ArrayList", "ya eblan");
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                    }
-                                });
-                AlertDialog alertDialog = mDialogBuilder.create();
-                alertDialog.show();
-                return true;
-            }});
+        if(getIntent().getStringExtra("email") == null){
+            isCus = true;
+            email = cus.getEmail();
+        } else{
+            email = getIntent().getStringExtra("email");
+            isCus = false;
+        }
+
+        updateTests();
+        if(isCus) {
+            questions.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
+                    LayoutInflater li = LayoutInflater.from(MyTestsActivity.this);
+                    View promptsView = li.inflate(R.layout.delete_prompt, null);
+                    AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(MyTestsActivity.this);
+                    mDialogBuilder.setView(promptsView);
+
+                    final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
+                    delete.setText("Удалить тест?");
+                    mDialogBuilder
+                            .setCancelable(false)
+                            .setPositiveButton("Да",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            final FirebaseUser cus = mAuth.getCurrentUser();
+                                            final CollectionReference tests = db.collection("tests");
+                                            deletedId.add(Integer.valueOf(arrayList.get(position).get("Test_id")));
+                                            Log.d("deletedId ArrayList", String.valueOf(arrayList.get(position).get("Test_id")));
+                                            tests.document(arrayList.get(position).get("Test_id")).delete();
+                                            HashMap<String, Object> hashMap = new HashMap<>();
+                                            hashMap.put("deletedId", deletedId);
+                                            db.collection("oth_info").document("tests").update(hashMap);
+                                            Log.d("deleting test", "test id: " + arrayList.get(position).get("Test_id") + "cur email: " + cus.getEmail() + " | " + arrayList.get(position).get("test_maker_email"));
+                                            updateTests();
+                                            Log.d("deletedId ArrayList", "ya eblan");
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        }
+                                    })
+                            .setNegativeButton("Отмена",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        }
+                                    });
+                    AlertDialog alertDialog = mDialogBuilder.create();
+                    alertDialog.show();
+                    return true;
+                }
+            });
+        }
     }
 
     void updateTests(){
         arrayList.clear();
         questions.setAdapter(null);
-        final FirebaseUser cus = mAuth.getCurrentUser();
         final CollectionReference tests = db.collection("tests");
-        Query q = tests.whereEqualTo("test_maker_email",cus.getEmail());
+        Query q = tests.whereEqualTo("test_maker_email", email);
+
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        isThereTest = true;
                         DecimalFormat df = new DecimalFormat("#.##");
 
                         Log.d("MortyList", document.getId() + " => " + document.getData());
@@ -186,6 +202,17 @@ public class MyTestsActivity extends AppCompatActivity {
                 }
             }
         });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isThereTest) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(MyTestsActivity.this, "Нет созданных тестов", Toast.LENGTH_LONG).show();
+                }
+            }
+        }, 2000);
+
         final DocumentReference other_tests = db.collection("oth_info").document("tests");
         other_tests.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
