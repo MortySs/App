@@ -41,7 +41,7 @@ public class User_profile extends AppCompatActivity {
     private TextView uzname_field;
     private TextView uzemail_field,avatarUri;
     private ImageView Avatar;
-    private Button logout_btn,avatarChoose_btn,avatrUpl_btn;
+    private Button logout_btn, avatarChoose_btn, solvedTestsWatch_btn;
     private ProgressBar progressBar;
     private HashMap<String,Object> map;
     String email;
@@ -65,6 +65,7 @@ public class User_profile extends AppCompatActivity {
         Avatar = findViewById(R.id.uz_avatar);
         logout_btn = findViewById(R.id.LogOut);
         avatarChoose_btn = findViewById(R.id.av_ch);
+        solvedTestsWatch_btn = findViewById(R.id.solved_watch);
         avatarUri = findViewById(R.id.av_url);
 
         final FirebaseUser cus = mAuth.getCurrentUser();
@@ -80,9 +81,13 @@ public class User_profile extends AppCompatActivity {
         if (stringIntent.equals(cus.getEmail()) || stringIntent.equals("")){
             isCus = true;
             email = cus.getEmail();
+            logout_btn.setText("Выйти из аккаунта");
+            avatarChoose_btn.setText("Выбрать аватарку");
         } else{
             isCus = false;
             email = stringIntent;
+            avatarChoose_btn.setText("Посмотреть тесты");
+            solvedTestsWatch_btn.setVisibility(View.VISIBLE);
         }
 
         final DocumentReference CurrentUser = db.collection("users").document(cus.getEmail());
@@ -109,11 +114,6 @@ public class User_profile extends AppCompatActivity {
                 }
             }
         });
-
-        if (isCus){
-            logout_btn.setText("Выйти из аккаунта");
-            avatarChoose_btn.setText("Выбрать аватарку");
-        }else avatarChoose_btn.setText("Посмотреть тесты");
 
         logout_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,6 +213,15 @@ public class User_profile extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        solvedTestsWatch_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(User_profile.this, SolvedTestsActivity.class);
+                intent.putExtra("email", email);
+                startActivity(intent);
             }
         });
 

@@ -21,6 +21,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -48,7 +49,8 @@ public class SolvedTestsActivity extends AppCompatActivity {
     private TextView not_auth;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     ListView questions;
-    ArrayList<String> str;
+    String email;
+    boolean isCus, isThereTest = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,14 @@ public class SolvedTestsActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         cus = mAuth.getCurrentUser();
+
+        if(getIntent().getStringExtra("email") == null){
+            isCus = true;
+            email = cus.getEmail();
+        } else{
+            email = getIntent().getStringExtra("email");
+            isCus = false;
+        }
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
@@ -111,7 +121,9 @@ public class SolvedTestsActivity extends AppCompatActivity {
 
                         if(Emails != null) {
                             for (int i = 0; i < Emails.size(); i++) {
-                                if (Emails.get(i).equals(cus.getEmail())) {
+                                if (Emails.get(i).equals(email)) {
+
+                                    isThereTest = true;
                                     DecimalFormat df = new DecimalFormat("#.##");
 
                                     map.put("Test_id", document.getId());
@@ -131,9 +143,19 @@ public class SolvedTestsActivity extends AppCompatActivity {
                                     map.put("R_count", CorrectAnswersCounts.get(i) + " решено верно");
                                     map.put("Time", "Время " + Minutes.get(i) + ":" + Seconds.get(i));
                                     String MySCount = EmailsSolvedCount.get(i).toString();
-                                    if (MySCount.endsWith("2") || MySCount.endsWith("3") || MySCount.endsWith("4")) {
-                                        map.put("My_S_count", "Решен вами " + MySCount + " раза");
-                                    } else map.put("My_S_count", "Решен вами " + MySCount + " раз");
+
+                                    boolean is234 = MySCount.endsWith("2") || MySCount.endsWith("3") || MySCount.endsWith("4");
+                                    if(isCus) {
+                                        if (is234) {
+                                            map.put("My_S_count", "Решен вами " + MySCount + " раза");
+                                        } else
+                                            map.put("My_S_count", "Решен вами " + MySCount + " раз");
+                                    }else {
+                                        if (is234) {
+                                            map.put("My_S_count", "Решен им(-ей) " + MySCount + " раза");
+                                        } else
+                                            map.put("My_S_count", "Решен им(-ей) " + MySCount + " раз");
+                                    }
 
                                     arrayList.add(map);
                                     SimpleAdapter adapter = new SimpleAdapter(SolvedTestsActivity.this, arrayList, R.layout.solved_tests_item,
@@ -162,6 +184,16 @@ public class SolvedTestsActivity extends AppCompatActivity {
                 }
             }
         });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isThereTest) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(SolvedTestsActivity.this, "Нет решенных тестов", Toast.LENGTH_LONG).show();
+                }
+            }
+        }, 2000);
     }
 
 }
