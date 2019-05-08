@@ -227,9 +227,9 @@ public class User_profile extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        final DocumentReference users = db.collection("users").document(email);
+        final DocumentReference user = db.collection("users").document(email);
 
-        users.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        user.addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot snapshot,
                                 @Nullable FirebaseFirestoreException e) {
@@ -294,7 +294,7 @@ public class User_profile extends AppCompatActivity {
                                              public void run() {
                                                  map = new HashMap<>();
                                                  map.put("avatar_link", taskSnapshot.getMetadata().getPath());
-                                                 users.update(map);
+                                                 user.update(map);
 
                                                  // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                                                  // ...
