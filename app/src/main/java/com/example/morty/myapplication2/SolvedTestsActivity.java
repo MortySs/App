@@ -165,10 +165,34 @@ public class SolvedTestsActivity extends AppCompatActivity {
                                     progressBar.setVisibility(View.GONE);
                                     questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
-                                        public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                                            Intent intent = new Intent(SolvedTestsActivity.this, test_view.class);
-                                            intent.putExtra("Test_id", arrayList.get((int) id).get("Test_id").toString());
-                                            startActivity(intent);
+                                        public void onItemClick(AdapterView<?> parent, View itemClicked, int position, final long id) {
+                                            LayoutInflater li = LayoutInflater.from(SolvedTestsActivity.this);
+                                            View promptsView = li.inflate(R.layout.delete_prompt, null);
+                                            AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(SolvedTestsActivity.this);
+                                            mDialogBuilder.setView(promptsView);
+
+                                            final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
+                                            delete.setText("Решить тест или посмотреть информацию?");
+                                            mDialogBuilder
+                                                    .setCancelable(false)
+                                                    .setPositiveButton("Решить",
+                                                            new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int DialogId) {
+                                                                    Intent intent = new Intent(SolvedTestsActivity.this, test_view.class);
+                                                                    intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id"));
+                                                                    startActivity(intent);
+                                                                }
+                                                            })
+                                                    .setNegativeButton("Посмотреть",
+                                                            new DialogInterface.OnClickListener() {
+                                                                public void onClick(DialogInterface dialog, int DialogId) {
+                                                                    Intent intent = new Intent(SolvedTestsActivity.this, MyTestsSolveActivity.class);
+                                                                    intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id"));
+                                                                    startActivity(intent);
+                                                                }
+                                                            });
+                                            AlertDialog alertDialog = mDialogBuilder.create();
+                                            alertDialog.show();
                                         }
                                     });
 
