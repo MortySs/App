@@ -32,7 +32,7 @@
 
     <RatingBar
         android:id="@+id/rating"
-        android:layout_width="240dp"
+        android:layout_width="@dimen/RatingBar_width"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.RatingBar"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -46,10 +46,11 @@
         android:id="@+id/test_end_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Закончить"
+        android:text="@string/solve_end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.719" />
+
 </android.support.constraint.ConstraintLayout>

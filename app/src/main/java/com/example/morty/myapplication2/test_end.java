@@ -202,4 +202,7 @@ public class test_end extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {}
 }

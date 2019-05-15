@@ -44,7 +44,6 @@
         <activity android:name=".MyTestsSolveActivity" />
         <activity android:name=".TestCreateView" />
         <activity android:name=".SolvedTestsActivity" />
-        <activity android:name=".SearchableActivity" />
         <activity android:name=".test_end" />
         <activity android:name=".ParsingActivity" />
     </application>

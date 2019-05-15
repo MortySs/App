@@ -6,4 +6,14 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="logo_w_h">100dp</dimen>
+    <dimen name="turtle_size">180dp</dimen>
+    <dimen name="turtle_marginBottom">30dp</dimen>
+    <dimen name="EditText_marginVertical">10dp</dimen>
+    <dimen name="Button_marginVertical">20dp</dimen>
+    <dimen name="ProgressBar_size">30dp</dimen>
+    <dimen name="forgot_your_password_textSize">20sp</dimen>
+    <dimen name="RatingBar_width">240dp</dimen>
+    <dimen name="test_view_frameLayout_height">49dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 </resources>

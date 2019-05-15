@@ -14,7 +14,7 @@
     <string name="hint_email">Адрес электронной почты</string>
     <string name="hint_password">Пароль</string>
     <string name="hint_name">Fullname</string>
-    <string name="btn_login">LOGIN</string>
+    <string name="btn_login">Войти</string>
     <string name="btn_link_to_register">Все еще не с нами? Присоединяйтесь!</string>
     <string name="btn_link_to_login">Уже зарегистрированы? Войдите!</string>
     <string name="title_activity_reset_password">ResetPasswordActivity</string>

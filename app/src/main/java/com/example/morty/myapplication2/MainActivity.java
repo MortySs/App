@@ -381,7 +381,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     void searchTestsInCategory(final String name, String category){
-        //Log.d("searchTests", name);
         progressBar.setVisibility(View.VISIBLE);
         questions.setAdapter(null);
         arrayList.clear();
@@ -442,7 +441,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     void searchAllTests(final String name){
-        Log.d("searchTests", name);
         progressBar.setVisibility(View.VISIBLE);
         questions.setAdapter(null);
         arrayList.clear();

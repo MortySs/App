@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -35,8 +36,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class User_profile extends AppCompatActivity {
+public class User_profile extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
+    FirebaseFirestore db;
     private FirebaseAuth mAuth;
     private TextView uzname_field;
     private TextView uzemail_field,avatarUri;
@@ -47,18 +49,20 @@ public class User_profile extends AppCompatActivity {
     String email;
     Intent intent;
     boolean isCus;
+    SwipeRefreshLayout swipeRefreshLayout;
     ArrayList<String> CurrentSubscribers = new ArrayList<>(), CurrentSubscriptions = new ArrayList<>(),
             OtherSubscribers = new ArrayList<>(), OtherSubscriptions = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference storageRef = storage.getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        swipeRefreshLayout = findViewById(R.id.swipe_user);
         progressBar = findViewById(R.id.progressBar);
         uzname_field = findViewById(R.id.uzname_field);
         uzemail_field = findViewById(R.id.uz_email);
@@ -67,6 +71,9 @@ public class User_profile extends AppCompatActivity {
         avatarChoose_btn = findViewById(R.id.av_ch);
         solvedTestsWatch_btn = findViewById(R.id.solved_watch);
         avatarUri = findViewById(R.id.av_url);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
         final FirebaseUser cus = mAuth.getCurrentUser();
         intent = getIntent();
@@ -275,7 +282,7 @@ public class User_profile extends AppCompatActivity {
                          public void fileSelected(final File file) {
                              if (file.getAbsolutePath().endsWith(".png") || file.getAbsolutePath().endsWith(".jpg")) {
                                  Uri file2 = Uri.fromFile(new File(file.getAbsolutePath()));
-                                 StorageReference riversRef = storageRef.child("users_avatars/" + email + "/" + file2.getLastPathSegment());
+                                 StorageReference riversRef = storageRef.child("users_avatars/" + email + "/" + "avatar");
                                  UploadTask uploadTask = riversRef.putFile(file2);
 
                                  // Register observers to listen for when the download is done or if it fails
@@ -318,4 +325,52 @@ public class User_profile extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onRefresh() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        final DocumentReference user = db.collection("users").document(email);
+        final StorageReference storageRef = storage.getReference();
+            user.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                @Override
+                public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                    @Nullable FirebaseFirestoreException e) {
+                    if (e != null) {
+                        Log.w("", "Listen failed.", e);
+                        return;
+                    }
+                    if (snapshot != null && snapshot.exists()) {
+                        if (snapshot.get("avatar_link")!=null) {
+                            storageRef.child(snapshot.get("avatar_link").toString())
+                                    .getDownloadUrl()
+                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            Picasso.get().load(uri).into(Avatar);
+                                            progressBar.setVisibility(View.GONE);
+                                        }
+                                    });
+                        } else {
+                            Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/leotest-2k1n.appspot.com/o/Default%2Favatar_pic.png?alt=media&token=0a264da6-7d1b-44cd-aaee-9230bd2d0b2d").into(Avatar);
+                            progressBar.setVisibility(View.GONE);
+                        }
+                        if (snapshot.get("name")!=null) {
+                            uzname_field.setText(snapshot.get("name").toString());
+                        }else{
+                            uzname_field.setText("Ошибка загрузки данных");
+                        }
+                        uzemail_field.setText(email);
+                        Log.d("", "Current data: " + snapshot.getData());
+                    } else {
+                        Log.d("", "Current data: null");
+                    }
+                }
+            });
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, 1000);
+
+    }
 }
