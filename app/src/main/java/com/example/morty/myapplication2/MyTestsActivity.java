@@ -194,8 +194,8 @@ public class MyTestsActivity extends AppCompatActivity {
                                 AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(MyTestsActivity.this);
                                 mDialogBuilder.setView(promptsView);
 
-                                final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
-                                delete.setText("Решить тест или посмотреть информацию?");
+                                final TextView textView = (TextView) promptsView.findViewById(R.id.delete_tv);
+                                textView.setText("Решить тест или посмотреть информацию?");
                                 mDialogBuilder
                                         .setCancelable(false)
                                         .setPositiveButton("Решить",

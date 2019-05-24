@@ -113,7 +113,6 @@ public class MyTestsSolveActivity extends AppCompatActivity {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d("MortyList", document.getId() + " => " + document.getData());
-                        map = new HashMap<>();
                         ArrayList<String> Emails = (ArrayList<String>) document.get("solved_emails");
                         ArrayList<String> Names = (ArrayList<String>) document.get("solved_names");
                         ArrayList<Long> EmailsSolvedCount = (ArrayList<Long>) document.get("emails_solved_count");
@@ -123,6 +122,7 @@ public class MyTestsSolveActivity extends AppCompatActivity {
 
                         if(Emails != null) {
                             for (int i = 0; i < Emails.size(); i++) {
+                                map = new HashMap<>();
                                 map.put("Email", Emails.get(i));
                                 map.put("Name", Names.get(i));
 
@@ -163,23 +163,24 @@ public class MyTestsSolveActivity extends AppCompatActivity {
                                 }
                                 map.put("Correct_Answers_Count", CorrectCount);
 
+                                arrayList.add(map);
+                                SimpleAdapter adapter = new SimpleAdapter(MyTestsSolveActivity.this, arrayList, R.layout.my_tests_solve_item,
+                                        new String[]{"Email", "Name", "Emails_Solved_Count", "Time", "Correct_Answers_Count"},
+                                        new int[]{R.id.my_test_solve_user_email, R.id.my_test_solve_user_name, R.id.my_test_solve_solved_count,
+                                                R.id.my_test_solve_time, R.id.my_test_solve_right_count});
+                                usersList.setAdapter(adapter);
+
+                                usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
+                                        Intent intent = new Intent(MyTestsSolveActivity.this, User_profile.class);
+                                        intent.putExtra("Email", arrayList.get((int) id).get("Email"));
+                                        startActivity(intent);
+                                    }
+                                });
+
                             }
                         }
-                        arrayList.add(map);
-                        SimpleAdapter adapter = new SimpleAdapter(MyTestsSolveActivity.this, arrayList, R.layout.my_tests_solve_item,
-                                new String[]{"Email", "Name", "Emails_Solved_Count", "Time", "Correct_Answers_Count"},
-                                new int[]{R.id.my_test_solve_user_email, R.id.my_test_solve_user_name, R.id.my_test_solve_solved_count,
-                                        R.id.my_test_solve_time, R.id.my_test_solve_right_count});
-                        usersList.setAdapter(adapter);
-
-                        usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, long id) {
-                                Intent intent = new Intent(MyTestsSolveActivity.this, User_profile.class);
-                                intent.putExtra("Email", arrayList.get((int) id).get("Email"));
-                                startActivity(intent);
-                            }
-                        });
                     }
                 }
             }
