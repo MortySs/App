@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,11 +41,12 @@ import java.util.Map;
 
 public class TestCreateActivity extends AppCompatActivity {
     public final ArrayList<String> Questions = new ArrayList<>();
-    private EditText name;
+    private EditText name,  testPass;
     private FirebaseAuth mAuth;
     private Button q_create, t_create;
     private ProgressBar progressBar;
     final Context context = this;
+    private String private_status = "free";
     private int questionId = 0;
 
     @Override
@@ -52,6 +56,7 @@ public class TestCreateActivity extends AppCompatActivity {
         q_create = (Button) findViewById(R.id.q_add);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         name = (EditText) findViewById(R.id.name_of_test);
+        testPass = findViewById(R.id.test_pass);
         t_create = (Button) findViewById(R.id.t_create);
         Spinner category = (Spinner) findViewById(R.id.list_tag);
         final ListView questionView = (ListView) findViewById(R.id.test_create_list);
@@ -107,7 +112,29 @@ public class TestCreateActivity extends AppCompatActivity {
                 return true;
             }});
 
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.private_radiogroup);
 
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case -1:
+                        break;
+                    case R.id.private_radio:
+                       testPass.setVisibility(View.VISIBLE);
+                       private_status="pass";
+                        break;
+                    case R.id.sub_radio:
+                        testPass.setVisibility(View.GONE);
+                        private_status="sub";
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
 
         AdapterView.OnItemSelectedListener itemSelectedListener = new AdapterView.OnItemSelectedListener() {
             @Override
@@ -257,6 +284,10 @@ public class TestCreateActivity extends AppCompatActivity {
                         });
                         data.put("category",category.getSelectedItem().toString());
                         test_inf.put("solved_cnt",0);
+                        test_inf.put("private_status",private_status);
+                        if (testPass.getText()!=null){
+                            test_inf.put("test_pass",testPass.getText().toString());
+                        }
                         test_inf.put("test_name",name.getText().toString());
                         test_inf.put("test_maker_email",cus.getEmail());
                         ArrayList<Long> deletedId = (ArrayList<Long>) document.get("deletedId");

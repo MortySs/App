@@ -305,6 +305,13 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
             //Toast.makeText(this, "У вас пока нет ни одного черновика", Toast.LENGTH_SHORT).show();
+        }  else if(id==R.id.nav_pr_tests) {
+            if (cus == null) {
+                Toast.makeText(this, "Для доступа к контенту, пожалуйста, зарегистрируйтесь", Toast.LENGTH_LONG).show();
+            } else {
+                Intent intent = new Intent(MainActivity.this, PrivateTestsActivity.class);
+                startActivity(intent);
+            }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -316,7 +323,7 @@ public class MainActivity extends AppCompatActivity
         questions.setAdapter(null);
         arrayList.clear();
 
-        Query q = tests.whereEqualTo("category",category);
+        Query q = tests.whereEqualTo("category",category).whereEqualTo("private_status","free");
 
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -370,7 +377,7 @@ public class MainActivity extends AppCompatActivity
         questions.setAdapter(null);
         arrayList.clear();
 
-        Query q = tests.whereEqualTo("category",category);
+        Query q = tests.whereEqualTo("category",category).whereEqualTo("private_status","free");
 
         q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -429,8 +436,8 @@ public class MainActivity extends AppCompatActivity
         progressBar.setVisibility(View.VISIBLE);
         questions.setAdapter(null);
         arrayList.clear();
-
-        tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Query q = tests.whereEqualTo("private_status","free");
+        q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 boolean search = false;
@@ -486,7 +493,8 @@ public class MainActivity extends AppCompatActivity
     void setAllTests(){
         arrayList.clear();
         questions.setAdapter(null);
-        tests.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Query q = tests.whereEqualTo("private_status","free");
+        q.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {

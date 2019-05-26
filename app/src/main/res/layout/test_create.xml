@@ -101,20 +101,45 @@
     </LinearLayout>
 
 
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/test_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:hint="пароль"
+            android:inputType="textPassword"
+            android:visibility="gone" />
+    </android.support.design.widget.TextInputLayout>
+
     <ListView
         android:id="@+id/test_create_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="15dp"/>
+        android:layout_height="250dp"
+        android:layout_margin="10dp" />
 
-    <Button
-        android:id="@+id/add_answer"
+    <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:text="+ добавить вопрос"
-        android:textSize="10dp"
-        android:textColor="@color/colorAccent"
-        android:layout_margin="15dp"/>
+        android:layout_height="match_parent"
+        android:orientation='horizontal'
+        android:id="@+id/private_radiogroup">
+
+        <RadioButton
+            android:id="@+id/private_radio"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Пароль" />
+
+        <RadioButton
+            android:id="@+id/sub_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Для всех подписчиков" />
+    </RadioGroup>
 
 </LinearLayout>

@@ -24,6 +24,10 @@
             android:id="@+id/nav_manage"
             android:icon="@drawable/person"
             android:title="Сообщество" />
+        <item
+            android:id="@+id/nav_pr_tests"
+            android:icon="@android:drawable/ic_lock_idle_lock"
+            android:title="Приватные тесты" />
     </group>
 
 </menu>
