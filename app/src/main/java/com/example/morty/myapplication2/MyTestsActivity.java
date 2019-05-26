@@ -125,6 +125,26 @@ public class MyTestsActivity extends AppCompatActivity {
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             final FirebaseUser cus = mAuth.getCurrentUser();
+                                            final DocumentReference user = db.collection("users").document(cus.getEmail());
+                                            user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot document = task.getResult();
+                                                        if (document.exists()) {
+                                                            Log.d("LOL", "DocumentSnapshot data: " + document.getData());
+                                                            HashMap<String, Object> hashMap = new HashMap<>();
+                                                            hashMap.put("tests_count", document.getLong("tests_count") - 1);
+                                                            user.update(hashMap);
+                                                        } else {
+                                                            Log.d("LOL", "No such document");
+                                                        }
+                                                    } else {
+                                                        Log.d("LOL", "get failed with ", task.getException());
+                                                    }
+                                                }
+                                            });
+
                                             final CollectionReference tests = db.collection("tests");
                                             deletedId.add(Integer.valueOf(arrayList.get(position).get("Test_id")));
                                             Log.d("deletedId ArrayList", String.valueOf(arrayList.get(position).get("Test_id")));

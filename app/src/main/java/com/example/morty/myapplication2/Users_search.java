@@ -13,9 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.SearchView;
+import android.support.v7.widget.SearchView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,22 +25,19 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Users_search extends AppCompatActivity implements SearchView.OnQueryTextListener{
+public class Users_search extends AppCompatActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener{
     private FirebaseAuth mAuth;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private final CollectionReference users = db.collection("users");
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private  HashMap<String, String> map;
     ListView usersList;
-    TextView testsCount;
     TabLayout tabLayout;
 
     @Override
@@ -444,5 +440,12 @@ public class Users_search extends AppCompatActivity implements SearchView.OnQuer
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onClose() {
+        if(tabLayout.getSelectedTabPosition() == 0) SetAll();
+        else SetSubscriptions();
+        return false;
     }
 }

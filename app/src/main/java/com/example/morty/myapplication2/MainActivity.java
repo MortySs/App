@@ -1,10 +1,6 @@
 package com.example.morty.myapplication2;
 
-import android.app.AlertDialog;
 import android.app.SearchManager;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,19 +10,15 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.MenuItemCompat;
 
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.RatingBar;
-import android.widget.SearchView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
@@ -42,8 +34,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -58,7 +48,7 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener,
-        SwipeRefreshLayout.OnRefreshListener{
+        SwipeRefreshLayout.OnRefreshListener, SearchView.OnCloseListener{
     private FirebaseAuth mAuth;
     private FirebaseUser cus;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -66,10 +56,8 @@ public class MainActivity extends AppCompatActivity
     private final ArrayList<HashMap<String, String>> arrayList = new ArrayList<>();
     private HashMap<String, String> map;
     private ProgressBar progressBar;
-    private ImageView Avatar ;
     private TextView not_auth;
-    private ListView listView;
-    private RatingBar testRt;
+
     ListView questions;
     byte pressedCount = 1;
     Date pressedMoment1 = new Date(0);
@@ -89,7 +77,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
@@ -108,7 +95,6 @@ public class MainActivity extends AppCompatActivity
         tabLayout.addTab(tabLayout.newTab().setText(categories[9]),10);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        listView = myView.findViewById(R.id.list);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +114,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        final StorageReference storageRef = storage.getReference();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
@@ -561,5 +546,12 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         for (int i = 0; i < navigationView.getMenu().size(); i++)  navigationView.getMenu().getItem(i).setChecked(false);
         super.onStart();
+    }
+
+    @Override
+    public boolean onClose() {
+        if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
+        else caseVoid(categories[tabLayout.getSelectedTabPosition() - 1]);
+        return false;
     }
 }
