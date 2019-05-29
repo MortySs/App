@@ -146,49 +146,56 @@ public class PrivateTestsActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
+                    for (final QueryDocumentSnapshot document1 : task.getResult()) {
                         isThereTest = true;
-                        DecimalFormat df = new DecimalFormat("#.##");
-
-                        Log.d("MortyList", document.getId() + " => " + document.getData());
+                        final DecimalFormat df = new DecimalFormat("#.##");
                         map = new HashMap<>();
-                        map.put("Test_id",document.getId());
-                        map.put("private_status",document.get("private_status").toString());
-                        map.put("test_maker_email",document.get("test_maker_email").toString());
-                        map.put("Test_name",document.get("test_name").toString());
-                        map.put("Q_count", "Вопросов: " + document.get("q_count").toString());
-                        map.put("S_count",document.get("solved_cnt").toString());
-                        if (document.get("rating")!=null) map.put("Rating",df.format(document.get("rating")));
-                        if (document.get("name")!=null) map.put("P_name", document.get("name").toString());
-
-                        arrayList.add(map);
-                        SimpleAdapter adapter = new SimpleAdapter(PrivateTestsActivity.this, arrayList, R.layout.my_tests_item,
-                                new String[]{"Test_name", "Q_count", "P_name", "S_count", "Rating"},
-                                new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
-                        questions.setAdapter(adapter);
-                        progressBar.setVisibility(View.GONE);
+                        map.put("test_maker_email",document1.get("test_maker_email").toString());
                         final DocumentReference user = db.collection("users").document(map.get("test_maker_email"));
-                        questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override
-                            public void onItemClick(AdapterView<?> parent, View itemClicked, int position, final long id) {
-                                user.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            DocumentSnapshot document = task.getResult();
-                                            if (document.exists()) {
-                                                ArrayList<String> subs = (ArrayList<String>) document.get("subscribers");
-                                                Log.d("testsCount", "DocumentSnapshot data: " + document.getData());
-                                            } else {
-                                                Log.d("testsCount", "No such document");
-                                            }
-                                        } else {
-                                            Log.d("testsCount", "get failed with ", task.getException());
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot document = task.getResult();
+                                    if (document.exists()) {
+                                        ArrayList<String> subs = (ArrayList<String>)document.get("subscribers");
+                                        if(subs.contains(cus.getEmail())){
+                                            Log.d("MortyList", document1.getId() + " => " + document1.getData());
+                                            map = new HashMap<>();
+                                            map.put("Test_id",document1.getId());
+                                           map.put("private_status",document1.get("private_status").toString());
+                                            map.put("test_maker_email",document1.get("test_maker_email").toString());
+                                            map.put("Test_name",document1.get("test_name").toString());
+                                            map.put("Q_count", "Вопросов: " + document1.get("q_count").toString());
+                                            map.put("S_count",document1.get("solved_cnt").toString());
+                                            if (document.get("rating")!=null) map.put("Rating",df.format(document.get("rating")));
+                                            if (document.get("name")!=null) map.put("P_name", document.get("name").toString());
+
+                                            arrayList.add(map);
+                                            SimpleAdapter adapter = new SimpleAdapter(PrivateTestsActivity.this, arrayList, R.layout.my_tests_item,
+                                                    new String[]{"Test_name", "Q_count", "P_name", "S_count", "Rating"},
+                                                    new int[]{R.id.test_name, R.id.q_count, R.id.person_name, R.id.solved_count, R.id.test_rating});
+                                            questions.setAdapter(adapter);
+                                            progressBar.setVisibility(View.GONE);
+
+                                            questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                @Override
+                                                public void onItemClick(AdapterView<?> parent, View itemClicked, int position, final long id) {
+
+                                                }
+                                            });
                                         }
+                                        Log.d("testsCount", "DocumentSnapshot data: " + document1.getData());
+                                    } else {
+                                        Log.d("testsCount", "No such document");
                                     }
-                                });
+                                } else {
+                                    Log.d("testsCount", "get failed with ", task.getException());
+                                }
                             }
                         });
+
+
                     }
                 } else {
                     not_auth.setVisibility(View.VISIBLE);

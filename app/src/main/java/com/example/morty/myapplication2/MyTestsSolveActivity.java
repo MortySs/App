@@ -143,7 +143,7 @@ public class MyTestsSolveActivity extends AppCompatActivity {
                                 }
                                 map.put("Emails_Solved_Count", SolvedCount);
 
-                                String time = "время " + Seconds.get(i) + ":" + Minutes.get(i);
+                                String time = "время " + Minutes.get(i) + ":" + Seconds.get(i);
                                 map.put("Time", time);
 
                                 long cCount = CorrectAnswersCounts.get(i);

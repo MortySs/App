@@ -1,10 +1,14 @@
 package com.example.morty.myapplication2;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -61,6 +65,13 @@ public class User_profile extends AppCompatActivity implements SwipeRefreshLayou
         final StorageReference storageRef = storage.getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
+        int permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+        } else {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                    10);
+        }
 
         swipeRefreshLayout = findViewById(R.id.swipe_user);
         progressBar = findViewById(R.id.progressBar);
@@ -276,6 +287,7 @@ public class User_profile extends AppCompatActivity implements SwipeRefreshLayou
         avatarChoose_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (isCus) {
                     new FileChooser(User_profile.this).setFileListener(new FileChooser.FileSelectedListener() {
                          @Override
@@ -372,5 +384,23 @@ public class User_profile extends AppCompatActivity implements SwipeRefreshLayou
             }
         }, 1000);
 
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 10:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+// permission granted
+                } else {
+                    Toast toast = Toast.makeText(getApplicationContext(),
+                            "Для загрузки аватара предоставьте разрешение на доступ к памяти телефона", Toast.LENGTH_LONG);
+                    toast.show();
+                    Intent intent = new Intent(User_profile.this,MainActivity.class);
+                    startActivity(intent);
+                }
+                return;
+        }
     }
 }

@@ -341,7 +341,7 @@ public class ParsingActivity extends AppCompatActivity {
 
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(),
-                            "Для парсинга дайте разрешение на доступ к памяти телефона", Toast.LENGTH_LONG);
+                            "Для парсинга предоставьте разрешение на доступ к памяти телефона", Toast.LENGTH_LONG);
                     toast.show();
                     Intent intent = new Intent(ParsingActivity.this,MainActivity.class);
                     startActivity(intent);
