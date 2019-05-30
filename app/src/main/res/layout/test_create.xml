@@ -133,7 +133,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Пароль" />
-
+        <RadioButton
+            android:id="@+id/all_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Для всех" />
         <RadioButton
             android:id="@+id/sub_radio"
             android:layout_width="wrap_content"

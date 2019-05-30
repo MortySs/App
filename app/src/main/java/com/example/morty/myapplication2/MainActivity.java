@@ -177,7 +177,10 @@ public class MainActivity extends AppCompatActivity
             pressedCount = 1;
             pressedMoment2 = new Date();
             if(pressedMoment2.getTime()-pressedMoment1.getTime() < 1000) {
-                super.onBackPressed();
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 pressedMoment1 = new Date(0);
                 pressedMoment2 = new Date(0);
             }else{

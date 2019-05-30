@@ -129,7 +129,9 @@ public class TestCreateActivity extends AppCompatActivity {
                         testPass.setVisibility(View.GONE);
                         private_status="sub";
                         break;
-
+                    case R.id.all_radio:
+                        testPass.setVisibility(View.GONE);
+                        private_status="free";
                     default:
                         break;
                 }
