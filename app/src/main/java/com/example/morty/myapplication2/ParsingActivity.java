@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +42,9 @@ public class ParsingActivity extends AppCompatActivity {
     final ArrayList<String[]> Answers = new ArrayList<>();
     final ArrayList<Boolean[]> RightAnswers = new ArrayList<>();
     final ArrayList<String> Questions = new ArrayList<>();
-    String name,category;
+    String name,category,private_status,test_pass;
     private FirebaseAuth mAuth;
+    private ProgressBar progressBar;
     private Button find_btn,create_btn;
     private TextView file_inf;
     int n;
@@ -63,6 +65,10 @@ public class ParsingActivity extends AppCompatActivity {
                 String strLine;
                 name = sc.nextLine();
                 category = sc.nextLine();
+                private_status = sc.nextLine();
+                if(private_status.equals("pass")){
+                    test_pass = sc.nextLine();
+                }
                 for (int i = 0; i < categories.length; i++) {
                     if(category.equalsIgnoreCase(categories[i])){
                         category = categories[i];
@@ -119,6 +125,8 @@ public class ParsingActivity extends AppCompatActivity {
         find_btn = findViewById(R.id.find_file_btn);
         file_inf =  findViewById(R.id.parsing_file_inf);
         create_btn = findViewById(R.id.create_parsed);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar2);
+
         int permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
 
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
@@ -146,10 +154,19 @@ public class ParsingActivity extends AppCompatActivity {
                 if(isTxt == true) {
                     if(categoryIsRight){
                         if(testIsCorrectly) {
+                            progressBar.setVisibility(View.VISIBLE);
                             Upd_test();
                             revertDraft();
-                            Intent intent = new Intent(ParsingActivity.this, MainActivity.class);
-                            startActivity(intent);
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setVisibility(View.GONE);
+                                    Intent intent = new Intent(ParsingActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                }
+                            }, 2000);
+
                         }else Toast.makeText(getApplicationContext(), "Проверьте файл", Toast.LENGTH_SHORT).show();
                     }else Toast.makeText(getApplicationContext(), "Проверьте категорию", Toast.LENGTH_SHORT).show();
                 } else Toast.makeText(getApplicationContext(), "Файл должен иметь txt формат",Toast.LENGTH_SHORT).show();
@@ -210,6 +227,7 @@ public class ParsingActivity extends AppCompatActivity {
                         id_inf.put("last_id",(long)document.get("last_id")+1);
                         test_inf.put("solved_cnt",0);
                         test_inf.put("test_name",name);
+                        test_inf.put("private_status",private_status);
                         createdTests.document(id_inf.get("last_id").toString()).set(test_inf);
 
                         test_inf.put("test_maker_email",cus.getEmail());
