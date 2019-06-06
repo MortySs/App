@@ -42,6 +42,7 @@
         <item>Химия</item>
         <item>Другое</item>
     </string-array>
+    <string name="test_name"></string>
     <string name="parsing_regulations">
     txt документ должен иметь такой вид:\n
     1 строчка: Название теста\n

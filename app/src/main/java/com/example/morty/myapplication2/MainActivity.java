@@ -68,8 +68,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mAuth = FirebaseAuth.getInstance();
+        cus = mAuth.getCurrentUser();
+    if(mAuth.getCurrentUser()==null){
+        Intent intent = new Intent(this,EmailPasswordActivity.class);
+        startActivity(intent);
+    }else{
         LayoutInflater inflater = getLayoutInflater();
-        View myView = inflater.inflate(R.layout.my_tests,null);
+        View myView = inflater.inflate(R.layout.my_tests, null);
 
         categories = getResources().getStringArray(R.array.tag_names);
 
@@ -82,17 +88,17 @@ public class MainActivity extends AppCompatActivity
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
 
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Все тесты"),0);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[0]),1);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[1]),2);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[2]),3);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[3]),4);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[4]),5);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[5]),6);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[6]),7);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[7]),8);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[8]),9);
-        tabLayout.addTab(tabLayout.newTab().setText(categories[9]),10);
+        tabLayout.addTab(tabLayout.newTab().setText("Все тесты"), 0);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[0]), 1);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[1]), 2);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[2]), 3);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[3]), 4);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[4]), 5);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[5]), 6);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[6]), 7);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[7]), 8);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[8]), 9);
+        tabLayout.addTab(tabLayout.newTab().setText(categories[9]), 10);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -104,10 +110,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        mAuth = FirebaseAuth.getInstance();
-        cus = mAuth.getCurrentUser();
 
-        if (cus == null){
+
+        if (cus == null) {
             fab.setClickable(false);
             Toast.makeText(this, "Для доступа к контенту, пожалуйста, зарегистрируйтесь", Toast.LENGTH_LONG).show();
         }
@@ -124,7 +129,7 @@ public class MainActivity extends AppCompatActivity
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
+                if (tabLayout.getSelectedTabPosition() == 0) setAllTests();
                 else caseVoid(categories[tabLayout.getSelectedTabPosition() - 1]);
                 Log.i("TAG", "onTabSelected: " + tab.getPosition());
             }
@@ -137,7 +142,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                if(tabLayout.getSelectedTabPosition() == 0) setAllTests();
+                if (tabLayout.getSelectedTabPosition() == 0) setAllTests();
                 else caseVoid(categories[tabLayout.getSelectedTabPosition() - 1]);
                 Log.i("TAG", "onTabReselected: " + tab.getPosition());
             }
@@ -162,6 +167,8 @@ public class MainActivity extends AppCompatActivity
         //         not_auth.setVisibility(View.VISIBLE);
         //     }
     }
+    }
+
 
     @Override
     public void onBackPressed() {

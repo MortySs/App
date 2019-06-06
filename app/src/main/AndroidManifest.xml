@@ -31,19 +31,26 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".ResetPasswordActivity" />
-        <activity android:name=".SignupActivity" />
-        <activity android:name=".EmailPasswordActivity" />
+        <activity android:name=".ResetPasswordActivity"
+            android:label="Восстановление пароля"/>
+        <activity android:name=".SignupActivity"
+            android:label="Регистрация"/>
+        <activity android:name=".EmailPasswordActivity"
+            android:label="Вход"/>
         <activity android:name=".NavHeaderActivity" />
-        <activity android:name=".TestCreateActivity" />
+        <activity android:name=".TestCreateActivity"
+            android:label="Создание теста"/>
         <activity
             android:name=".User_profile"
             android:label="@string/title_activity_user_profile" />
-        <activity android:name=".test_view" />
+        <activity android:name=".test_view"
+            android:label="@string/test_name"/>
         <activity android:name=".prompt" />
-        <activity android:name=".MyTestsActivity" />
+        <activity android:name=".MyTestsActivity"
+            android:label="Мои тесты"/>
         <activity android:name=".MyTestsSolveActivity" />
-        <activity android:name=".TestCreateView" />
+        <activity android:name=".TestCreateView"
+            android:label="@string/test_name"/>
         <activity android:name=".SolvedTestsActivity" />
         <activity android:name=".test_end" />
         <activity android:name=".ParsingActivity" />
