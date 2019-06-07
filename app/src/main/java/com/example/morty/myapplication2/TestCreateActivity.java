@@ -79,42 +79,6 @@ public class TestCreateActivity extends AppCompatActivity {
             }
         });
 
-        questionView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
-                LayoutInflater li = LayoutInflater.from(context);
-                View promptsView = li.inflate(R.layout.delete_prompt, null);
-                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
-                mDialogBuilder.setView(promptsView);
-
-                final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
-                delete.setText("Удалить вопрос?");
-                mDialogBuilder
-                        .setCancelable(false)
-                        .setPositiveButton("Да",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        Questions.remove(position);
-                                        Log.d("deleting", "onClick: удален вопрос номер "+q_id);
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                    }
-                                })
-                        .setNegativeButton("Отмена",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,int id) {
-                                        dialog.cancel();
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-                                    }
-                                });
-                AlertDialog alertDialog = mDialogBuilder.create();
-                alertDialog.show();
-                return true;
-            }});
-
         RadioGroup radioGroup = findViewById(R.id.private_radiogroup);
         final RadioButton all = findViewById(R.id.all_radio);
         final RadioButton sub = findViewById(R.id.sub_radio);
@@ -278,6 +242,78 @@ public class TestCreateActivity extends AppCompatActivity {
                 }
             });
         }else {
+            questionView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long q_id) {
+                    LayoutInflater li = LayoutInflater.from(context);
+                    View promptsView = li.inflate(R.layout.delete_prompt, null);
+                    AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(context);
+                    mDialogBuilder.setView(promptsView);
+
+                    final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
+                    delete.setText("Удалить вопрос?");
+                    mDialogBuilder
+                            .setCancelable(false)
+                            .setPositiveButton("Да",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,int id) {
+                                            Log.d("deleting", "onClick: удален вопрос " + Questions.get(position));
+                                            Questions.remove(position);
+                                            Log.d("deleting", "onClick: удален вопрос номер "+q_id);
+
+                                            ArrayAdapter<String> qAdapter = new ArrayAdapter<String>(TestCreateActivity.this,
+                                                    android.R.layout.simple_list_item_1, Questions);
+                                            questionView.setAdapter(qAdapter);
+
+                                            mAuth = FirebaseAuth.getInstance();
+                                            final FirebaseUser cus = mAuth.getCurrentUser();
+                                            final FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                            final CollectionReference a_draft = db.collection("users").document(cus.getEmail().toString()).collection("tests").document("draft").collection("answers");
+
+                                            for (int i = 0; i < Questions.size() + 1; i++) {
+                                                final int i1 = i;
+                                                a_draft.document(String.valueOf(i+1)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            DocumentSnapshot document = task.getResult();
+                                                            if (document.exists()) {
+                                                                Log.d("LOL", "DocumentSnapshot data: " + document.getData());
+                                                                HashMap<String, Object> map = new HashMap<>();
+                                                                for (int j = 0; j < 4; j++) {
+                                                                    map.put(String.valueOf(j), document.get(String.valueOf(j)));
+                                                                    map.put("is_cor_" + j,document.get("is_cor_" + j));
+                                                                }
+                                                                a_draft.document(String.valueOf(i1)).set(map);
+                                                            } else {
+                                                                Log.d("LOL", "No such document");
+                                                            }
+                                                        } else {
+                                                            Log.d("LOL", "get failed with ", task.getException());
+                                                        }
+                                                    }
+                                                });
+                                            }
+
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        }
+                                    })
+                            .setNegativeButton("Отмена",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,int id) {
+                                            dialog.cancel();
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                                        }
+                                    });
+                    AlertDialog alertDialog = mDialogBuilder.create();
+                    alertDialog.show();
+                    return true;
+                }});
+
             q_create.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
