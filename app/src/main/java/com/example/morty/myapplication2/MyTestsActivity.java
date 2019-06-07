@@ -120,7 +120,7 @@ public class MyTestsActivity extends AppCompatActivity {
                     final TextView delete = (TextView) promptsView.findViewById(R.id.delete_tv);
                     delete.setText("Удалить тест?");
                     mDialogBuilder
-                            .setCancelable(false)
+                            .setCancelable(true)
                             .setPositiveButton("Да",
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
@@ -209,32 +209,36 @@ public class MyTestsActivity extends AppCompatActivity {
                         questions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View itemClicked, int position, final long id) {
-                                LayoutInflater li = LayoutInflater.from(MyTestsActivity.this);
-                                View promptsView = li.inflate(R.layout.delete_prompt, null);
-                                AlertDialog.Builder mDialogBuilder = new AlertDialog.Builder(MyTestsActivity.this);
-                                mDialogBuilder.setView(promptsView);
+                                final String[] mCatsName ={"Решить", "Посмотреть инф-ю", "Изменить"};
 
-                                final TextView textView = (TextView) promptsView.findViewById(R.id.delete_tv);
-                                textView.setText("Решить тест или посмотреть информацию?");
-                                mDialogBuilder
-                                        .setCancelable(false)
-                                        .setPositiveButton("Решить",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int DialogId) {
-                                                        Intent intent = new Intent(MyTestsActivity.this, test_view.class);
-                                                        intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id"));
-                                                        startActivity(intent);
-                                                    }
-                                                })
-                                        .setNegativeButton("Посмотреть",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int DialogId) {
-                                                        Intent intent = new Intent(MyTestsActivity.this, MyTestsSolveActivity.class);
-                                                        intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id"));
-                                                        startActivity(intent);
-                                                    }
-                                                });
-                                AlertDialog alertDialog = mDialogBuilder.create();
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MyTestsActivity.this);
+                                builder.setTitle("Что сделать с тестом?"); // заголовок для диалога
+
+                                builder.setItems(mCatsName, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int item) {
+                                        Intent intent;
+                                        switch (item){
+                                            case 0:
+                                                intent = new Intent(MyTestsActivity.this, test_view.class);
+                                                intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id"));
+                                                startActivity(intent);
+                                                break;
+                                            case 1:
+                                                intent = new Intent(MyTestsActivity.this, MyTestsSolveActivity.class);
+                                                intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id"));
+                                                startActivity(intent);
+                                                break;
+                                            case 2:
+                                                intent = new Intent(MyTestsActivity.this, TestCreateActivity.class);
+                                                intent.putExtra("Test_id",arrayList.get((int)id).get("Test_id"));
+                                                startActivity(intent);
+                                                break;
+                                        }
+                                    }
+                                });
+                                builder.setCancelable(true);
+                                AlertDialog alertDialog = builder.create();
                                 alertDialog.show();
                             }
                         });

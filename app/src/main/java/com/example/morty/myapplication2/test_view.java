@@ -63,7 +63,6 @@ public class test_view extends AppCompatActivity {
         btnAndBackground.put(a3,f3);
         btnAndBackground.put(a4,f4);
         mAuth = FirebaseAuth.getInstance();
-        final FirebaseUser cus = mAuth.getCurrentUser();
 
         startTimerThread();
 

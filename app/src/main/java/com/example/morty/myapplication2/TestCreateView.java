@@ -144,7 +144,7 @@ public class TestCreateView extends AppCompatActivity {
          Map<String, Object> data = new HashMap<>();
          for (int i = 0; i < 4; i++) {
              String count = "" + i;
-             data.put(count, Answers.get(i).toString());
+             data.put(count, Answers.get(i));
          }
          data.put("is_cor_" + 0, rb1.isChecked());
          data.put("is_cor_" + 1, rb2.isChecked());
