@@ -70,10 +70,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
         cus = mAuth.getCurrentUser();
-    if(mAuth.getCurrentUser()==null){
-        Intent intent = new Intent(this,EmailPasswordActivity.class);
-        startActivity(intent);
-    }else{
+
         LayoutInflater inflater = getLayoutInflater();
         View myView = inflater.inflate(R.layout.my_tests, null);
 
@@ -82,6 +79,10 @@ public class MainActivity extends AppCompatActivity
         not_auth = (TextView) myView.findViewById(R.id.not_auth_text);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(mAuth.getCurrentUser()==null){
+            Intent intent = new Intent(this,EmailPasswordActivity.class);
+            startActivity(intent);
+        }else{
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
