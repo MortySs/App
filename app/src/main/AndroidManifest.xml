@@ -52,7 +52,8 @@
         <activity android:name=".TestCreateView"
             android:label="@string/test_name"/>
         <activity android:name=".SolvedTestsActivity" />
-        <activity android:name=".test_end" />
+        <activity android:name=".test_end"
+            android:label="конец"/>
         <activity android:name=".ParsingActivity" />
         <activity android:name=".PrivateTestsActivity"></activity>
     </application>
